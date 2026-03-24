@@ -1,0 +1,51 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<nav class="navbar">
+  <div class="nav-logo">
+    <img src="/assets/logo.png" alt="Myrass Logo">
+  </div>
+  <ul class="nav-links">
+    <li><a routerLink="/home">Home</a></li>
+    <li><a href="#">Product</a></li>
+    <li><a routerLink="/gift">Our Gift</a></li>
+    <li><a routerLink="/about">Who We Are</a></li>
+  </ul>
+<div class="nav-icons">
+
+
+  <button class="icon-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+  </button>
+
+  <button class="icon-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+      <path d="M3 6h18"></path>
+      <path d="M16 10a4 4 0 0 1-8 0"></path>
+    </svg>
+  </button>
+
+ <button class="icon-btn" (click)="isLoginOpen = true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+    <circle cx="12" cy="7" r="4"></circle>
+    
+  </svg>
+
+</button>
+
+
+</div>
+</nav>
+  <app-login-drawer 
+    [isOpen]="isLoginOpen"
+    (closeDrawer)="isLoginOpen=false"
+    (switchToRegister)="switchToRegister()">
+</app-login-drawer>
+
+<app-register-drawer 
+    [isOpen]="isRegisterOpen"
+    (closeDrawer)="isRegisterOpen=false">
+</app-register-drawer>

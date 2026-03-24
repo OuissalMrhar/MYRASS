@@ -1,0 +1,139 @@
+.login-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 550px; 
+  height: 100vh;
+  background: #fff;
+  z-index: 3000;
+  padding: 30px 40px; 
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden; 
+  &.open { transform: translateX(0); }
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px; 
+  .title { font-size: 26px; font-weight: 300; letter-spacing: 1px; }
+  .close-icon { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+}
+
+.google-section {
+  text-align: center;
+  margin-bottom: 25px;
+  .btn-google {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    border-radius: 50px;
+    border: 1px solid #d1ccc8;
+    border-radius: 4px; // Look plus moderne/carré
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    img { width: 18px; }
+  }
+  .or-text { display: block; margin-top: 15px; font-size: 11px; color: #999; text-transform: uppercase; }
+}
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .custom-input {
+    width: 100%;
+    padding-right: 45px; // Laisse de la place pour l'icône à droite
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #8e867e; // Couleur taupe comme tes autres icônes
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #3d342f; // Plus sombre au survol
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+.form-group {
+  margin-bottom: 15px; // Compacté
+  label { display: block; font-size: 11px; text-transform: uppercase; color: #666; margin-bottom: 5px; }
+  .custom-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2e2e2;
+    background: #f9f9f9;
+    &:focus { outline: none; border-color: #333; background: #fff; }
+  }
+}
+
+
+.forgot-link { display: block; text-align: right; font-size: 11px; color: #666; margin-top: 5px; }
+
+.btn-black {
+  width: 100%;
+  padding: 15px;
+  background: #000;
+  border-radius: 50px;
+  color: #a9aea3;
+  border: none;
+  font-weight: 300;
+
+  letter-spacing: 1px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  &:hover { opacity: 0.8; }
+}
+
+.section-divider {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid #eee;
+  .new-client-box {
+    text-align: center;
+    h3 { font-size: 18px; font-weight: 400; margin-bottom: 10px; }
+    p { font-size: 13px; color: #777; margin-bottom: 15px; }
+  }
+}
+
+.btn-outline {
+  width: 100%;
+  padding: 12px;
+  border-radius: 50px;
+  background: #fff;
+  border: 1px solid #000;
+
+  font-size: 15px;
+  font-weight: 200;
+  cursor: pointer;
+  &:hover { background: #000; color: #fff; }
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(3px); // Effet de flou sur le fond
+  z-index: 2999;
+}

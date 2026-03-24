@@ -1,0 +1,537 @@
+// --- CONFIGURATION GENERALE ---
+:host {
+  --text-main: #3d342f;
+  --text-light: #8e867e;
+  --bg-cream: #f9f7f4;
+  --dark-footer: #231f1e;
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-main);
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+ font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+
+
+
+.hero {
+  height: 85vh;
+  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/assets/Accueil_Caroussel.jpeg') center/cover;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; text-align: center;
+  h1 { font-size: 52px; font-weight: 300; em { font-family: 'Cormorant Garamond', serif; font-style: italic; } }
+  p { font-size: 14px; letter-spacing: 1px; margin-top: 10px; opacity: 0.9; }
+}
+
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  .img-box {
+    aspect-ratio: 4/5;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    padding: 10px;
+    background-color: #f4f4f4; // Couleur de secours pendant le chargement
+    
+    // Attribution des images spécifiques
+    &.prod-1 {
+      background-image: url('/assets/Shifa.png');
+    }
+    
+    &.prod-2 {
+      background-image: url('/assets/harvest.png');
+    }
+    
+    &.prod-3 {
+      background-image: url('/assets/harvest_pack.png');
+    }
+  }
+
+  .badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    font-size: 9px;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    border: 0.5px solid #eee;
+    color: #3d342f;
+  }
+
+  .p-title {
+    margin-top: 15px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3d342f;
+  }
+
+  .p-desc {
+    color: #aaa;
+    font-size: 11px;
+    margin: 4px 0;
+  }
+
+  .p-price {
+    font-size: 12px;
+    font-weight: 600;
+    color: #3d342f;
+  }
+}
+
+// --- BESTSELLERS ---
+.bestsellers {
+  padding: 50px 100px;
+
+  background: #f6f6f4;
+  .section-subtitle { text-align: center; color: #553b31; font-size: 15px; margin-bottom: 60px; font-weight: 500;}
+  .bs-layout { display: grid; grid-template-columns: 280px 1fr; gap: 60px; }
+  .bs-sidebar h2 { font-size: 24px; font-weight: 400; margin-bottom: 20px; color:#553b31;font-weight: 600;}
+  .bs-sidebar p { font-size: 12px; line-height: 1.8; color: #553b31;}
+}
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px; // Espace large entre les flèches et les points
+  margin-top: 160px;
+
+  .nav-arrow {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #c2bab2; // Couleur beige/gris clair de l'image
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+
+    svg {
+      width: 45px; // Flèches assez grandes
+      height: 45px;
+    }
+
+    &:hover {
+      color: #8e867e;
+    }
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 15px; // Espacement généreux
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #d8d2cc; // Points inactifs clairs
+      border-radius: 50%;
+      display: inline-block;
+
+      &.active {
+        width: 24px; // Barre allongée
+        height: 7px;
+        background-color: #6e635d; // Barre active foncée
+        border-radius: 10px;
+        transform: translateY(0px);
+      }
+    }
+  }
+}
+.products-grid {
+
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  .img-box { 
+    border-radius: 8px;
+    aspect-ratio: 4/5; background: #e0e0e0; position: relative; padding: 10px; 
+    background-size: cover; background-position: center;
+  }
+  .badge { background: #fff; font-size: 9px; padding: 3px 8px; border: 0.5px solid #eee; }
+  .p-title { margin-top: 15px; font-size: 13px; font-weight: 500; }
+  .p-desc { color: #aaa; font-size: 11px; margin: 4px 0; }
+  .p-price { font-size: 12px; font-weight: 600; }
+}
+
+// --- BRAND STORY (Capture 3) ---
+.brand-story {
+  background-color: #ffffff;
+  text-align: center; 
+  padding: 40px 20%; // Augmentation du padding latéral pour centrer le bloc de texte
+
+  h2 { 
+    font-size: 42px; 
+    font-weight: 400; 
+    margin-bottom: 50px; 
+    color: #553b31;
+    
+    em { 
+
+      font-weight: 600; 
+    } 
+  }
+
+  .story-content { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;    
+    gap: 30px !important;              
+    text-align: center;     
+    max-width: 800px;
+    margin: 0 auto;
+    
+    p { 
+      font-size: 14px; 
+      color: #553b31; 
+      line-height: 1.8; 
+      margin: 0;
+      letter-spacing: 0.5px;
+    } 
+  }
+}
+// --- VIDEO ---
+.video-preview {
+  height: 650px; background: #5a6350;
+  display: flex; align-items: center; justify-content: center;
+  .play-button { color: white; font-size: 40px; border: 1px solid white; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; }
+}
+
+// --- COLLECTIONS ---
+.collections {
+  padding: 50px 50px;
+  padding-top: 200px;
+  background-color: #ffffff;
+
+  .col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .col-item {
+    text-align: center;
+
+    .col-img {
+
+      aspect-ratio: 2 / 3; 
+      
+   
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      border-radius: 8px; 
+      margin-bottom: 20px;
+      background-color: #f0f0f0;
+
+      &.c-1 { background-image: url('/assets/Collection1.png'); }
+      &.c-2 { background-image: url('/assets/Collection2.png'); }
+      &.c-3 { background-image: url('/assets/Collection3.png'); }
+    }
+
+    p {
+      font-size: 18px; // Un peu plus grand pour l'élégance
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 0;
+      letter-spacing: 1px;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.ramadan-section {
+  padding: 60px 250px;
+  padding-bottom: 100px;
+  
+  background-color: #f6f6f4; 
+  text-align: center;
+
+  .ramadan-header {
+    max-width: 800px;
+    margin: 0 auto 60px;
+
+    h3 {
+      font-size: 14px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+      color: #553b31;
+    }
+
+    p {
+      font-size: 12px;
+      line-height: 1.8;
+      color: #8e867e;
+    }
+  }
+
+  .ramadan-container {
+    display: flex;
+    gap: 30px; // Espace entre les deux blocs
+    align-items: flex-start;
+  }
+
+  .ramadan-item {
+    &.small {
+      flex: 1; // Prend moins de place
+      text-align: left;
+
+      .img-wrapper img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+      }
+
+      .item-info {
+        margin-top: 15px;
+        h4 { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #553b31; }
+        p { font-size: 11px; color: #553b31; line-height: 1.4; }
+      }
+    }
+
+    &.large {
+      flex: 2; // Prend plus de place (image plus longue)
+      position: relative;
+      height: 450px; // Hauteur fixe pour l'aspect "long"
+
+      .img-wrapper {
+        height: 100%;
+        border-radius: 8px;
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover; // Remplissage sans déformer l'image
+          display: block;
+        }
+      }
+
+      .overlay-content {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        right: 0;
+        color: white;
+        text-align: center;
+        padding: 0 20px;
+
+ 
+ 
+        .description { 
+          font-size: 20px; 
+          max-width: 60%; 
+          margin: 0 auto 20px; 
+          line-height: 1.6;
+          font-weight: 600;
+          color: white;
+          opacity: 0.9;
+        }
+
+        .view-btn {
+          background: transparent;
+          border: 1px solid white;
+          border-radius: 50px;
+          color: white;
+          padding: 12px 30px;
+          font-size: 10px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: white;
+            color: #3d342f;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+.guide-container {
+  width: 100%;
+  background-color: #ffffff;
+  
+
+  .guide-hero {
+
+    min-height: 550px; 
+    width: 100%;
+    
+    /* L'image ne se déforme jamais avec 'cover' */
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+                url('/assets/guide.png') center/cover no-repeat;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-align: center;
+
+    .guide-content {
+      h2 {
+        font-size: 38px;
+        font-weight: 400;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+      }
+
+      p {
+        font-size: 16px;
+      color: #ffffff;
+        margin-bottom: 30px;
+        opacity: 0.9;
+      }
+
+      .btn-guide {
+        background-color: #fffcf1; // Couleur crème identique à l'image
+        color: #3d342f;
+        border: none;
+        padding: 12px 35px;
+        font-size: 13px;
+        text-transform: capitalize;
+        cursor: pointer;
+        transition: 0.3s;
+
+        &:hover {
+          background-color: #ffffff;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  // Barre d'icônes sous l'image
+.features-bar {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    padding: 35px 5%;
+    border-bottom: 1px solid #f0f0f0;
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      span {
+        font-size: 9px;
+    
+        font-weight: 600;          // Augmente l'épaisseur (500 ou 600 selon ton besoin)
+        letter-spacing: 1.5px;     // Un peu plus d'espace entre les lettres pour la lisibilité
+        color: #5c4e47;            // Couleur un peu plus foncée pour plus de présence
+      }
+
+      img {
+        height: 20px;              // Légèrement agrandi pour équilibrer le texte plus gras
+        width: auto;
+        opacity: 0.9;
+      }
+    }
+  }
+}
+
+
+.contact-section {
+  display: flex;
+  width: 100%;
+  min-height: 300px; // Définit la hauteur "longue" de la section
+  background-color: #fffcf1; // Couleur crème de fond (partie droite)
+
+  .contact-image {
+    flex: 1; // Prend 50% de la largeur
+    height: auto;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; // L'image remplit la hauteur sans se déformer
+      display: block;
+    }
+  }
+
+  .contact-form-container {
+    flex: 1; // Prend 50% de la largeur
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+
+    .form-content {
+      max-width: 400px;
+      text-align: center;
+
+      h2 {
+        font-size: 28px;
+        font-weight: 500;
+        color: #715c54;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 13px;
+        color: #715c54;
+        margin-bottom: 30px;
+        line-height: 1.5;
+      }
+
+      .input-group {
+        position: relative;
+        width: 100%;
+
+
+        input {
+          width: 80%;
+          padding: 12px 40px 12px 20px;
+          border: none;
+          background: #f3f4f0;
+          font-size: 14px;
+          outline: none;
+          color: #989898;
+
+          &::placeholder {
+            color: #b5ada5;
+          }
+        }
+
+        button {
+          padding: 80px 20px;
+          position: absolute;
+          right: 0;
+          top: 45%;
+          transform: translateY(-50%);
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          font-size: 20px;
+          color: #a7978d;
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: translateY(-50%) translateX(5px);
+          }
+        }
+      }
+    }
+  }
+}
+

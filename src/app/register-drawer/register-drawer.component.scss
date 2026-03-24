@@ -1,0 +1,300 @@
+// ─── OVERLAY ────────────────────────────────────────────────────────────────
+.drawer-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100vh;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(3px);
+  z-index: 2999;
+}
+
+
+.login-drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: 550px;
+  height: 100vh;
+  background: #fff;
+  z-index: 3000;
+  box-shadow: -10px 0 40px rgba(0,0,0,0.08);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: 'Montserrat', sans-serif;
+  overflow-y: auto;
+
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px 40px;
+
+  &.open { transform: translateX(0); }
+}
+
+// ─── HEADER ─────────────────────────────────────────────────────────────────
+.drawer-header {
+  margin-bottom: 8px;
+
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title-label {
+    font-size: 9px;
+    font-weight: 400;
+    color: #767676;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+  }
+
+  .close-icon {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #767676;
+    padding: 2px 6px;
+    line-height: 1;
+    transition: color 0.2s;
+    &:hover { color: #000; }
+  }
+}
+
+.header-divider {
+  height: 1px;
+  background:#767676;
+  margin: 18px 0 28px;
+}
+
+
+.alert {
+  padding: 10px 14px;
+  font-size: 11px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+
+  &-success { background: #e8f5ec; color: #2a7d46; border-left: 2px solid #2a7d46; }
+  &-danger   { background: #fdf0ef; color: #c0392b; border-left: 2px solid #c0392b; }
+}
+
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #767676;
+    margin-bottom: 7px;
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 14px;
+
+  .col-title { flex: 0 0 110px; }
+  .col-name  { flex: 1; }
+}
+
+// ─── INPUTS ──────────────────────────────────────────────────────────────────
+.custom-input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  background: #f5f5f5;
+  font-size: 12px;
+  font-family: 'Montserrat', sans-serif;
+  color: #222;
+  letter-spacing: 0.3px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder { color: #bbb; font-size: 11px; }
+  &:focus { border-color: #999; background: #fff; }
+  &.is-invalid { border-color: #e0574f; background: #fff8f8; }
+}
+
+select.custom-input {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23bbb' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 22px;
+}
+
+// ─── VALIDATION ──────────────────────────────────────────────────────────────
+.invalid-feedback {
+  font-size: 9px;
+  color: #e0574f;
+  letter-spacing: 0.5px;
+  margin-top: 5px;
+}
+
+// ─── PASSWORD ────────────────────────────────────────────────────────────────
+.pass-wrap {
+  position: relative;
+
+  .custom-input { padding-right: 40px; }
+
+  .toggle-pw {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bbb;
+    display: flex;
+    padding: 0;
+    transition: color 0.2s;
+    &:hover { color: #555; }
+
+    svg { width: 16px; height: 16px; }
+  }
+}
+
+// ─── PHONE ───────────────────────────────────────────────────────────────────
+.phone-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.prefix-wrap {
+  flex: 0 0 140px;
+
+  select.custom-input {
+    font-size: 11px;
+  }
+}
+
+.phone-num {
+  flex: 1;
+}
+
+// ─── DATE ────────────────────────────────────────────────────────────────────
+.date-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+
+  .date-part { flex: 1; }
+  .date-year { flex: 1.4; }
+
+  .date-sep {
+    font-size: 11px;
+    color: #ccc;
+    padding-top: 26px;
+    user-select: none;
+    align-self: center;
+  }
+}
+
+.date-input {
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.or-sep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 12px;
+
+  span {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #ccc;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #f0f0f0;
+  }
+}
+
+.date-picker-wrap {
+  position: relative;
+
+  .custom-input {
+    padding-right: 36px;
+
+    &::-webkit-calendar-picker-indicator {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+
+  .cal-icon {
+    position: absolute;
+    right: 4px;
+    bottom: 13px;
+    pointer-events: none;
+    color: #ccc;
+    svg { width: 15px; height: 15px; }
+  }
+}
+
+// ─── FOOTER ──────────────────────────────────────────────────────────────────
+.form-footer {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.btn-continue {
+  padding: 13px 50px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) { background: #222; }
+
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.activation-text {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #767676;
+  margin-top: 12px;
+  text-align: left;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+
+}
