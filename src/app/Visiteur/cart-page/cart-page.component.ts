@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
+import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../core/api-url';
+import { environment } from '../../../environments/environment';
 import { ProductRoutingHelper } from '../../core/product-routing.helper';
 import { SiteLanguageService } from '../../core/site-language.service';
 import { CartPageLabels } from '../../core/visitor-i18n';
@@ -25,8 +26,6 @@ export interface CheckoutVm {
   codePromoForSubmit: string | null;
 }
 
-/** Clé publiable Stripe — remplacez par votre clé pk_live_… ou pk_test_… */
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_REMPLACEZ_PAR_VOTRE_CLE_STRIPE';
 
 @Component({
   selector: 'app-cart-page',
@@ -53,6 +52,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
 
   promoCodeInput = '';
   private readonly promoCodeActive = new BehaviorSubject<string | null>(null);
+  private readonly destroy$ = new Subject<void>();
 
   // ── Stripe ────────────────────────────────────────────────────
   stripeError: string | null = null;
@@ -142,6 +142,8 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.cardNumber?.destroy();
     this.cardExpiry?.destroy();
     this.cardCvc?.destroy();
@@ -151,7 +153,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
     if (typeof window === 'undefined') return;
     const StripeConstructor = window.Stripe;
     if (StripeConstructor) {
-      this.stripe = StripeConstructor(STRIPE_PUBLISHABLE_KEY);
+      this.stripe = StripeConstructor(environment.stripePublishableKey);
       this.mountStripeElements();
     } else if (attempt < 20) {
       setTimeout(() => this.waitForStripeAndMount(attempt + 1), 200);
@@ -258,6 +260,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
         fraisLivraison: vm.shipping,
         codePromo: vm.codePromoForSubmit ?? undefined,
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
           this.orderSubmitting = false;
@@ -304,12 +307,12 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
 
     try {
       // 1. Créer un PaymentIntent côté backend
-      const intentResp = await this.http
-        .post<{ clientSecret: string }>(apiUrl('/api/payments/create-intent'), {
+      const intentResp = await firstValueFrom(
+        this.http.post<{ clientSecret: string }>(apiUrl('/api/payments/create-intent'), {
           amountEur: vm.total,
           codePromo: vm.codePromoForSubmit ?? null,
         })
-        .toPromise();
+      );
 
       if (!intentResp?.clientSecret) {
         this.stripeError = 'Impossible d\'initialiser le paiement. Réessayez.';
@@ -337,6 +340,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
             fraisLivraison: vm.shipping,
             codePromo: vm.codePromoForSubmit ?? undefined,
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: (res) => {
               if (res.userPointsTotal != null) {

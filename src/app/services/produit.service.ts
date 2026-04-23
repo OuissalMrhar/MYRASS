@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { Produit, ProduitWrite } from '../models/produit.model';
 import { apiUrl } from '../core/api-url';
 
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
+  private allProduits$: Observable<Produit[]> | null = null;
+
   constructor(private http: HttpClient) {}
 
   /** Unifie la description (camelCase / PascalCase, types JSON). */
@@ -38,9 +40,19 @@ export class ProduitService {
   }
 
   getAll(): Observable<Produit[]> {
-    return this.http
-      .get<Produit[]>(apiUrl('/api/produits'))
-      .pipe(map((list) => (list ?? []).map((item) => this.normalizeProduit(item))));
+    if (!this.allProduits$) {
+      this.allProduits$ = this.http
+        .get<Produit[]>(apiUrl('/api/produits'))
+        .pipe(
+          map((list) => (list ?? []).map((item) => this.normalizeProduit(item))),
+          shareReplay(1),
+        );
+    }
+    return this.allProduits$;
+  }
+
+  invalidateCache(): void {
+    this.allProduits$ = null;
   }
 
   /** Produits les plus vendus (quantités cumulées sur les commandes). Paramètre `count` optionnel (défaut : 3). */
@@ -60,14 +72,16 @@ export class ProduitService {
   create(body: ProduitWrite): Observable<Produit> {
     return this.http
       .post<Produit>(apiUrl('/api/produits'), body)
-      .pipe(map((item) => this.normalizeProduit(item)));
+      .pipe(map((item) => { this.invalidateCache(); return this.normalizeProduit(item); }));
   }
 
   update(id: number, body: ProduitWrite): Observable<void> {
-    return this.http.put<void>(apiUrl(`/api/produits/${id}`), body);
+    return this.http.put<void>(apiUrl(`/api/produits/${id}`), body)
+      .pipe(map((v) => { this.invalidateCache(); return v; }));
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(apiUrl(`/api/produits/${id}`));
+    return this.http.delete<void>(apiUrl(`/api/produits/${id}`))
+      .pipe(map((v) => { this.invalidateCache(); return v; }));
   }
 }

@@ -2,6 +2,7 @@ export const environment = {
   production: true,
   /** URL publique de l'API Myrass (doit pointer vers ton backend deploye). */
   apiBaseUrl: 'https://your-backend-domain.com',
+  stripePublishableKey: '',
   /** OAuth Google (Google Identity Services) */
   googleClientId: '',
   /** OAuth Facebook (JS SDK) */

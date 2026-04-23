@@ -2,6 +2,7 @@ export const environment = {
   production: false,
   /** En dev, laisser vide pour utiliser le proxy Angular (voir proxy.conf.json). */
   apiBaseUrl: '',
+  stripePublishableKey: '',
   /** OAuth Google (Google Identity Services) */
   googleClientId: '',
   /** OAuth Facebook (JS SDK) */

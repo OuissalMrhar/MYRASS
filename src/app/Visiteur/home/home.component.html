@@ -228,7 +228,7 @@
   <div class="ramadan-container" [class.ramadan-container--single]="gifts.length === 1" *ngIf="gifts.length > 0">
     <div class="ramadan-item large" *ngFor="let gift of gifts">
       <div class="img-wrapper main-banner">
-        <img [src]="giftImageUrl(gift)" [alt]="gift | lang: 'nom' : currentLang" />
+        <img [src]="giftImageUrl(gift)" [alt]="gift | lang: 'nom' : currentLang" fetchpriority="high" />
         <div class="overlay-content">
           <a [routerLink]="['/details-gift', gift.id]" class="view-btn view-btn--link">{{ t.viewGift }}</a>
         </div>
@@ -254,7 +254,7 @@
     <div class="features-track">
       <div class="feature" *ngFor="let feature of partnerFeaturesLoop">
         <span>{{ feature }}</span>
-        <img src="/assets/icon_durable.png" [alt]="feature + ' icon'">
+        <img src="/assets/icon_durable.png" [alt]="feature + ' icon'" loading="lazy">
       </div>
     </div>
   </div>

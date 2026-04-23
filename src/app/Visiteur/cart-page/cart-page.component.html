@@ -28,6 +28,7 @@
                 [src]="line.imageUrl"
                 [alt]="line.name"
                 class="cart-checkout__item-img"
+                loading="lazy"
               />
               <span *ngIf="!line.imageUrl" class="cart-checkout__item-img cart-checkout__item-img--ph" aria-hidden="true"></span>
             </a>

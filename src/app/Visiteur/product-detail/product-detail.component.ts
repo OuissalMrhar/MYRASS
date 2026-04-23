@@ -80,6 +80,7 @@ export interface ProductComment {
 })
 export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
+  private readonly cancelLoad$ = new Subject<void>();
   private scrollRevealObserver?: IntersectionObserver;
   private allProduits: Produit[] = [];
   @ViewChild('thumbnailsRow') thumbnailsRowRef?: ElementRef<HTMLDivElement>;
@@ -418,6 +419,8 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnDestroy(): void {
     if (this.feedbackThankYouClear != null) clearTimeout(this.feedbackThankYouClear);
     this.scrollRevealObserver?.disconnect();
+    this.cancelLoad$.next();
+    this.cancelLoad$.complete();
     this.destroy$.next();
     this.destroy$.complete();
     if (this.mobileDockRaf) {
@@ -1248,6 +1251,7 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private loadProduct(id: number): void {
+    this.cancelLoad$.next(); // annule la requête précédente si encore en vol
     // Évite de remasquer toute la fiche si l'URL change seulement (slug canonique, même id).
     if (this.product?.id !== id) {
       this.loading = true;
@@ -1267,6 +1271,8 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
             ),
           }).pipe(map(({ all, typeDetail }) => ({ product, all, typeDetail }))),
         ),
+        takeUntil(this.cancelLoad$),
+        takeUntil(this.destroy$),
       )
       .subscribe({
         next: ({ product, all, typeDetail }) => {

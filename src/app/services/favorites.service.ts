@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   Observable,
   EMPTY,
+  Subject,
   forkJoin,
   of,
   distinctUntilChanged,
@@ -11,6 +12,7 @@ import {
   catchError,
   map,
   tap,
+  takeUntil,
 } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { apiUrl } from '../core/api-url';
@@ -35,8 +37,9 @@ const FAV_KEY_GUEST = 'myrass-favorites-v1-guest';
 const FAV_KEY_LEGACY = 'myrass-favorites-v1';
 
 @Injectable({ providedIn: 'root' })
-export class FavoritesService {
+export class FavoritesService implements OnDestroy {
   private readonly _items = new BehaviorSubject<FavoriteItem[]>([]);
+  private readonly destroy$ = new Subject<void>();
   private lastUserId: number | null;
   /** Invité : persistance `localStorage` uniquement ; connecté : API (pas de LS compte). */
   private persistGuest = false;
@@ -61,7 +64,7 @@ export class FavoritesService {
       this._items.next(FavoritesService.loadGuestFromStorage());
     }
 
-    this._items.subscribe((items) => {
+    this._items.pipe(takeUntil(this.destroy$)).subscribe((items) => {
       if (this.persistGuest) {
         FavoritesService.persistGuestToStorage(items);
       }
@@ -71,8 +74,14 @@ export class FavoritesService {
       .pipe(
         distinctUntilChanged((a, b) => a?.id === b?.id),
         skip(1),
+        takeUntil(this.destroy$),
       )
       .subscribe((user) => this.onUserScopeChanged(user?.id ?? null));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   has(productId: number): boolean {

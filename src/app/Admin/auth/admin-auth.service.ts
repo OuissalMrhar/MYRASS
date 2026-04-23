@@ -43,11 +43,12 @@ export class AdminAuthService {
   readonly authState$ = this.authStateSubject.asObservable();
 
   private idleTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly idleEvents = ['click', 'keydown', 'touchstart', 'scroll'] as const;
+  private readonly boundResetIdle = (): void => this.resetIdleTimer();
 
   constructor(private http: HttpClient, private router: Router) {
-    // Réinitialise le timer sur toute interaction utilisateur
-    (['click', 'keydown', 'touchstart', 'scroll'] as const).forEach(evt =>
-      document.addEventListener(evt, () => this.resetIdleTimer(), { passive: true })
+    this.idleEvents.forEach(evt =>
+      document.addEventListener(evt, this.boundResetIdle, { passive: true })
     );
     this.resetIdleTimer();
   }
@@ -120,6 +121,9 @@ export class AdminAuthService {
     return this.http.post<AdminAuthResponse>(apiUrl(ADMIN_LOGIN_PATH), body).pipe(
       tap((resp) => {
         this.applyAuthResponse(resp);
+        this.idleEvents.forEach(evt =>
+          document.addEventListener(evt, this.boundResetIdle, { passive: true })
+        );
         this.resetIdleTimer();
       }),
     );
@@ -131,6 +135,9 @@ export class AdminAuthService {
 
   logout(): void {
     if (this.idleTimer !== null) { clearTimeout(this.idleTimer); this.idleTimer = null; }
+    this.idleEvents.forEach(evt =>
+      document.removeEventListener(evt, this.boundResetIdle)
+    );
     localStorage.removeItem(LS_TOKEN);
     localStorage.removeItem(LS_ROLE_ID);
     localStorage.removeItem(LS_ADMIN_ID);
