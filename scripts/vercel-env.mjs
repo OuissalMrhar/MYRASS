@@ -22,6 +22,7 @@ if (!onVercel && !hasApiOverride) {
 const apiBase = (process.env.MYRASS_API_BASE_URL ?? '').trim().replace(/\/$/, '');
 const googleClientId = (process.env.MYRASS_GOOGLE_CLIENT_ID ?? '').trim();
 const facebookAppId = (process.env.MYRASS_FACEBOOK_APP_ID ?? '').trim();
+const stripePublishableKey = (process.env.MYRASS_STRIPE_PUBLISHABLE_KEY ?? '').trim();
 const emailjs = {
   serviceId: (process.env.MYRASS_EMAILJS_SERVICE_ID ?? '').trim(),
   templateId: (process.env.MYRASS_EMAILJS_TEMPLATE_ID ?? '').trim(),
@@ -33,6 +34,7 @@ const ts = `/* Généré par scripts/vercel-env.mjs au build (Vercel ou build:ve
 export const environment = {
   production: true,
   apiBaseUrl: ${JSON.stringify(apiBase)},
+  stripePublishableKey: ${JSON.stringify(stripePublishableKey)},
   googleClientId: ${JSON.stringify(googleClientId)},
   facebookAppId: ${JSON.stringify(facebookAppId)},
   emailjs: {
