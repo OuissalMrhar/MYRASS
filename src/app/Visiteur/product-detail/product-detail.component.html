@@ -27,7 +27,7 @@
       </nav>
       <div class="product-images">
         <div class="main-image" [class.main-image--animating]="mainImageTransitioning">
-          <img [src]="mainImageUrl" [alt]="mainImageAlt" class="main-image__img" fetchpriority="high" />
+          <img [src]="mainImageUrl" [alt]="mainImageAlt" class="main-image__img" fetchpriority="high" width="4" height="5" />
           <button
             type="button"
             class="main-image__share"
@@ -76,7 +76,7 @@
                 [class.active]="selectedThumb === i"
                 (click)="selectThumb(i)"
               >
-                <img [src]="imageUrls[i]" [attr.alt]="imageAlts[i] || ''" loading="lazy" />
+                <img [src]="imageUrls[i]" [attr.alt]="imageAlts[i] || ''" loading="lazy" width="3" height="4" />
               </button>
             </div>
           </div>
@@ -272,7 +272,7 @@
       <div class="related-grid related-grid--snap">
         <a class="related-card" *ngFor="let p of relatedProducts" [routerLink]="productLink.detailLink(p.name, p.id)">
           <div class="related-image light-bg">
-            <img [src]="p.imgSrc" [alt]="p.name" loading="lazy" />
+            <img [src]="p.imgSrc" [alt]="p.name" loading="lazy" width="1" height="1" />
           </div>
           <div class="related-info">
             <p class="related-name">{{ p.name }}</p>
@@ -297,6 +297,8 @@
                     [alt]="card.imageAlt || ('Illustration — ' + product.nom + ', partie ' + ($index + 1))"
                     class="history-cell__img"
                     loading="lazy"
+                    width="1"
+                    height="1"
                   />
                 } @else {
                   <div

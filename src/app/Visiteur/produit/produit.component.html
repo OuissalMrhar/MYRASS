@@ -78,7 +78,7 @@
           <div class="product-card">
             <div class="product-image-wrap" [class.product-image-wrap--soon]="isRubriqueDimmed(product)">
               <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-image-link" [attr.aria-label]="'Voir — ' + product.nom">
-                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy"/>
+                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy" width="3" height="4" />
               </a>
               <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
               <button
@@ -125,7 +125,7 @@
           <div class="rv-card" *ngFor="let product of recentlyViewedItems">
             <div class="rv-card__img-wrap" [class.rv-card__img-wrap--soon]="isRubriqueDimmed(product)">
               <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="rv-card__img-link" [attr.aria-label]="'Voir — ' + product.nom">
-                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy"/>
+                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy" width="3" height="4" />
               </a>
               <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
               <button
@@ -156,7 +156,7 @@
           <div class="product-card">
             <div class="product-image-wrap" [class.product-image-wrap--soon]="isRubriqueDimmed(product)">
               <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-image-link" [attr.aria-label]="'Voir — ' + product.nom">
-                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy"/>
+                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy" width="3" height="4" />
               </a>
               <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
               <button
