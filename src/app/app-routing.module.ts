@@ -1,26 +1,26 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CatalogueAfficherComponent } from './admin/catalogue/catalogue-afficher/catalogue-afficher.component';
-import { CatalogueAjouterComponent } from './admin/catalogue/catalogue-ajouter/catalogue-ajouter.component';
-import { CatalogueModifierComponent } from './admin/catalogue/catalogue-modifier/catalogue-modifier.component';
-import { TypeProduitAfficherComponent } from './admin/type-produit/type-produit-afficher/type-produit-afficher.component';
-import { TypeProduitAjouterComponent } from './admin/type-produit/type-produit-ajouter/type-produit-ajouter.component';
-import { TypeProduitModifierComponent } from './admin/type-produit/type-produit-modifier/type-produit-modifier.component';
-import { ProduitAfficherComponent } from './admin/produit/produit-afficher/produit-afficher.component';
-import { ProduitAjouterComponent } from './admin/produit/produit-ajouter/produit-ajouter.component';
-import { ProduitModifierComponent } from './admin/produit/produit-modifier/produit-modifier.component';
-import { CategorieFormComponent } from './admin/categories/categorie-form/categorie-form.component';
-import { CategorieListComponent } from './admin/categories/categorie-list/categorie-list.component';
-import { AdminLoginComponent } from './admin/auth/admin-login/admin-login.component';
-import { AdminRegisterComponent } from './admin/auth/admin-register/admin-register.component';
-import { AdminAuthGuard } from './admin/auth/guards/admin-auth.guard';
-import { SuperAdminGuard } from './admin/auth/guards/super-admin.guard';
-import { VolumeAfficherComponent } from './admin/volume/volume-afficher/volume-afficher.component';
-import { VolumeAjouterComponent } from './admin/volume/volume-ajouter/volume-ajouter.component';
-import { VolumeModifierComponent } from './admin/volume/volume-modifier/volume-modifier.component';
-import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
-import { AdminAccueilComponent } from './admin/admin-accueil/admin-accueil.component';
+import { CatalogueAfficherComponent } from './Admin/catalogue/catalogue-afficher/catalogue-afficher.component';
+import { CatalogueAjouterComponent } from './Admin/catalogue/catalogue-ajouter/catalogue-ajouter.component';
+import { CatalogueModifierComponent } from './Admin/catalogue/catalogue-modifier/catalogue-modifier.component';
+import { TypeProduitAfficherComponent } from './Admin/type-produit/type-produit-afficher/type-produit-afficher.component';
+import { TypeProduitAjouterComponent } from './Admin/type-produit/type-produit-ajouter/type-produit-ajouter.component';
+import { TypeProduitModifierComponent } from './Admin/type-produit/type-produit-modifier/type-produit-modifier.component';
+import { ProduitAfficherComponent } from './Admin/produit/produit-afficher/produit-afficher.component';
+import { ProduitAjouterComponent } from './Admin/produit/produit-ajouter/produit-ajouter.component';
+import { ProduitModifierComponent } from './Admin/produit/produit-modifier/produit-modifier.component';
+import { CategorieFormComponent } from './Admin/categories/categorie-form/categorie-form.component';
+import { CategorieListComponent } from './Admin/categories/categorie-list/categorie-list.component';
+import { AdminLoginComponent } from './Admin/auth/admin-login/admin-login.component';
+import { AdminRegisterComponent } from './Admin/auth/admin-register/admin-register.component';
+import { AdminAuthGuard } from './Admin/auth/guards/admin-auth.guard';
+import { SuperAdminGuard } from './Admin/auth/guards/super-admin.guard';
+import { VolumeAfficherComponent } from './Admin/volume/volume-afficher/volume-afficher.component';
+import { VolumeAjouterComponent } from './Admin/volume/volume-ajouter/volume-ajouter.component';
+import { VolumeModifierComponent } from './Admin/volume/volume-modifier/volume-modifier.component';
+import { AdminDashboardComponent } from './Admin/admin-dashboard/admin-dashboard.component';
+import { AdminAccueilComponent } from './Admin/admin-accueil/admin-accueil.component';
 import { HomeComponent } from './Visiteur/home/home.component';
 import { FaqComponent } from './Visiteur/faq/faq.component';
 import { AboutComponent } from './Visiteur/about/about.component';
@@ -32,11 +32,11 @@ import { FavoritesPageComponent } from './Visiteur/favorites-page/favorites-page
 import { MyOrdersPageComponent } from './Visiteur/my-orders-page/my-orders-page.component';
 import { DetailsGiftComponent } from './Visiteur/details-gift/details-gift.component';
 import { GuideComponent } from './Visiteur/guide/guide.component';
-import { GiftAfficherComponent } from './admin/gift/gift-afficher/gift-afficher.component';
-import { GiftAjouterComponent } from './admin/gift/gift-ajouter/gift-ajouter.component';
-import { GiftModifierComponent } from './admin/gift/gift-modifier/gift-modifier.component';
-import { CodePromoAfficherComponent } from './admin/code-promo/code-promo-afficher/code-promo-afficher.component';
-import { CodePromoFormComponent } from './admin/code-promo/code-promo-form/code-promo-form.component';
+import { GiftAfficherComponent } from './Admin/gift/gift-afficher/gift-afficher.component';
+import { GiftAjouterComponent } from './Admin/gift/gift-ajouter/gift-ajouter.component';
+import { GiftModifierComponent } from './Admin/gift/gift-modifier/gift-modifier.component';
+import { CodePromoAfficherComponent } from './Admin/code-promo/code-promo-afficher/code-promo-afficher.component';
+import { CodePromoFormComponent } from './Admin/code-promo/code-promo-form/code-promo-form.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },

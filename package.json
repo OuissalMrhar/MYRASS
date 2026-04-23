@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:vercel": "node scripts/vercel-env.mjs && ng build --configuration production",
+    "build:vercel": "node scripts/vercel-env.mjs && ng cache clean && ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

@@ -1,20 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { AdminAuthService } from './admin/auth/admin-auth.service';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { GlobalScrollToTopComponent } from './global-scroll-to-top/global-scroll-to-top.component';
+import { AdminAuthService } from './Admin/auth/admin-auth.service';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    RouterOutlet,
-    GlobalScrollToTopComponent,
-  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

@@ -3,7 +3,7 @@
   "framework": "angular",
   "installCommand": "npm ci",
   "buildCommand": "npm run build:vercel",
-  "outputDirectory": "dist/admin-interface/browser",
+  "outputDirectory": "dist/admin-interface",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
