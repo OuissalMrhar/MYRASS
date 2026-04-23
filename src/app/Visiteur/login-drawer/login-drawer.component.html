@@ -1,0 +1,77 @@
+<div class="drawer-overlay" *ngIf="isOpen" (click)="close()"></div>
+
+<div class="login-drawer" [class.open]="isOpen" [attr.dir]="isRtl ? 'rtl' : 'ltr'">
+  <div class="drawer-header">
+    <h2 class="title">{{ labels.loginTitle }}</h2>
+    <button class="close-icon" (click)="close()">✕</button>
+  </div>
+
+  <div class="drawer-body">
+    <div class="login-drawer__center">
+    <div *ngIf="errorMessage" class="alert-error">{{ errorMessage }}</div>
+    <form class="form-container" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-meta">
+        <span></span>
+        <span class="required-note">{{ labels.requiredFields }}</span>
+      </div>
+      <div class="form-group">
+        <label>{{ labels.emailLabel }}</label>
+        <input
+          type="email"
+          class="custom-input"
+          formControlName="email"
+          [class.is-invalid]="submitted && loginForm.get('email')?.invalid"
+        >
+        <div class="invalid-feedback" *ngIf="submitted && loginForm.get('email')?.invalid">
+          {{ labels.emailRequired }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ labels.passwordLabel }}</label>
+        <div class="password-container">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="custom-input"
+            formControlName="motDePasse"
+            [class.is-invalid]="submitted && loginForm.get('motDePasse')?.invalid"
+          >
+      <span class="toggle-password" (click)="togglePassword()">
+  <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </svg>
+
+  <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+    <line x1="1" y1="1" x2="23" y2="23"></line>
+  </svg>
+</span>
+        </div>
+        <div class="invalid-feedback" *ngIf="submitted && loginForm.get('motDePasse')?.invalid">
+          {{ labels.passwordRequired }}
+        </div>
+        <a href="#" class="forgot-link">{{ labels.forgotPw }}</a>
+      </div>
+
+      <div class="login-link-hint">
+        {{ labels.loginLinkHint }}
+        <a href="#" class="login-link-action">{{ labels.loginLinkAction }}</a>
+      </div>
+
+      <button class="btn-black" type="submit" [disabled]="isLoading">
+        {{ isLoading ? labels.logging : labels.loginBtn }}
+      </button>
+    </form>
+
+    <div class="section-divider">
+      <div class="new-client-box">
+        <h3>{{ labels.newClient }}</h3>
+        <p>{{ labels.newClientDesc }}</p>
+        <button class="btn-outline" (click)="onSwitch()">{{ labels.createAccount }}</button>
+      </div>
+    </div>
+
+    </div>
+  </div>
+</div>

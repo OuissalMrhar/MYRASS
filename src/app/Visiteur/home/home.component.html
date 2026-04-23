@@ -1,0 +1,293 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<app-navbar></app-navbar>
+<ng-container *ngIf="homeLabels$ | async as t">
+<section class="hero home-reveal">
+  <div class="hero-content">
+    <h1>{{ t.heroTitle }}</h1>
+    <p>{{ t.heroSubtitle }}</p>
+  </div>
+</section>
+
+<section class="bestsellers home-reveal home-reveal--delay-1">
+  <p class="section-subtitle">{{ t.sectionSubtitle }}</p>
+
+  <!-- Mobile / tablette : image + description + barre de navigation fixe en bas -->
+  <div class="bs-mobile" *ngIf="isMobileProductsCarousel && bestsellerSlides.length">
+    <ng-container *ngIf="activeBestsellerSlide as slide">
+      <div class="bs-mobile__visual" (click)="onBestsellerCardClick(slide)">
+        <div
+          class="bs-mobile__img"
+          [class.bs-mobile__img--photo]="!!slide.imageUrl"
+          [ngClass]="slide.imageUrl ? null : slide.fallbackImageClass"
+          [style.background-image]="cardBackgroundImage(slide)"
+        >
+          <span class="badge">Best-seller</span>
+        </div>
+      </div>
+      <div class="bs-mobile__copy">
+        <h2 class="bs-mobile__title">{{ slide.title }}</h2>
+        <div
+          class="bs-mobile__desc-wrap"
+          [class.bs-mobile__desc-wrap--expanded]="mobileBestsellerDescExpanded"
+        >
+          <p class="bs-mobile__desc">{{ slide.desc }}</p>
+        </div>
+        <button
+          type="button"
+          class="bs-mobile__desc-more"
+          *ngIf="slide.desc && slide.desc.trim().length > 90"
+          (click)="toggleMobileBestsellerDesc(); $event.stopPropagation()"
+        >
+          {{ mobileBestsellerDescExpanded ? t.readLess : t.readMore }}
+        </button>
+        <p class="bs-mobile__price">{{ slide.price }}</p>
+      </div>
+      <div class="bs-mobile__nav">
+        <button class="nav-arrow prev" type="button" (click)="prevProduct(); $event.stopPropagation()" aria-label="Produit précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="pagination" role="tablist" aria-label="Best-sellers">
+          <button
+            type="button"
+            class="dot"
+            *ngFor="let product of bestsellerSlides; let i = index"
+            [class.active]="i === activeProductIndex"
+            (click)="goToProduct(i); $event.stopPropagation()"
+            [attr.aria-label]="'Produit ' + (i + 1)"
+            [attr.aria-selected]="i === activeProductIndex"
+            role="tab"
+          ></button>
+        </div>
+        <button class="nav-arrow next" type="button" (click)="nextProduct(); $event.stopPropagation()" aria-label="Produit suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Desktop -->
+  <div class="bs-layout bs-desktop" *ngIf="!isMobileProductsCarousel">
+    <div class="bs-sidebar">
+      <div class="bs-sidebar__intro">
+        <h2>{{ bestsellerSidebarTitle }}</h2>
+      </div>
+      <div class="bs-sidebar__desc-wrap">
+        <p class="bs-sidebar__desc" *ngIf="bestsellerSidebarDescription as d">{{ d }}</p>
+      </div>
+      <div class="carousel-controls">
+        <button class="nav-arrow prev" type="button" (click)="prevProduct()" aria-label="Produit precedent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="pagination">
+          <button
+            type="button"
+            class="dot"
+            *ngFor="let product of bestsellerSlides; let i = index"
+            [class.active]="i === activeProductIndex"
+            (click)="goToProduct(i)"
+            [attr.aria-label]="'Aller au produit ' + (i + 1)"
+          ></button>
+        </div>
+        <button class="nav-arrow next" type="button" (click)="nextProduct()" aria-label="Produit suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="products-grid">
+      <div class="products-track" [style.transform]="trackTransform">
+        <div
+          class="product-card"
+          *ngFor="let product of bestsellerSlides; let i = index"
+          [class.active]="i === activeProductIndex"
+          [class.product-card--clickable]="product.id > 0"
+          (click)="onBestsellerCardClick(product)"
+        >
+          <div
+            class="img-box"
+            [class.img-box--photo]="!!product.imageUrl"
+            [ngClass]="product.imageUrl ? null : product.fallbackImageClass"
+            [style.background-image]="cardBackgroundImage(product)"
+          >
+            <span class="badge">{{ t.bestSellerBadge }}</span>
+          </div>
+          <p class="p-title">{{ product.title }}</p>
+          <p class="p-price">{{ product.price }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="brand-story home-reveal home-reveal--delay-2">
+  <h2>{{ t.storyTitle }}</h2>
+  <div class="story-content" [class.story-content--expanded]="brandStoryExpanded">
+    <p class="story-content__text">{{ t.storyBody }}</p>
+    <button type="button" class="story-content__toggle" (click)="toggleBrandStory()">
+      <ng-container *ngIf="brandStoryExpanded">{{ t.readLess }}</ng-container>
+      <ng-container *ngIf="!brandStoryExpanded">{{ t.readMore }}</ng-container>
+    </button>
+  </div>
+</section>
+
+<section class="video-preview">
+  <video
+    class="video-preview__player"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    aria-label="Vidéo Myrass"
+  >
+    <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/v1776867833/myrass_ko1p25.mp4" type="video/mp4" />
+  </video>
+  <div class="video-preview__overlay"></div>
+</section>
+
+
+
+
+<section class="collections">
+
+  <div class="collections-desc">
+    <p class="collections-desc__text" *ngIf="activeCategoryDescription">{{ activeCategoryDescription }}</p>
+    <p class="collections-desc__text collections-desc__text--placeholder" *ngIf="!activeCategoryDescription">&nbsp;</p>
+  </div>
+
+  <div class="col-grid">
+    <div
+      class="col-item"
+      *ngFor="let category of visibleCollectionCategories; let i = index"
+      [class.col-item--active]="activeCategoryIndex === i"
+      [class.col-item--inactive]="category.statut === false && !category.isComingSoon"
+      (click)="selectCategory(i)"
+    >
+      <div class="col-img" [ngClass]="categoryBgClass(i)" [class.coming-soon]="category.isComingSoon">
+        <span class="coming-badge" *ngIf="category.isComingSoon">{{ t.availableSoon }}</span>
+        <span class="inactive-badge" *ngIf="category.statut === false && !category.isComingSoon">{{ t.availableSoon }}</span>
+      </div>
+      <p class="category-name">{{ category | lang: 'nom' : currentLang }}</p>
+    </div>
+  </div>
+
+  <nav
+    class="collections-pagination"
+    *ngIf="isMobileCollectionsPaginated && collectionsTotalPages > 1"
+    aria-label="Pagination des catégories"
+  >
+    <button
+      type="button"
+      class="collections-pagination__arrow"
+      (click)="prevCollectionsPage()"
+      [disabled]="collectionsPageIndex === 0"
+      aria-label="Page précédente"
+    >
+      ‹
+    </button>
+    <div class="collections-pagination__dots" role="tablist">
+      <button
+        type="button"
+        *ngFor="let p of collectionsPageIndices"
+        class="collections-pagination__dot"
+        [class.collections-pagination__dot--active]="p === collectionsPageIndex"
+        (click)="goCollectionsPage(p)"
+        [attr.aria-label]="'Page ' + (p + 1)"
+        [attr.aria-current]="p === collectionsPageIndex ? 'true' : null"
+      ></button>
+    </div>
+    <button
+      type="button"
+      class="collections-pagination__arrow"
+      (click)="nextCollectionsPage()"
+      [disabled]="collectionsPageIndex >= collectionsTotalPages - 1"
+      aria-label="Page suivante"
+    >
+      ›
+    </button>
+  </nav>
+</section>
+
+
+<section class="ramadan-section home-reveal home-reveal--delay-2">
+  <div class="ramadan-header">
+    <ng-container *ngIf="gifts.length > 0">
+      <h3>{{ gifts[0] | lang: 'nom' : currentLang }}</h3>
+      <p *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc">{{ giftDesc }}</p>
+    </ng-container>
+  </div>
+
+  <div class="ramadan-container" [class.ramadan-container--single]="gifts.length === 1" *ngIf="gifts.length > 0">
+    <div class="ramadan-item large" *ngFor="let gift of gifts">
+      <div class="img-wrapper main-banner">
+        <img [src]="giftImageUrl(gift)" [alt]="gift | lang: 'nom' : currentLang" />
+        <div class="overlay-content">
+          <a [routerLink]="['/details-gift', gift.id]" class="view-btn view-btn--link">{{ t.viewGift }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ramadan-loading" *ngIf="isGiftsLoading">
+    <p>{{ t.loading }}</p>
+  </div>
+</section>
+
+
+<section class="guide-container home-reveal home-reveal--delay-3">
+  <div class="guide-hero">
+    <div class="guide-content">
+      <h2>{{ t.guideTitle }}</h2>
+      <a routerLink="/guide" class="btn-guide">{{ t.readMore }}</a>
+    </div>
+  </div>
+
+  <div class="features-bar">
+    <div class="features-track">
+      <div class="feature" *ngFor="let feature of partnerFeaturesLoop">
+        <span>{{ feature }}</span>
+        <img src="/assets/icon_durable.png" [alt]="feature + ' icon'">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="contact-dual home-reveal home-reveal--delay-3" id="contact">
+  <div class="contact-dual__panel contact-dual__panel--partner">
+    <h2 class="contact-dual__title">{{ t.partnerTitle }}</h2>
+    <p class="contact-dual__desc">{{ t.partnerDesc }}</p>
+    <form class="contact-dual__form" (submit)="$event.preventDefault()">
+      <div class="input-group">
+        <input type="email" name="partner-email" autocomplete="email" [placeholder]="t.newsletterPlaceholder" aria-label="Email partenariat">
+        <button type="submit" aria-label="Envoyer">
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="contact-dual__panel contact-dual__panel--newsletter">
+    <h2 class="contact-dual__title">{{ t.newsletterTitle }}</h2>
+    <p class="contact-dual__desc">{{ t.newsletterDesc }}</p>
+    <form class="contact-dual__form" (submit)="$event.preventDefault()">
+      <div class="input-group">
+        <input type="email" name="newsletter-email" autocomplete="email" [placeholder]="t.newsletterPlaceholder" aria-label="Newsletter email">
+        <button type="submit" aria-label="Envoyer">
+          <span class="arrow">→</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+</ng-container>
+<router-outlet></router-outlet>
+<app-footer></app-footer>

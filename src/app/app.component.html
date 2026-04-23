@@ -1,0 +1,47 @@
+<div class="app-shell" [class.visitor-shell]="isVisitorPage">
+  <aside class="sidebar" *ngIf="showSidebar">
+    <a
+      [routerLink]="loggedIn ? (isSuperAdmin ? ['/dashboard'] : ['/accueil']) : ['/admin/login']"
+      class="sidebar-brand"
+      aria-label="Myrass Admin"
+    >
+<span class="sidebar-brand-label">Myrass <em>Admin</em></span>
+    </a>
+
+    <div class="sidebar-user" *ngIf="loggedIn">
+      <span class="sidebar-user-label">Connecté</span>
+      <span class="sidebar-user-name">{{ displayName }}</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ng-container *ngIf="loggedIn; else guestLinks">
+        <ng-container *ngIf="isSuperAdmin">
+          <span class="nav-label">Super-admin</span>
+          <a routerLink="/dashboard" routerLinkActive="active">Tableau de bord</a>
+          <span class="nav-label">Données</span>
+          <a routerLink="/categories" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Catégories</a>
+          <a routerLink="/catalogues" routerLinkActive="active">Catalogues</a>
+          <a routerLink="/types-produit" routerLinkActive="active">Types de produit</a>
+          <a routerLink="/produits" routerLinkActive="active">Produits</a>
+          <a routerLink="/tailles" routerLinkActive="active">Tailles</a>
+          <a routerLink="/gifts" routerLinkActive="active">Gifts</a>
+          <a routerLink="/codes-promo" routerLinkActive="active">Codes promo</a>
+        </ng-container>
+        <ng-container *ngIf="isNormalAdmin">
+          <span class="nav-label">Espace</span>
+          <a routerLink="/accueil" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
+        </ng-container>
+        <button type="button" class="btn btn-logout" (click)="logout()">Déconnexion</button>
+      </ng-container>
+
+      <ng-template #guestLinks>
+        <span class="nav-label">Accès</span>
+        <a routerLink="/admin/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Connexion</a>
+      </ng-template>
+    </nav>
+  </aside>
+  <main class="main-area" [class.visitor-main]="isVisitorPage">
+    <router-outlet />
+    <app-global-scroll-to-top [visitorSite]="isVisitorPage" />
+  </main>
+</div>

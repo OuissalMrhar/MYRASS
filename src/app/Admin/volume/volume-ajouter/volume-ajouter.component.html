@@ -1,0 +1,106 @@
+<section class="page">
+  <div class="sidebar-line"></div>
+
+  <header class="page-head">
+    <div class="page-head-left">
+      <p class="eyebrow">Gestion des contenus</p>
+      <h1>Nouvelle taille</h1>
+      <p class="subtitle">Renseigne la valeur, l'unité et le type de produit.</p>
+    </div>
+  </header>
+
+  <div class="deco-line"><span class="deco-line-text">formulaire</span></div>
+
+  <div class="card form-card">
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+    }
+
+    <form (ngSubmit)="submit()" [formGroup]="form">
+      <div class="field">
+        <label>Langue</label>
+        <div class="segmented">
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='fr'" (click)="setLang('fr')">FR</button>
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='en'" (click)="setLang('en')">EN</button>
+        </div>
+        <p class="muted" style="margin: .25rem 0 0;">Unité EN optionnelle (fallback unité FR).</p>
+      </div>
+      <div class="field">
+        <label for="categorie">Catégorie <span class="req">*</span></label>
+        <select id="categorie" formControlName="categorieId" class="input" [disabled]="loadingTypes">
+          <option [ngValue]="null">— Choisir —</option>
+          @for (c of categories; track c.id) {
+            <option [ngValue]="c.id">{{ c.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="catalogue">Catalogue <span class="req">*</span></label>
+        <select id="catalogue" formControlName="catalogueId" class="input" [disabled]="loadingTypes || !form.value.categorieId">
+          <option [ngValue]="null">— Choisir —</option>
+          @for (cat of filteredCatalogues; track cat.id) {
+            <option [ngValue]="cat.id">{{ cat.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="typeProduit">Type produit <span class="req">*</span></label>
+        <select id="typeProduit" formControlName="typeProduitId" class="input" [disabled]="loadingTypes || !form.value.catalogueId">
+          <option [ngValue]="null">— Choisir —</option>
+          @for (t of filteredTypes; track t.id) {
+            <option [ngValue]="t.id">{{ t.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="valeur">Valeur <span class="req">*</span></label>
+        <input
+          id="valeur"
+          type="number"
+          step="0.01"
+          min="0.000001"
+          formControlName="valeur"
+          class="input"
+          placeholder="Ex. 50"
+        />
+      </div>
+
+      <div class="field">
+        <label for="unite">Unité <span class="req">*</span></label>
+        <input
+          id="unite"
+          type="text"
+          formControlName="unite"
+          class="input"
+          maxlength="50"
+          placeholder="Ex. ml, kg"
+        />
+        @if (form.controls.unite.touched && form.controls.unite.invalid) {
+          <span class="field-error">L'unité est requise (max. 50 caractères).</span>
+        }
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'en'">
+        <label for="uniteEn">Unité (EN)</label>
+        <input
+          id="uniteEn"
+          type="text"
+          formControlName="uniteEn"
+          class="input"
+          maxlength="50"
+          placeholder="Ex. ml, kg"
+        />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" (click)="annuler()">Annuler</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving">
+          {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

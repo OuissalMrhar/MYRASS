@@ -1,0 +1,345 @@
+<app-navbar></app-navbar>
+
+<div class="page-wrapper">
+
+  <!-- Hero -->
+  <section class="hero" appReveal>
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <span class="hero-kicker">{{ labels.heroKicker }}</span>
+      <h1 class="hero-title">{{ labels.heroTitle }}</h1>
+      <p class="hero-subtitle">{{ labels.heroSubtitle }}</p>
+    </div>
+  </section>
+
+  <!-- Barre filtres -->
+  <div class="filter-bar" appReveal [revealDelay]="120">
+    <button type="button" class="filter-btn filter-btn--main" (click)="openFilters()">
+      <svg class="filter-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 5h18M6 12h12M10 19h4" stroke-linecap="round"/>
+      </svg>
+      {{ labels.filtersBtn }}
+    </button>
+
+    <div class="dropdown-wrap" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="filter-btn"
+        [class.filter-btn--disabled]="singleSelectedCatalogueId == null"
+        (click)="toggleTypeDropdown($event)"
+        [disabled]="singleSelectedCatalogueId == null"
+      >
+        {{ selectedTypeLabel }}
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="dropdown-panel dropdown-panel--types" *ngIf="typeDropdownOpen && singleSelectedCatalogueId != null" role="listbox">
+        <button type="button" class="dropdown-item" role="option" (click)="selectTypeFromDropdown(null)">{{ labels.allTypes }}</button>
+        <button
+          type="button"
+          class="dropdown-item"
+          role="option"
+          *ngFor="let t of typesForCatalogue"
+          [disabled]="!typeRowSelectable(t)"
+          [class.dropdown-item--inactive]="!typeRowSelectable(t)"
+          (click)="selectTypeFromDropdown(t)"
+        >
+          {{ t.nom | langValue: t.nomEn : t.nomAr }}<span *ngIf="!isTypeActive(t)"> {{ labels.inactive }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dropdown-wrap dropdown-wrap--push" (click)="$event.stopPropagation()">
+      <button type="button" class="filter-btn" (click)="toggleSortDropdown($event)">
+        {{ selectedSortLabel }}
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="dropdown-panel dropdown-panel--sort" *ngIf="sortDropdownOpen" role="listbox">
+        <button type="button" class="dropdown-item" role="option" *ngFor="let o of sortOptions" (click)="setSortMode(o.id)">
+          {{ o.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grille produits -->
+  <section class="products-section">
+    <p class="products-section__empty" *ngIf="productSections.length === 0">
+      {{ labels.noMatch }}
+    </p>
+
+    <ng-container *ngFor="let section of productSections">
+      <h2 class="products-section__heading" *ngIf="productSections.length > 1 || section.key !== 'disponible'">
+        {{ section.label }}
+      </h2>
+
+      <!-- First block: 8 products -->
+      <div class="product-grid" appReveal [revealDelay]="80">
+        <ng-container *ngFor="let product of firstHalfForSection(section)">
+          <div class="product-card">
+            <div class="product-image-wrap" [class.product-image-wrap--soon]="isRubriqueDimmed(product)">
+              <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-image-link" [attr.aria-label]="'Voir — ' + product.nom">
+                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy"/>
+              </a>
+              <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
+              <button
+                type="button"
+                class="product-fav"
+                [class.product-fav--on]="isFavorite(product.id)"
+                (click)="toggleFavorite($event, product)"
+                [attr.aria-label]="isFavorite(product.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+              >
+                <svg width="18" height="16" viewBox="0 0 18 16" fill="none" aria-hidden="true">
+                  <path d="M9 14.5S1.5 9.5 1.5 5a3.75 3.75 0 017.5-1.09A3.75 3.75 0 0116.5 5c0 4.5-7.5 9.5-7.5 9.5z" stroke="#1a1512" stroke-width="1.2" [attr.fill]="isFavorite(product.id) ? '#1a1512' : 'none'"/>
+                </svg>
+              </button>
+            </div>
+            <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-info-link">
+              <div class="product-info">
+                <p class="product-name">{{ product.nom | langValue: product.nomEn : product.nomAr }}</p>
+                <div class="product-card-stars" *ngIf="productRating(product.id) as pr">
+                  <span class="product-card-stars__icons" aria-hidden="true">
+                    <span class="filled" *ngFor="let _ of starsForProductCard(pr.moyenne)">★</span>
+                  </span>
+                  <span class="product-card-stars__avg">{{ pr.moyenne }}</span>
+                  <span class="product-card-stars__count">({{ pr.nombre }})</span>
+                </div>
+                <p class="product-set">{{ typeLine(product) }}</p>
+                <p class="product-price">{{ getDisplayPrice(product) }}</p>
+              </div>
+            </a>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Consulté récemment (fixed, between the two blocks, first section only) -->
+      <section
+        class="rv-section"
+        *ngIf="isFirstSection(section) && recentlyViewedItems.length > 0"
+        [attr.aria-label]="labels.recentlyViewed"
+      >
+        <div class="rv-section__head">
+          <span class="rv-section__kicker">{{ labels.historique }}</span>
+          <h2 class="rv-section__title">{{ labels.recentlyViewed }}</h2>
+        </div>
+        <div class="rv-grid">
+          <div class="rv-card" *ngFor="let product of recentlyViewedItems">
+            <div class="rv-card__img-wrap" [class.rv-card__img-wrap--soon]="isRubriqueDimmed(product)">
+              <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="rv-card__img-link" [attr.aria-label]="'Voir — ' + product.nom">
+                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy"/>
+              </a>
+              <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
+              <button
+                type="button"
+                class="product-fav"
+                [class.product-fav--on]="isFavorite(product.id)"
+                (click)="toggleFavorite($event, product)"
+                [attr.aria-label]="isFavorite(product.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+              >
+                <svg width="18" height="16" viewBox="0 0 18 16" fill="none" aria-hidden="true">
+                  <path d="M9 14.5S1.5 9.5 1.5 5a3.75 3.75 0 017.5-1.09A3.75 3.75 0 0116.5 5c0 4.5-7.5 9.5-7.5 9.5z" stroke="#1a1512" stroke-width="1.2" [attr.fill]="isFavorite(product.id) ? '#1a1512' : 'none'"/>
+                </svg>
+              </button>
+            </div>
+            <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-info-link">
+              <div class="product-info">
+                <p class="product-name">{{ product.nom | langValue: product.nomEn : product.nomAr }}</p>
+                <p class="product-price">{{ getDisplayPrice(product) }}</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Second block: next 8 products -->
+      <div class="product-grid" *ngIf="secondHalfForSection(section).length > 0">
+        <ng-container *ngFor="let product of secondHalfForSection(section)">
+          <div class="product-card">
+            <div class="product-image-wrap" [class.product-image-wrap--soon]="isRubriqueDimmed(product)">
+              <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-image-link" [attr.aria-label]="'Voir — ' + product.nom">
+                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy"/>
+              </a>
+              <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
+              <button
+                type="button"
+                class="product-fav"
+                [class.product-fav--on]="isFavorite(product.id)"
+                (click)="toggleFavorite($event, product)"
+                [attr.aria-label]="isFavorite(product.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+              >
+                <svg width="18" height="16" viewBox="0 0 18 16" fill="none" aria-hidden="true">
+                  <path d="M9 14.5S1.5 9.5 1.5 5a3.75 3.75 0 017.5-1.09A3.75 3.75 0 0116.5 5c0 4.5-7.5 9.5-7.5 9.5z" stroke="#1a1512" stroke-width="1.2" [attr.fill]="isFavorite(product.id) ? '#1a1512' : 'none'"/>
+                </svg>
+              </button>
+            </div>
+            <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-info-link">
+              <div class="product-info">
+                <p class="product-name">{{ product.nom | langValue: product.nomEn : product.nomAr }}</p>
+                <div class="product-card-stars" *ngIf="productRating(product.id) as pr">
+                  <span class="product-card-stars__icons" aria-hidden="true">
+                    <span class="filled" *ngFor="let _ of starsForProductCard(pr.moyenne)">★</span>
+                  </span>
+                  <span class="product-card-stars__avg">{{ pr.moyenne }}</span>
+                  <span class="product-card-stars__count">({{ pr.nombre }})</span>
+                </div>
+                <p class="product-set">{{ typeLine(product) }}</p>
+                <p class="product-price">{{ getDisplayPrice(product) }}</p>
+              </div>
+            </a>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="pagination" *ngIf="pagesForSection(section).length > 1">
+        <button
+          class="page-btn"
+          *ngFor="let page of pagesForSection(section)"
+          [class.active]="currentSectionPage(section.key) === page"
+          (click)="setSectionPage(section.key, page, section)"
+        >{{ page }}</button>
+        <button
+          class="page-btn page-btn--next"
+          (click)="setSectionPage(section.key, currentSectionPage(section.key) < sectionPageCount(section) ? currentSectionPage(section.key) + 1 : currentSectionPage(section.key), section)"
+        >&rsaquo;</button>
+      </div>
+    </ng-container>
+  </section>
+
+  <!-- Section cadeaux (packs dont le nom commence par "cadeaux") -->
+  <section class="gifts-section" *ngIf="cadeauxGifts.length > 0 || isGiftsLoading" appReveal>
+    <div class="gifts-section__inner">
+      <span class="gifts-section__kicker">{{ labels.giftKicker }}</span>
+      <h3 class="gifts-section__title">{{ giftName(cadeauxGifts[0]) || labels.giftTitle }}</h3>
+      <p class="gifts-section__text" *ngIf="giftDescription(cadeauxGifts[0]) || labels.giftText">
+        {{ giftDescription(cadeauxGifts[0]) || labels.giftText }}
+      </p>
+    </div>
+    <ng-container *ngFor="let gift of cadeauxGifts">
+      <div class="gifts-section__banner">
+        <img [src]="giftImageUrl(gift)" [alt]="giftName(gift)" loading="lazy"/>
+        <div class="gifts-section__overlay">
+          <a [routerLink]="['/details-gift', gift.id]" class="gifts-section__view-btn">{{ labels.viewBtn }}</a>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+
+</div>
+
+<!-- Overlay filtres -->
+<div class="filter-overlay" *ngIf="filterPanelOpen" (click)="closeFilters()" aria-hidden="true"></div>
+
+<!-- Tiroir filtres -->
+<aside class="filter-drawer" [class.filter-drawer--open]="filterPanelOpen" [class.filter-drawer--rtl]="isRtl" [attr.aria-label]="labels.filterTitle" [attr.aria-hidden]="!filterPanelOpen">
+  <header class="filter-drawer__head">
+    <span class="filter-drawer__title">{{ labels.filterTitle }}</span>
+    <button type="button" class="filter-drawer__close" (click)="closeFilters()" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="filter-drawer__body">
+
+    <!-- Catégories -->
+    <section class="acc">
+      <button type="button" class="acc__head" (click)="accCategoryOpen = !accCategoryOpen">
+        <span>{{ labels.byCategory }}</span>
+        <svg class="acc__chev" [class.acc__chev--open]="accCategoryOpen" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M1 1l5 5 5-5"/>
+        </svg>
+      </button>
+      <div class="acc__panel" *ngIf="accCategoryOpen">
+        <ng-container *ngFor="let c of categories">
+          <!-- Ligne catégorie -->
+          <div class="acc__row acc__row--category" [class.acc__row--disabled]="!categoryRowSelectable(c)">
+            <label class="acc__row-main">
+              <input
+                type="checkbox"
+                [checked]="isCategoryChecked(c.id!)"
+                [disabled]="!categoryRowSelectable(c)"
+                (change)="onCategoryChange(c.id!, $any($event.target).checked)"
+              />
+              <span>{{ c.nom | langValue: c.nomEn : c.nomAr }}</span>
+            </label>
+            <button
+              type="button"
+              class="acc__row-chev"
+              [disabled]="!categoryRowSelectable(c)"
+              [class.acc__row-chev--open]="expandedCategoryId === c.id"
+              (click)="toggleCategoryExpand(c.id!)"
+              aria-label="Afficher les catalogues"
+            >
+              <svg class="chev-icon" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M1 1l5 5 5-5"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Catalogues inline directement sous cette catégorie -->
+          <div class="catalogue-inline" *ngIf="expandedCategoryId === c.id">
+            <p class="acc__hint" *ngIf="cataloguesForCategory(c.id!).length === 0">{{ labels.noCatalogue }}</p>
+            <label
+              class="acc__row acc__row--catalogue"
+              *ngFor="let cat of cataloguesForCategory(c.id!)"
+              [class.acc__row--disabled]="!catalogueRowSelectable(cat, c.id!)"
+            >
+              <input
+                type="checkbox"
+                [checked]="isCatalogueChecked(cat.id)"
+                [disabled]="!catalogueRowSelectable(cat, c.id!)"
+                (change)="onCatalogueChangeForCategory(c.id!, cat.id, $any($event.target).checked)"
+              />
+              <span>{{ cat.nom | langValue: cat.nomEn : cat.nomAr }}</span>
+            </label>
+          </div>
+        </ng-container>
+      </div>
+    </section>
+
+    <!-- Prix -->
+    <section class="acc">
+      <button type="button" class="acc__head" (click)="accPriceOpen = !accPriceOpen">
+        <span>{{ labels.byPrice }}</span>
+        <svg class="acc__chev" [class.acc__chev--open]="accPriceOpen" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M1 1l5 5 5-5"/>
+        </svg>
+      </button>
+      <div class="acc__panel" *ngIf="accPriceOpen">
+        <label class="acc__row" *ngFor="let b of priceBands">
+          <input
+            type="checkbox"
+            [checked]="isPriceBandChecked(b.key)"
+            (change)="togglePriceBand(b.key, $any($event.target).checked)"
+          />
+          <span>{{ b.label }}</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Livraison -->
+    <section class="acc">
+      <button type="button" class="acc__head" (click)="accDeliveryOpen = !accDeliveryOpen">
+        <span>{{ labels.byDelivery }}</span>
+        <svg class="acc__chev" [class.acc__chev--open]="accDeliveryOpen" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M1 1l5 5 5-5"/>
+        </svg>
+      </button>
+      <div class="acc__panel" *ngIf="accDeliveryOpen">
+        <label class="acc__row acc__row--disabled" *ngFor="let d of deliveryOptions">
+          <input type="checkbox" disabled [attr.value]="d.key"/>
+          <span>{{ d.label }}</span>
+        </label>
+        <p class="acc__note">{{ labels.comingSoon }}</p>
+      </div>
+    </section>
+  </div>
+
+  <footer class="filter-drawer__foot">
+    <button type="button" class="filter-drawer__cta" (click)="applyFiltersAndClosePanel()">
+      {{ labels.showProducts }}
+    </button>
+  </footer>
+</aside>
+
+<app-footer></app-footer>

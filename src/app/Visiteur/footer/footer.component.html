@@ -1,0 +1,88 @@
+<footer class="site-footer" *ngIf="footerLabels$ | async as f">
+  <div class="footer-mobile-logo">
+    <img src="/assets/logoblanc.png" alt="Myrass Logo">
+  </div>
+
+  <div class="footer-top">
+    <div class="footer-col">
+      <h3>{{ f.theHouse }}</h3>
+      <ul>
+        <li><a routerLink="/about">{{ f.aboutUs }}</a></li>
+        <li><a routerLink="/guide">{{ f.guideProducts }}</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>{{ f.shop }}</h3>
+      <ul>
+        <li><a routerLink="/produit">{{ f.collections }}</a></li>
+        <li><a routerLink="/details-gift/ramadan-1">{{ f.corporateGifts }}</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>{{ f.help }}</h3>
+      <ul>
+        <li><a routerLink="/contact">{{ f.contact }}</a></li>
+        <li><a routerLink="/faq">{{ f.faq }}</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-mobile-accordion">
+    <div class="acc-section">
+      <button type="button" class="acc-header" (click)="toggleSection('house')">
+        <span>{{ f.theHouse }}</span>
+        <span class="chevron" [class.open]="openedSection === 'house'">&gt;</span>
+      </button>
+      <ul *ngIf="openedSection === 'house'">
+        <li><a routerLink="/about">{{ f.aboutUs }}</a></li>
+        <li><a routerLink="/guide">{{ f.guideProducts }}</a></li>
+      </ul>
+    </div>
+
+    <div class="acc-section">
+      <button type="button" class="acc-header" (click)="toggleSection('shop')">
+        <span>{{ f.shop }}</span>
+        <span class="chevron" [class.open]="openedSection === 'shop'">&gt;</span>
+      </button>
+      <ul *ngIf="openedSection === 'shop'">
+        <li><a routerLink="/produit">{{ f.collections }}</a></li>
+        <li><a routerLink="/details-gift/ramadan-1">{{ f.corporateGifts }}</a></li>
+      </ul>
+    </div>
+
+    <div class="acc-section">
+      <button type="button" class="acc-header" (click)="toggleSection('help')">
+        <span>{{ f.help }}</span>
+        <span class="chevron" [class.open]="openedSection === 'help'">&gt;</span>
+      </button>
+      <ul *ngIf="openedSection === 'help'">
+        <li><a routerLink="/contact">{{ f.contact }}</a></li>
+        <li><a routerLink="/faq">{{ f.faq }}</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="social-links">
+      <p>{{ f.followTag }}</p>
+      <div class="icons">
+        <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+        <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+        <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-tiktok"></i></a>
+        <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-pinterest-p"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-logo">
+      <img src="/assets/logoblanc.png" alt="Myrass Logo">
+    </div>
+
+    <div class="footer-legal">
+      <a href="#">{{ f.privacyPolicy }}</a>
+      <p>{{ f.copyright }}</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,90 @@
+<div class="faq-host" [class.rtl]="isRtl">
+  <app-navbar></app-navbar>
+
+  <!-- En-tête luxueux (remplace le hero) -->
+  <header class="faq-page-header" appReveal>
+    <div class="faq-page-header__inner">
+      <span class="faq-page-header__kicker">{{ copy.kicker }}</span>
+      <h1 class="faq-page-header__title">{{ copy.heroTitle }}</h1>
+      <div class="faq-page-header__rule" aria-hidden="true">
+        <span class="faq-page-header__rule-line"></span>
+        <span class="faq-page-header__rule-diamond">◆</span>
+        <span class="faq-page-header__rule-line"></span>
+      </div>
+      <p class="faq-page-header__subtitle">{{ copy.heroSubtitle }}</p>
+    </div>
+  </header>
+
+  <!-- Navigation catégories -->
+  <nav class="faq-cat-nav" aria-label="Catégories FAQ">
+    <div class="faq-cat-nav__inner">
+      <button
+        type="button"
+        class="faq-cat-nav__btn"
+        *ngFor="let section of copy.sections; let si = index"
+        (click)="scrollToSection(si)"
+      >
+        {{ section.heading }}
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenu principal -->
+  <main class="faq-main">
+
+    <ng-container *ngFor="let section of copy.sections; let si = index">
+      <section
+        class="faq-section faq-reveal"
+        [id]="'faq-section-' + si"
+        [style.animation-delay]="si * 0.07 + 's'"
+      >
+        <div class="faq-section__head">
+          <span class="faq-section__num" aria-hidden="true">{{ (si + 1).toString().padStart(2, '0') }}</span>
+          <div class="faq-section__title-wrap">
+            <h2 class="faq-section__heading">{{ section.heading }}</h2>
+            <p class="faq-section__desc" *ngIf="section.desc">{{ section.desc }}</p>
+          </div>
+          <span class="faq-section__badge" [attr.aria-label]="section.items.length + ' questions'">
+            {{ section.items.length }}
+          </span>
+        </div>
+
+        <div class="faq-accordion" role="list">
+          <div
+            class="faq-item"
+            role="listitem"
+            *ngFor="let item of section.items; let i = index"
+            [class.faq-item--open]="isOpen(item.id)"
+          >
+            <button
+              type="button"
+              class="faq-item__head"
+              (click)="toggle(item.id)"
+              [attr.aria-expanded]="isOpen(item.id)"
+            >
+              <span class="faq-item__q">{{ item.question }}</span>
+              <span class="faq-item__icon" aria-hidden="true">
+                <svg class="faq-item__icon-svg faq-item__icon-plus" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v12M1 7h12"/></svg>
+                <svg class="faq-item__icon-svg faq-item__icon-minus" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7h12"/></svg>
+              </span>
+            </button>
+            <div class="faq-item__body" *ngIf="isOpen(item.id)">
+              <p class="faq-item__a">{{ item.answer }}</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </ng-container>
+
+    <!-- CTA -->
+    <div class="faq-cta faq-reveal" [style.animation-delay]="copy.sections.length * 0.07 + 's'">
+      <h2 class="faq-cta__title">{{ copy.ctaTitle }}</h2>
+      <p class="faq-cta__subtitle">{{ copy.ctaSubtitle }}</p>
+      <a routerLink="/contact" class="faq-cta__btn">{{ copy.ctaBtn }}</a>
+    </div>
+
+  </main>
+
+  <app-footer></app-footer>
+</div>

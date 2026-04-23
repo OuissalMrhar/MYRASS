@@ -1,0 +1,68 @@
+@import '../../../../scss/luxe-forms.scss';
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+  align-items: start;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.form-block {
+  padding: 2rem 2.15rem;
+  animation: signeReveal 0.65s 0.1s var(--ease) both;
+}
+
+.form-actions-inner {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--parchment);
+}
+
+.btn-muted {
+  background: var(--paper);
+  color: var(--text-muted);
+  padding: 0.72rem 1.3rem;
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+
+  &:hover:not(:disabled) {
+    background: #fafaf9;
+    color: var(--ink);
+  }
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    accent-color: var(--crimson);
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.mono {
+  font-family: ui-monospace, monospace;
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}

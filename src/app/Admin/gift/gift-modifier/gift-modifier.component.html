@@ -1,0 +1,130 @@
+<section class="page">
+  <div class="sidebar-line"></div>
+
+  <header class="page-head">
+    <div class="page-head-left">
+      <p class="eyebrow">Gestion des contenus</p>
+      <h1>Modifier pack</h1>
+      <p class="subtitle">Mettre à jour le pack cadeau</p>
+    </div>
+    <button type="button" class="btn btn-ghost" (click)="annuler()">Retour</button>
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <div class="card"><p class="muted">Chargement…</p></div>
+  }
+
+  @if (!loading) {
+    <div class="card form-card">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-grid" style="margin-bottom: 10px;">
+          <label class="field field--full">
+            <span>Langue</span>
+            <div class="segmented">
+              <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='fr'" (click)="setLang('fr')">FR</button>
+              <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='en'" (click)="setLang('en')">EN</button>
+              <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='ar'" (click)="setLang('ar')">AR</button>
+            </div>
+            <small class="muted">FR obligatoire · EN et AR optionnels (fallback FR).</small>
+          </label>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Nom</span>
+            <input type="text" formControlName="nom" placeholder="Nom du pack" />
+          </label>
+
+          <label class="field" *ngIf="activeLang === 'en'">
+            <span>Nom (EN)</span>
+            <input type="text" formControlName="nomEn" placeholder="Gift name (EN)" />
+          </label>
+
+          <label class="field" *ngIf="activeLang === 'ar'" dir="rtl">
+            <span>الاسم (AR)</span>
+            <input type="text" formControlName="nomAr" placeholder="اسم الحزمة (عربي)" />
+          </label>
+
+          <label class="field field--full">
+            <span>Description</span>
+            <textarea rows="3" formControlName="description" placeholder="Description (optionnel)"></textarea>
+          </label>
+
+          <label class="field field--full" *ngIf="activeLang === 'en'">
+            <span>Description (EN)</span>
+            <textarea rows="3" formControlName="descriptionEn" placeholder="Description (EN)"></textarea>
+          </label>
+
+          <label class="field field--full" *ngIf="activeLang === 'ar'" dir="rtl">
+            <span>الوصف (AR)</span>
+            <textarea rows="3" formControlName="descriptionAr" placeholder="وصف الحزمة (عربي)"></textarea>
+          </label>
+
+          <label class="field">
+            <span>Prix ($)</span>
+            <input type="number" min="0" step="0.01" formControlName="prix" placeholder="Ex: 49.99" />
+            <small class="muted">Prix affiché sur la page pack (optionnel).</small>
+          </label>
+
+          <label class="field">
+            <span>Stock <span class="req">*</span></span>
+            <input type="number" min="0" formControlName="stock" placeholder="Ex: 50" />
+          </label>
+
+          <label class="field field--full">
+            <span>Image principale (URL Cloudinary)</span>
+            <input type="url" formControlName="imageUrl" placeholder="https://res.cloudinary.com/…" />
+            <small class="muted">Coller l'URL Cloudinary de l'image du pack. Sinon, la première image produit est utilisée.</small>
+          </label>
+        </div>
+
+        <div class="deco-line"><span class="deco-line-text">produits</span></div>
+
+        <div class="rows" formArrayName="produits">
+          <div class="row" *ngFor="let fg of produitsArray.controls; let i = index" [formGroupName]="i">
+            <label class="field">
+              <span>Produit</span>
+              <select formControlName="produitId" (change)="onProduitRowChanged(i)">
+                <option [ngValue]="null">— Choisir —</option>
+                <option *ngFor="let p of produits" [ngValue]="p.id">{{ p.nom }}</option>
+              </select>
+            </label>
+
+            <label class="field field--taille">
+              <span>Taille</span>
+              <select formControlName="tailleId" [disabled]="taillesForProduitId(fg.value?.produitId).length === 0">
+                <option [ngValue]="null">—</option>
+                <option *ngFor="let t of taillesForProduitId(fg.value?.produitId)" [ngValue]="t.tailleId">
+                  {{ t.tailleLabel || ('Taille ' + t.tailleId) }}
+                </option>
+              </select>
+            </label>
+
+            <label class="field field--qty">
+              <span>Quantité</span>
+              <input type="number" min="1" formControlName="quantite" />
+            </label>
+
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeProduitRow(i)" [disabled]="produitsArray.length <= 1">
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-ghost" (click)="addProduitRow()">+ Ajouter un produit</button>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" (click)="annuler()">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+            {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</section>
+

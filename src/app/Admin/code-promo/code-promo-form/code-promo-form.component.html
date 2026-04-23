@@ -1,0 +1,75 @@
+<section class="page">
+  <div class="sidebar-line"></div>
+
+  <header class="page-head">
+    <div class="page-head-left">
+      <p class="eyebrow">Codes promo</p>
+      <h1>{{ id == null ? 'Nouveau code' : 'Modifier le code' }}</h1>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="card"><p class="muted">Chargement…</p></div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (!loading) {
+    <div class="card form-block">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="grid-2">
+          <div class="field span-2">
+            <label for="cp-code">Code (affiché en majuscules côté serveur)</label>
+            <input id="cp-code" class="input mono" formControlName="code" autocomplete="off" />
+          </div>
+          <div class="field span-2">
+            <label for="cp-desc">Description (optionnel)</label>
+            <input id="cp-desc" class="input" formControlName="description" />
+          </div>
+          <div class="field">
+            <label for="cp-type">Type de remise</label>
+            <select id="cp-type" class="input" formControlName="typeRemise">
+              @for (opt of typeOptions; track opt.value) {
+                <option [ngValue]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label for="cp-val">Valeur (0–100 si %, sinon DH)</label>
+            <input id="cp-val" class="input" type="number" step="0.01" formControlName="valeur" />
+          </div>
+          <div class="field">
+            <label class="check-label">
+              <input type="checkbox" formControlName="actif" />
+              Actif
+            </label>
+          </div>
+          <div class="field">
+            <label for="cp-min">Montant minimum panier (DH, optionnel)</label>
+            <input id="cp-min" class="input" type="number" step="0.01" formControlName="montantMinimumPanier" />
+          </div>
+          <div class="field">
+            <label for="cp-max">Plafond d’utilisations (vide = illimité)</label>
+            <input id="cp-max" class="input" type="number" formControlName="utilisationsMax" />
+          </div>
+          <div class="field">
+            <label for="cp-d1">Début validité (local, optionnel)</label>
+            <input id="cp-d1" class="input" type="datetime-local" formControlName="dateDebutLocal" />
+          </div>
+          <div class="field">
+            <label for="cp-d2">Fin validité (local, optionnel)</label>
+            <input id="cp-d2" class="input" type="datetime-local" formControlName="dateFinLocal" />
+          </div>
+        </div>
+        <div class="form-actions-inner">
+          <button type="button" class="btn btn-muted" (click)="annuler()">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</section>

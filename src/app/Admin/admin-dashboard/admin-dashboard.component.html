@@ -1,0 +1,226 @@
+<div class="sidebar-line"></div>
+
+<!-- Toast succès -->
+@if (successMsg) {
+  <div class="toast toast-success" role="status" aria-live="polite">
+    <span class="toast-icon">✓</span>
+    {{ successMsg }}
+  </div>
+}
+
+<section class="page">
+  <div class="page-head">
+    <div class="page-head-left">
+      <span class="eyebrow">Super-administration</span>
+      <h1>Tableau de bord</h1>
+      <p class="subtitle">Suivi des connexions, demandes d'inscription et gestion des comptes.</p>
+    </div>
+    <button type="button" class="btn btn-ghost" (click)="downloadPdf()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 1v9M4 7l4 4 4-4M2 13h12"/>
+      </svg>
+      Journal (PDF)
+    </button>
+  </div>
+
+  @if (error) {
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+  }
+  @if (actionError) {
+    <div class="alert alert-danger" role="alert">{{ actionError }}</div>
+  }
+
+  @if (loading) {
+    <div class="card loading-card">
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+    </div>
+  } @else {
+
+    <!-- ─── ADMINS & ACTIVITÉ ─────────────────────────── -->
+    <div class="deco-line"><span class="deco-line-text">Admins &amp; activité récente</span></div>
+
+    <div class="table-wrap card mb">
+      <div class="table-header">
+        <p class="table-count"><span>{{ overview.length }}</span> compte{{ overview.length !== 1 ? 's' : '' }}</p>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Admin</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Dernière connexion (UTC)</th>
+              <th>Actif</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of overview; track row.adminId) {
+              <tr [class.row-editing]="editRow?.adminId === row.adminId"
+                  [class.row-deleting]="confirmDeleteId === row.adminId">
+                <td><strong>{{ row.prenom }} {{ row.nom }}</strong></td>
+                <td class="cell-email">{{ row.email }}</td>
+                <td>
+                  <span class="badge-role" [class.badge-role--super]="row.roleId === 1">
+                    {{ row.roleId === 1 ? 'Super-admin' : 'Admin' }}
+                  </span>
+                </td>
+                <td class="cell-date">{{ formatUtc(row.lastLoginUtc) }}</td>
+                <td>
+                  @if (row.approxOnline) {
+                    <span class="online-dot" title="Actif dans les 30 dernières minutes"></span>
+                  } @else {
+                    <span class="muted small">—</span>
+                  }
+                </td>
+                <td class="col-actions">
+                  @if (confirmDeleteId === row.adminId) {
+                    <div class="confirm-inline">
+                      <span class="confirm-label">Supprimer ?</span>
+                      <button type="button" class="btn btn-danger btn-sm" [disabled]="deleting" (click)="confirmDelete()">
+                        {{ deleting ? '…' : 'Confirmer' }}
+                      </button>
+                      <button type="button" class="btn btn-ghost btn-sm" (click)="cancelDelete()">Annuler</button>
+                    </div>
+                  } @else {
+                    <div class="actions">
+                      <button type="button" class="btn btn-primary btn-sm"
+                              [class.btn-active]="editRow?.adminId === row.adminId"
+                              (click)="openEdit(row)">
+                        Modifier
+                      </button>
+                      <button type="button" class="btn btn-danger-outline btn-sm" (click)="askDelete(row.adminId)">
+                        Supprimer
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+
+              <!-- Panneau d'édition inline -->
+              @if (editRow?.adminId === row.adminId) {
+                <tr class="edit-panel-row">
+                  <td colspan="6">
+                    <div class="edit-panel">
+                      <div class="edit-panel-title">Modifier l'administrateur</div>
+                      <div class="edit-grid">
+                        <div class="field">
+                          <label>Prénom</label>
+                          <input class="input" type="text" [(ngModel)]="editForm.prenom" name="eprenom" autocomplete="off" />
+                        </div>
+                        <div class="field">
+                          <label>Nom</label>
+                          <input class="input" type="text" [(ngModel)]="editForm.nom" name="enom" autocomplete="off" />
+                        </div>
+                        <div class="field">
+                          <label>Email</label>
+                          <input class="input" type="email" [(ngModel)]="editForm.email" name="eemail" autocomplete="off" />
+                        </div>
+                        <div class="field">
+                          <label>Nouveau mot de passe <span class="field-hint">(laisser vide pour ne pas changer)</span></label>
+                          <input class="input" type="password" [(ngModel)]="editForm.password" name="epw" autocomplete="new-password" placeholder="••••••••" />
+                        </div>
+                        <div class="field">
+                          <label>Rôle</label>
+                          <select class="input" [(ngModel)]="editForm.roleId" name="erole">
+                            <option [ngValue]="2">Administrateur (normal)</option>
+                            <option [ngValue]="1">Super-administrateur</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="edit-panel-actions">
+                        <button type="button" class="btn btn-primary" [disabled]="saving" (click)="saveEdit()">
+                          {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+                        </button>
+                        <button type="button" class="btn btn-ghost" (click)="cancelEdit()">Annuler</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── DEMANDES D'INSCRIPTION ─────────────────────── -->
+    <div class="deco-line"><span class="deco-line-text">Demandes d'inscription</span></div>
+
+    <div class="table-wrap card mb">
+      @if (pending.length === 0) {
+        <p class="muted pad">Aucune demande en attente.</p>
+      } @else {
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Demandé (UTC)</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of pending; track r.id) {
+                <tr>
+                  <td>{{ r.prenom }} {{ r.nom }}</td>
+                  <td class="cell-email">{{ r.email }}</td>
+                  <td class="cell-date">{{ formatUtc(r.requestedUtc) }}</td>
+                  <td class="col-actions">
+                    <div class="actions">
+                      <button type="button" class="btn btn-primary btn-sm" (click)="approve(r.id)">Approuver</button>
+                      <button type="button" class="btn btn-danger-outline btn-sm" (click)="reject(r.id)">Refuser</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <!-- ─── CRÉER UN ADMIN ────────────────────────────── -->
+    <div class="deco-line"><span class="deco-line-text">Créer un administrateur</span></div>
+
+    <div class="card form-block">
+      <p class="muted small role-hint">
+        <strong>Rôle 1</strong> = super-administrateur &nbsp;·&nbsp; <strong>Rôle 2</strong> = administrateur normal.
+      </p>
+      <div class="create-grid">
+        <div class="field">
+          <label>Prénom</label>
+          <input class="input" type="text" [(ngModel)]="createForm.prenom" name="cpre" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>Nom</label>
+          <input class="input" type="text" [(ngModel)]="createForm.nom" name="cnom" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input class="input" type="email" [(ngModel)]="createForm.email" name="cem" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label>Mot de passe</label>
+          <input class="input" type="password" [(ngModel)]="createForm.password" name="cpw" autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label>Rôle</label>
+          <select class="input" [(ngModel)]="createForm.roleId" name="crole">
+            <option [ngValue]="2">Administrateur (normal)</option>
+            <option [ngValue]="1">Super-administrateur</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions-inner">
+        <button type="button" class="btn btn-primary" [disabled]="creating" (click)="createAdmin()">
+          {{ creating ? 'Création…' : 'Créer le compte' }}
+        </button>
+      </div>
+    </div>
+  }
+</section>

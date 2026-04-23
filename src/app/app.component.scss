@@ -1,0 +1,11 @@
+/* Shell layout lives in global styles.scss */
+
+:host ::ng-deep .app-shell.visitor-shell {
+  display: block;
+  min-height: 100vh;
+}
+
+:host ::ng-deep .app-shell.visitor-shell .main-area.visitor-main {
+  padding: 0;
+  background: #f3f2ef;
+}

@@ -1,0 +1,50 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Connexion Admin</h1>
+      <p class="subtitle">Accède au panneau d'administration</p>
+    </div>
+
+    <form (ngSubmit)="login()" class="auth-form">
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          class="input"
+          type="email"
+          name="email"
+          required
+          [(ngModel)]="form.email"
+          placeholder="ex: admin@domaine.com"
+        />
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          name="password"
+          required
+          [(ngModel)]="form.password"
+          placeholder="Votre mot de passe"
+        />
+      </div>
+
+      @if (error) {
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+      }
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p class="muted">Pas encore de compte ? Une validation super-admin est requise.</p>
+      <a routerLink="/admin/inscription" class="link">Demander un accès</a>
+    </div>
+  </div>
+</section>
+

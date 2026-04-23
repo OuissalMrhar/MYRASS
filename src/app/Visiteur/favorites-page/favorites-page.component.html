@@ -1,0 +1,110 @@
+<div class="favorites-host">
+  <app-navbar></app-navbar>
+
+  <ng-container *ngIf="labels$ | async as t">
+
+  <!-- En-tête -->
+  <div class="wl-header" *ngIf="!(currentUser$ | async); else loggedInWishlistHeader" appReveal>
+    <h1 class="wl-header__title">{{ t.guestTitle }}</h1>
+    <button type="button" class="wl-login-btn" (click)="openLoginPanel()">{{ t.loginBtn }}</button>
+  </div>
+  <ng-template #loggedInWishlistHeader>
+    <div class="wl-header wl-header--logged-in">
+      <h1 class="wl-header__title">{{ t.loggedTitle }}</h1>
+    </div>
+  </ng-template>
+
+  <main class="wl-main" appReveal [revealDelay]="100">
+    <ng-container *ngIf="items$ | async as items">
+
+      <!-- État vide -->
+      <div *ngIf="items.length === 0" class="wl-empty">
+        <div class="wl-empty__ornament" aria-hidden="true"></div>
+        <p class="wl-empty__text">{{ t.empty }}</p>
+        <a routerLink="/produit" class="wl-btn wl-btn--outline">{{ t.discoverBtn }}</a>
+      </div>
+
+      <!-- Grille -->
+      <div *ngIf="items.length > 0" class="wl-layout">
+        <div #wishlistGridAnchor class="wl-anchor"></div>
+
+        <div class="wl-count">
+          <span>{{ items.length }} article{{ items.length > 1 ? 's' : '' }}</span>
+        </div>
+
+        <div class="wl-grid">
+          <article *ngFor="let product of pagedItems(items); trackBy: trackByProductId" class="wl-card">
+
+            <!-- Image -->
+            <div class="wl-card__media">
+              <a
+                [routerLink]="productRoutes.detailLink(product.name, product.productId)"
+                class="wl-card__img-link"
+                [attr.aria-label]="product.name"
+              >
+                <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="wl-card__img" loading="lazy"/>
+                <span *ngIf="!product.imageUrl" class="wl-card__img wl-card__img--ph" aria-hidden="true"></span>
+              </a>
+              <button
+                type="button"
+                class="wl-card__heart"
+                (click)="removeFavorite(product, $event)"
+                [attr.aria-label]="t.removeFav"
+              >
+                <svg width="14" height="13" viewBox="0 0 18 16" fill="currentColor" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+                  <path d="M9 14.5S1.5 9.5 1.5 5a3.75 3.75 0 017.5-1.09A3.75 3.75 0 0116.5 5c0 4.5-7.5 9.5-7.5 9.5z"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Infos -->
+            <div class="wl-card__body">
+              <a [routerLink]="productRoutes.detailLink(product.name, product.productId)" class="wl-card__title-link">
+                <h2 class="wl-card__title">{{ product.name }}</h2>
+              </a>
+              <p class="wl-card__sub" *ngIf="subtitleFor(product) as sub">{{ sub }}</p>
+              <div class="wl-card__price-row">
+                <p class="wl-card__price" *ngIf="product.priceLabel">{{ product.priceLabel }}</p>
+                <button
+                  type="button"
+                  class="wl-card__cart-btn"
+                  [class.wl-card__cart-btn--done]="isInCart(product.productId)"
+                  (click)="addToCart(product, $event)"
+                  [attr.aria-label]="isInCart(product.productId) ? t.addedToCart : t.addToCart"
+                >
+                  <ng-container *ngIf="!isInCart(product.productId)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+                    </svg>
+                  </ng-container>
+                  <ng-container *ngIf="isInCart(product.productId)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </ng-container>
+                </button>
+              </div>
+            </div>
+
+          </article>
+        </div>
+
+        <!-- Pagination mobile -->
+        <nav *ngIf="showPagination(items)" class="wl-pagination" aria-label="Pagination">
+          <button type="button" class="wl-pagination__btn" [disabled]="currentPage <= 1" (click)="goPrev()">
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 1L1 6l5 5"/></svg>
+          </button>
+          <span class="wl-pagination__status">{{ currentPage }} / {{ totalPages(items) }}</span>
+          <button type="button" class="wl-pagination__btn" [disabled]="currentPage >= totalPages(items)" (click)="goNext(items)">
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 1l5 5-5 5"/></svg>
+          </button>
+        </nav>
+      </div>
+
+    </ng-container>
+  </main>
+
+  </ng-container>
+
+  <app-footer></app-footer>
+</div>

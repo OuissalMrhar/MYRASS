@@ -1,0 +1,225 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <h1>Modifier le produit</h1>
+      <p class="subtitle">Mettre à jour le produit</p>
+    </div>
+  </header>
+
+  @if (loadingRow || loadingRefs) {
+    <div class="card"><p class="muted">Chargement…</p></div>
+  } @else {
+    <div class="card form-card form-grid">
+      @if (errorMessage) {
+        <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+      }
+
+      <form (ngSubmit)="submit()" [formGroup]="form">
+        <div class="field span-2">
+          <label>Langue</label>
+          <div class="segmented">
+            <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='fr'" (click)="setLang('fr')">FR</button>
+            <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='en'" (click)="setLang('en')">EN</button>
+            <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='ar'" (click)="setLang('ar')">AR</button>
+          </div>
+          <p class="muted" style="margin: .25rem 0 0;">FR obligatoire · EN et AR optionnels (fallback FR).</p>
+        </div>
+
+        <div class="field">
+          <label for="nom">Nom <span class="req">*</span></label>
+          <input id="nom" type="text" formControlName="nom" class="input" />
+        </div>
+
+        <div class="field" *ngIf="activeLang === 'en'">
+          <label for="nomEn">Nom (EN)</label>
+          <input id="nomEn" type="text" formControlName="nomEn" class="input" />
+        </div>
+
+        <div class="field" *ngIf="activeLang === 'ar'" dir="rtl">
+          <label for="nomAr">الاسم (AR)</label>
+          <input id="nomAr" type="text" formControlName="nomAr" class="input" />
+        </div>
+
+        <div class="field span-2">
+          <label for="desc">Description</label>
+          <textarea id="desc" formControlName="description" class="input textarea" rows="3"></textarea>
+        </div>
+
+        <div class="field span-2" *ngIf="activeLang === 'en'">
+          <label for="descEn">Description (EN)</label>
+          <textarea id="descEn" formControlName="descriptionEn" class="input textarea" rows="3"></textarea>
+        </div>
+
+        <div class="field span-2" *ngIf="activeLang === 'ar'" dir="rtl">
+          <label for="descAr">الوصف (AR)</label>
+          <textarea id="descAr" formControlName="descriptionAr" class="input textarea" rows="3"></textarea>
+        </div>
+
+        <div class="field span-2 field--check">
+          <label class="check-label">
+            <input type="checkbox" formControlName="statut" />
+            <span>Produit actif (affiché en boutique ; sans stock = rubrique « rupture »)</span>
+          </label>
+        </div>
+
+        <div class="field">
+        <label for="categorie">Catégorie <span class="req">*</span></label>
+        <select id="categorie" formControlName="categorieId" class="input">
+            <option [ngValue]="null">— Choisir —</option>
+          @for (c of categories; track c.id) {
+            <option [ngValue]="c.id">{{ c.nom }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+        <label for="cat">Catalogue <span class="req">*</span></label>
+        <select id="cat" formControlName="catalogueId" class="input" [disabled]="!form.value.categorieId">
+          <option [ngValue]="null">— Choisir —</option>
+          @for (c of filteredCatalogues; track c.id) {
+            <option [ngValue]="c.id">{{ c.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+          <label for="type">Type de produit <span class="req">*</span></label>
+        <select id="type" formControlName="typeProduitId" class="input" [disabled]="!form.value.catalogueId">
+            <option [ngValue]="null">— Choisir —</option>
+            @for (t of types; track t.id) {
+              <option [ngValue]="t.id">{{ t.nom }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field span-2">
+          <label>Tailles (une ou plusieurs)</label>
+          <div class="card volume-card">
+            <div class="volume-card-inner">
+              @if (tailleRows.length === 0) {
+                <p class="muted">Aucune taille. Tu peux en ajouter plusieurs.</p>
+              }
+
+              @for (row of tailleRows; track $index) {
+                <div class="volume-row">
+                  <div>
+                    <label class="muted" style="display:block; margin-bottom:.25rem;">Taille</label>
+                    <select class="input" [(ngModel)]="row.tailleId" [ngModelOptions]="{ standalone: true }">
+                      <option [ngValue]="0">— Choisir —</option>
+                      @for (t of tailles; track t.id) {
+                        <option [ngValue]="t.id">{{ t.label }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div>
+                    <label class="muted" style="display:block; margin-bottom:.25rem;">Prix</label>
+                    <input class="input" type="number" step="0.01" min="0"
+                      [(ngModel)]="row.prix" [ngModelOptions]="{ standalone: true }" />
+                  </div>
+                  <div>
+                    <label class="muted" style="display:block; margin-bottom:.25rem;">Stock</label>
+                    <input class="input" type="number" min="0"
+                      [(ngModel)]="row.stock" [ngModelOptions]="{ standalone: true }" />
+                  </div>
+                  <div>
+                    <button type="button" class="btn btn-danger-outline btn-sm" (click)="removeTailleRow($index)">
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              }
+
+              <button type="button" class="btn btn-ghost btn-sm" (click)="addTailleRow()" [disabled]="!form.value.typeProduitId">
+                + Ajouter une taille
+              </button>
+              <p class="muted">Les tailles affichées dépendent du type de produit choisi.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="field span-2">
+          <label>Images &amp; médias</label>
+          <p class="muted" style="margin: 0 0 0.75rem;">
+            Images statiques (assets) pour l’instant ; upload cloud à réactiver plus tard. Ordre des lignes = galerie. Une image « principale » pour les vignettes.
+          </p>
+          <div class="card volume-card">
+            <div class="volume-card-inner">
+              @if (mediaRows.length === 0) {
+                <p class="muted">Aucun média pour ce produit.</p>
+              }
+              @for (row of mediaRows; track $index) {
+                <div class="media-row media-row--extended">
+                  <div class="media-row__meta">
+                    <label class="muted" style="display:block; margin-bottom:.25rem;">Réf. média</label>
+                    <p class="muted" style="margin:0; font-size:0.85rem;">
+                      @if (row.mediaId) { <span class="mono">#{{ row.mediaId }}</span> } @else { <span>nouveau</span> }
+                    </p>
+                  </div>
+                  <div class="media-row__preview" *ngIf="row.kind === 'image' && row.url">
+                    <img [src]="row.url" alt="" class="media-thumb" />
+                  </div>
+                  <div class="media-row__fields">
+                    <div>
+                      <label class="muted" style="display:block; margin-bottom:.25rem;">URL (statique / assets)</label>
+                      <input class="input" type="url" placeholder="https://…"
+                        [(ngModel)]="row.url" [ngModelOptions]="{ standalone: true }" />
+                    </div>
+                    <div>
+                      <label class="muted" style="display:block; margin-bottom:.25rem;">Légende / alt</label>
+                      <input class="input" type="text" maxlength="500"
+                        [(ngModel)]="row.legende" [ngModelOptions]="{ standalone: true }" />
+                    </div>
+                    <div>
+                      <label class="muted" style="display:block; margin-bottom:.25rem;">Type</label>
+                      <select class="input" [(ngModel)]="row.kind" [ngModelOptions]="{ standalone: true }">
+                        <option ngValue="image">Image</option>
+                        <option ngValue="video">Vidéo</option>
+                      </select>
+                    </div>
+                    <div *ngIf="row.kind === 'image'">
+                      <label class="muted" style="display:block; margin-bottom:.25rem;">Taille liée (optionnel)</label>
+                      <select class="input" [(ngModel)]="row.tailleId" [ngModelOptions]="{ standalone: true }"
+                        [disabled]="tailles.length === 0">
+                        <option [ngValue]="null">{{ tailles.length === 0 ? '— Aucune taille disponible —' : '— Toutes les tailles —' }}</option>
+                        @for (t of tailles; track t.id) {
+                          <option [ngValue]="t.id">{{ t.label }}</option>
+                        }
+                      </select>
+                      <p *ngIf="tailles.length === 0" class="muted" style="font-size:0.75rem; margin:.25rem 0 0;">
+                        Sélectionner un type de produit avec des tailles pour activer ce champ.
+                      </p>
+                    </div>
+                    <div class="field--check" *ngIf="row.kind === 'image'">
+                      <label class="check-label">
+                        <input
+                          type="radio"
+                          name="mediaPrincipalEdit"
+                          [checked]="row.estPrincipale"
+                          (change)="onPrincipalChange($index)"
+                        />
+                        <span>Image principale</span>
+                      </label>
+                    </div>
+                    <div>
+                      <button type="button" class="btn btn-danger-outline btn-sm" (click)="removeMediaRow($index)">
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+              <button type="button" class="btn btn-ghost btn-sm" (click)="addMediaRow()">+ Ajouter un média</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions span-2">
+          <button type="button" class="btn btn-ghost" (click)="annuler()">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving || loadingRefs">
+            {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</section>

@@ -1,0 +1,70 @@
+<div class="about-page" [class.rtl]="isRtl">
+  <app-navbar></app-navbar>
+
+  <!-- Hero -->
+  <section class="about-hero about-reveal">
+    <div class="about-hero__img-wrap">
+      <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg" [attr.alt]="labels.heroKicker" class="about-hero__img">
+      <div class="about-hero__overlay"></div>
+    </div>
+    <div class="about-hero__caption">
+      <h1 class="about-hero__title" [innerHTML]="labels.heroTitle.replace('\n', '<br>')"></h1>
+    </div>
+  </section>
+
+  <main class="about-main">
+
+    <!-- Histoire (desktop: texte + image côte à côte) -->
+    <section class="about-section about-reveal about-reveal--d1">
+      <div class="about-section__inner about-section__inner--histoire">
+        <div class="about-block about-block--dark">
+          <h2 class="about-block__title">{{ labels.histoireTitle }}</h2>
+          <p class="about-block__text">{{ labels.histoireText }}</p>
+        </div>
+        <div class="about-block about-block--image about-block--hide-mobile">
+          <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/v1776253958/pexels-pabloramon-18076611_bwwnvo.jpg" alt="Notre histoire" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- Photo + Vidéo côte à côte (mobile) / cachés sur desktop -->
+    <div class="about-photos about-photos--mobile-only about-reveal about-reveal--d2">
+      <div class="about-photos__item">
+        <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/v1776253958/pexels-pabloramon-18076611_bwwnvo.jpg" alt="Notre histoire" loading="lazy"/>
+      </div>
+      <div class="about-photos__item about-photos__item--video">
+        <video
+          src="https://res.cloudinary.com/dzajgsdwg/video/upload/v1776852071/6609491-uhd_4096_2160_30fps_bk7fqz.mp4"
+          autoplay muted loop playsinline preload="auto" aria-hidden="true"
+        ></video>
+      </div>
+    </div>
+
+    <!-- Engagement (desktop : texte | vidéo — mobile : texte seul) -->
+    <section class="about-section about-reveal about-reveal--d2">
+      <div class="about-section__inner about-section__inner--ambition">
+        <div class="about-block about-block--light">
+          <h2 class="about-block__title about-block__title--dark">{{ labels.ambitionTitle }}</h2>
+          <p class="about-block__text about-block__text--dark">{{ labels.ambitionText }}</p>
+        </div>
+        <div class="about-block about-block--image about-block--hide-mobile">
+          <video
+            class="about-engagement-video"
+            src="https://res.cloudinary.com/dzajgsdwg/video/upload/v1776852071/6609491-uhd_4096_2160_30fps_bk7fqz.mp4"
+            autoplay muted loop playsinline preload="auto" aria-hidden="true"
+          ></video>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="about-mission about-reveal about-reveal--d3">
+      <h2 class="about-mission__title">{{ labels.missionTitle }}</h2>
+      <p class="about-mission__text">{{ labels.missionText }}</p>
+    </section>
+
+  </main>
+
+  <router-outlet></router-outlet>
+  <app-footer></app-footer>
+</div>

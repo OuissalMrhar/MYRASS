@@ -1,0 +1,120 @@
+<ng-container *ngIf="labels$ | async as t">
+
+@if (isOpen) {
+  <div class="cart-drawer__backdrop" (click)="close()" aria-hidden="true"></div>
+}
+
+<aside
+  class="cart-drawer__card"
+  [class.cart-drawer__card--open]="isOpen"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cart-drawer-title"
+  [attr.aria-hidden]="!isOpen"
+>
+  <header class="cart-drawer__header">
+    <div class="cart-drawer__header-titles">
+      <h2 id="cart-drawer-title">{{ t.title }}</h2>
+      <ng-container *ngIf="lineCount$ | async as lineCount">
+        <span class="cart-drawer__count" *ngIf="lineCount > 0"
+          >({{ lineCount }} {{ lineCount > 1 ? t.articles : t.article }})</span
+        >
+      </ng-container>
+    </div>
+    <button type="button" class="cart-drawer__close" (click)="close()" [attr.aria-label]="t.title + ' — fermer'">×</button>
+  </header>
+
+  <div class="cart-drawer__body">
+    <ng-container *ngIf="lines$ | async as lines">
+      <p *ngIf="lines.length === 0" class="cart-drawer__empty">{{ t.empty }}</p>
+
+      <div *ngIf="lines.length > 0" class="cart-drawer__items">
+        <article *ngFor="let line of lines" class="cart-item">
+          <a
+            [routerLink]="productRoutes.detailLink(line.name, line.productId)"
+            [queryParams]="line.tailleId ? { tailleId: line.tailleId } : {}"
+            class="cart-item__img-wrap"
+            (click)="close()"
+            [attr.aria-label]="line.name"
+          >
+            <img
+              *ngIf="line.imageUrl"
+              [src]="line.imageUrl"
+              [alt]="line.name"
+              class="cart-item__img"
+            />
+            <span *ngIf="!line.imageUrl" class="cart-item__img cart-item__img--placeholder" aria-hidden="true"></span>
+          </a>
+
+          <div class="cart-item__detail">
+            <div class="cart-item__top">
+              <a
+                [routerLink]="productRoutes.detailLink(line.name, line.productId)"
+                [queryParams]="line.tailleId ? { tailleId: line.tailleId } : {}"
+                class="cart-item__text-hit"
+                (click)="close()"
+              >
+                <div class="cart-item__row cart-item__row--title">
+                  <span class="cart-item__name">{{ line.name }}</span>
+                </div>
+
+                <p class="cart-item__meta" *ngIf="line.variantLabel">{{ t.type }} : {{ line.variantLabel }}</p>
+                <p class="cart-item__meta" *ngIf="line.categoryLabel">{{ t.category }} : {{ line.categoryLabel }}</p>
+              </a>
+
+              <button
+                type="button"
+                class="cart-item__fav"
+                [class.cart-item__fav--on]="isFavorite(line.productId)"
+                (click)="toggleFavorite($event, line)"
+                [attr.aria-label]="isFavorite(line.productId) ? t.removeFav : t.addFav"
+              >
+                <svg width="18" height="16" viewBox="0 0 18 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M9 14.5S1.5 9.5 1.5 5a3.75 3.75 0 017.5-1.09A3.75 3.75 0 0116.5 5c0 4.5-7.5 9.5-7.5 9.5z"
+                    stroke="currentColor"
+                    stroke-width="1.2"
+                    [attr.fill]="isFavorite(line.productId) ? 'currentColor' : 'none'"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div class="cart-item__bottom">
+              <span class="cart-item__price">{{ formatPrice(lineSubtotal(line)) }}</span>
+              <div class="qty-control" role="group" [attr.aria-label]="line.name">
+                <button type="button" class="qty-control__btn" (click)="decrement(line)" [attr.aria-label]="line.quantity === 1 ? t.removeFromCart : t.decrease">
+                  <ng-container *ngIf="line.quantity === 1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v6M14 11v6" />
+                    </svg>
+                  </ng-container>
+                  <ng-container *ngIf="line.quantity > 1">−</ng-container>
+                </button>
+                <span class="qty-control__value">{{ line.quantity }}</span>
+                <button type="button" class="qty-control__btn" (click)="increment(line)" [attr.aria-label]="t.increase">+</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </ng-container>
+  </div>
+
+  <footer class="cart-drawer__footer" *ngIf="lines$ | async as lines">
+    <ng-container *ngIf="lines.length > 0">
+      <div class="cart-drawer__total">
+        <span class="cart-drawer__total-label">{{ t.total }}</span>
+        <span class="cart-drawer__total-value">{{ formatPrice((totalDhs$ | async) ?? 0) }}</span>
+      </div>
+      <button type="button" class="cart-drawer__cta" (click)="validateCart()">{{ t.validate }}</button>
+    </ng-container>
+    <ng-container *ngIf="lines.length === 0">
+      <button type="button" class="cart-drawer__cta" (click)="validateCart()">{{ t.viewCart }}</button>
+    </ng-container>
+  </footer>
+</aside>
+
+</ng-container>

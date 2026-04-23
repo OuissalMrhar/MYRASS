@@ -1,0 +1,52 @@
+.global-scroll-to-top {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  z-index: 900;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  color: #6e635d;
+  box-shadow:
+    0 4px 18px rgba(44, 36, 28, 0.18),
+    0 0 0 1px rgba(44, 36, 28, 0.06);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    color: #2a1f1a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(44, 36, 28, 0.22);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #5f7047;
+    outline-offset: 2px;
+  }
+}
+
+.global-scroll-to-top__icon {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .global-scroll-to-top--visitor-mobile {
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    right: max(14px, env(safe-area-inset-right, 0px));
+  }
+}

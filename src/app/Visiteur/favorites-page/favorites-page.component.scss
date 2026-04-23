@@ -1,0 +1,393 @@
+// ── Variables ────────────────────────────────────────────────
+$gold:      #c9a227;
+$gold-soft: #a98b57;
+$ink:       #1a1510;
+$muted:     #5a4d44;
+$bg:        #faf8f4;
+$card-bg:   #f2ede5;
+$border:    rgba(201, 162, 39, 0.18);
+$green:     #4e6636;
+$green-dk:  #3c4f28;
+
+// ── Host ─────────────────────────────────────────────────────
+.favorites-host {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  background: $bg;
+  color: $ink;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ── Header ───────────────────────────────────────────────────
+.wl-header {
+  text-align: center;
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 40px) clamp(20px, 3.5vw, 40px);
+  background: transparent;
+
+  &--logged-in .wl-header__title { margin-bottom: 0; }
+}
+
+.wl-header__title {
+  margin: 0 0 20px;
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: $ink;
+}
+
+.wl-login-btn {
+  display: inline-block;
+  padding: 13px 48px;
+  border: none;
+  border-radius: 999px;
+  background: $green;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: $green-dk; }
+}
+
+// ── Bouton outline (empty state) ──────────────────────────────
+.wl-btn {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.22s, color 0.22s, border-color 0.22s;
+
+  &--outline {
+    padding: 12px 36px;
+    background: transparent;
+    color: $muted;
+    border: 1px solid rgba($ink, 0.28);
+
+    &:hover { border-color: $ink; color: $ink; }
+  }
+}
+
+// ── Main ─────────────────────────────────────────────────────
+.wl-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 56px) clamp(16px, 4vw, 48px) clamp(40px, 6vw, 80px);
+  box-sizing: border-box;
+}
+
+// ── Empty state ───────────────────────────────────────────────
+.wl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: clamp(48px, 8vw, 96px) 20px;
+  text-align: center;
+}
+
+.wl-empty__ornament {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  position: relative;
+  flex-shrink: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba($gold, 0.1);
+  }
+}
+
+.wl-empty__text {
+  font-size: 14px;
+  color: $muted;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+// ── Compteur ─────────────────────────────────────────────────
+.wl-anchor {
+  height: 0;
+  scroll-margin-top: 16px;
+}
+
+.wl-count {
+  margin-bottom: clamp(16px, 2.5vw, 28px);
+
+  span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $gold-soft;
+  }
+}
+
+// ── Grille ───────────────────────────────────────────────────
+.wl-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+
+  @media (max-width: 1100px) { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px)  { grid-template-columns: repeat(3, 1fr); gap: 12px 10px; }
+  @media (max-width: 480px)  { grid-template-columns: repeat(2, 1fr); gap: 10px 8px; }
+}
+
+// ── Carte ────────────────────────────────────────────────────
+@keyframes wl-card-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.wl-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  animation: wl-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.06}s; }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: $gold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 1px 1px 0 0;
+  }
+
+  &:hover::after { opacity: 1; }
+}
+
+.wl-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: $card-bg;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.wl-card__img-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+
+  &:hover .wl-card__img:not(.wl-card__img--ph) {
+    transform: scale(1.04);
+    opacity: 0.92;
+  }
+}
+
+.wl-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+
+  &--ph {
+    background: linear-gradient(145deg, #e8e2d8 0%, #d8d0c5 100%);
+  }
+}
+
+// Bouton cœur (retirer des favoris)
+.wl-card__heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1a1512;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  opacity: 0.65;
+  transition: background 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: #fff;
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  &:focus-visible { outline: 2px solid $green; outline-offset: 2px; }
+}
+
+// ── Body carte ───────────────────────────────────────────────
+.wl-card__body {
+  padding: clamp(10px, 1.4vw, 14px) 2px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.wl-card__title-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover .wl-card__title { color: $gold-soft; }
+  &:focus-visible { outline: 2px solid $gold; outline-offset: 2px; border-radius: 2px; }
+}
+
+.wl-card__title {
+  margin: 0;
+  font-size: clamp(12px, 0.95vw, 13.5px);
+  font-weight: 500;
+  color: $ink;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  transition: color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wl-card__sub {
+  margin: 0;
+  font-size: 11px;
+  color: $muted;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+.wl-card__price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.wl-card__price {
+  margin: 0;
+  font-size: clamp(12px, 0.95vw, 13.5px);
+  font-weight: 600;
+  color: $ink;
+  letter-spacing: 0.04em;
+}
+
+// Bouton panier — icône sans fond
+.wl-card__cart-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: $green;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.18s ease;
+
+  svg { display: block; }
+
+  &:hover {
+    color: $green-dk;
+    transform: scale(1.15);
+  }
+
+  &--done {
+    color: $green;
+    pointer-events: none;
+  }
+
+  &:focus-visible { outline: 2px solid $green; outline-offset: 2px; }
+}
+
+// ── Pagination ────────────────────────────────────────────────
+.wl-layout { width: 100%; }
+
+.wl-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: clamp(24px, 4vw, 44px);
+  padding-top: 24px;
+  border-top: 1px solid rgba($gold, 0.14);
+}
+
+.wl-pagination__btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba($ink, 0.2);
+  border-radius: 50%;
+  background: transparent;
+  color: $ink;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: $gold;
+    color: $gold;
+    background: rgba($gold, 0.05);
+  }
+
+  &:disabled { opacity: 0.3; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid $gold; outline-offset: 2px; }
+}
+
+.wl-pagination__status {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: $muted;
+  min-width: 5rem;
+  text-align: center;
+}
+
+// ── Responsive ───────────────────────────────────────────────
+@media (max-width: 480px) {
+  .wl-header { padding: 36px 16px 32px; }
+  .wl-header__title { font-size: 1.5rem; }
+
+  .wl-main { padding: 22px 14px 48px; }
+
+  .wl-card__heart { opacity: 1; transform: scale(1); }
+}

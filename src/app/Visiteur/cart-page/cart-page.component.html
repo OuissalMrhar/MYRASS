@@ -1,0 +1,265 @@
+<div class="cart-page-host">
+  <app-navbar></app-navbar>
+
+  <ng-container *ngIf="labels$ | async as t">
+  <ng-container *ngIf="checkoutVm$ | async as vm">
+    <div class="cart-checkout" *ngIf="vm.lines.length === 0">
+      <div class="cart-checkout__empty-inner">
+        <h1 class="cart-checkout__empty-title">{{ t.cartTitle }}</h1>
+        <p class="cart-checkout__empty-text">{{ t.emptyText }}</p>
+        <a routerLink="/produit" class="cart-checkout__back-shop">{{ t.backToShop }}</a>
+      </div>
+    </div>
+
+    <div class="cart-checkout cart-checkout--split" *ngIf="vm.lines.length > 0" appReveal>
+      <section class="cart-checkout__left" aria-labelledby="cart-title">
+        <h1 id="cart-title" class="cart-checkout__panel-title">{{ t.cartTitle }}</h1>
+
+        <div class="cart-checkout__items">
+          <article *ngFor="let line of vm.lines" class="cart-checkout__item">
+            <a
+              [routerLink]="productRoutes.detailLink(line.name, line.productId)"
+              [queryParams]="line.tailleId ? { tailleId: line.tailleId } : {}"
+              class="cart-checkout__img-hit"
+              [attr.aria-label]="line.name"
+            >
+              <img
+                *ngIf="line.imageUrl"
+                [src]="line.imageUrl"
+                [alt]="line.name"
+                class="cart-checkout__item-img"
+              />
+              <span *ngIf="!line.imageUrl" class="cart-checkout__item-img cart-checkout__item-img--ph" aria-hidden="true"></span>
+            </a>
+
+            <div class="cart-checkout__item-info">
+              <a [routerLink]="productRoutes.detailLink(line.name, line.productId)" [queryParams]="line.tailleId ? { tailleId: line.tailleId } : {}" class="cart-checkout__text-hit">
+                <h2 class="cart-checkout__item-name">{{ line.name }}</h2>
+                <p class="cart-checkout__item-meta" *ngIf="line.variantLabel">{{ t.sizeVolume }} : {{ line.variantLabel }}</p>
+                <p class="cart-checkout__item-meta" *ngIf="line.categoryLabel">{{ t.category }} : {{ line.categoryLabel }}</p>
+                <p class="cart-checkout__item-meta" *ngIf="line.catalogueLabel">{{ t.catalogue }} : {{ line.catalogueLabel }}</p>
+                <p class="cart-checkout__item-meta" *ngIf="line.typeLabel">{{ t.type }} : {{ line.typeLabel }}</p>
+              </a>
+
+              <div class="cart-checkout__item-bottom">
+                <span class="cart-checkout__item-price">{{ lineSubtotal(line) | currencyDisplay }}</span>
+                <div class="cart-checkout__qty" role="group" [attr.aria-label]="line.name">
+                  <button
+                    type="button"
+                    class="cart-checkout__qty-btn"
+                    (click)="decrement(line)"
+                    aria-label="–"
+                  >
+                    <ng-container *ngIf="line.quantity === 1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14H6L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                      </svg>
+                    </ng-container>
+                    <ng-container *ngIf="line.quantity > 1">−</ng-container>
+                  </button>
+                  <span class="cart-checkout__qty-val">{{ line.quantity }}</span>
+                  <button type="button" class="cart-checkout__qty-btn" (click)="increment(line)" aria-label="+">+</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Code promo — même design que loyalty, bientôt disponible -->
+        <div class="cart-checkout__promo-card cart-checkout__promo-card--soon">
+          <div class="cart-checkout__promo-header">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+            </svg>
+            <span class="cart-checkout__promo-title">{{ t.promoTitle }}</span>
+            <span class="cart-checkout__promo-badge">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              {{ t.promoComingSoon }}
+            </span>
+          </div>
+          <p class="cart-checkout__promo-hint">{{ t.promoHint }}</p>
+          <div class="cart-checkout__promo-row">
+            <input
+              type="text"
+              class="cart-checkout__promo-input"
+              [(ngModel)]="promoCodeInput"
+              name="promoCode"
+              placeholder="Ex. ETE2026"
+              autocomplete="off"
+              disabled
+            />
+            <button type="button" class="cart-checkout__promo-apply btn-apply" disabled>
+              {{ t.apply }}
+            </button>
+            <button type="button" class="cart-checkout__promo-remove" disabled>
+              {{ t.removePromo }}
+            </button>
+          </div>
+        </div>
+
+        <div class="cart-checkout__summary">
+          <div class="cart-checkout__summary-row">
+            <span>{{ t.subtotalItems }}</span>
+            <span>{{ vm.subtotal | currencyDisplay }}</span>
+          </div>
+          <div class="cart-checkout__summary-row" *ngIf="vm.discount > 0">
+            <span>{{ t.discount }}</span>
+            <span>− {{ vm.discount | currencyDisplay }}</span>
+          </div>
+          <div class="cart-checkout__summary-row">
+            <span>{{ t.shipping }}</span>
+            <span>{{ vm.shipping | currencyDisplay }}</span>
+          </div>
+          <hr class="cart-checkout__summary-rule" />
+          <div class="cart-checkout__summary-row cart-checkout__summary-row--total">
+            <span>{{ t.total }}</span>
+            <strong>{{ vm.total | currencyDisplay }}</strong>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="cart-checkout__right" aria-labelledby="payment-title">
+        <h2 id="payment-title" class="cart-checkout__panel-title">{{ t.payment }}</h2>
+
+        <div class="cart-checkout__tabs" role="tablist" [attr.aria-label]="t.payment">
+          <button
+            type="button"
+            role="tab"
+            class="cart-checkout__tab"
+            [class.cart-checkout__tab--active]="paymentTab === 'card'"
+            [attr.aria-selected]="paymentTab === 'card'"
+            (click)="setPaymentTab('card')"
+          >
+            {{ t.card }}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="cart-checkout__tab"
+            [class.cart-checkout__tab--active]="paymentTab === 'eps'"
+            [attr.aria-selected]="paymentTab === 'eps'"
+            (click)="setPaymentTab('eps')"
+          >
+            EPS
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="cart-checkout__tab"
+            [class.cart-checkout__tab--active]="paymentTab === 'giropay'"
+            [attr.aria-selected]="paymentTab === 'giropay'"
+            (click)="setPaymentTab('giropay')"
+          >
+            Giropay
+          </button>
+          <button
+            type="button"
+            class="cart-checkout__tab cart-checkout__tab--more"
+            [class.cart-checkout__tab--active]="paymentTab === 'other'"
+            [attr.aria-selected]="paymentTab === 'other'"
+            (click)="setPaymentTab('other')"
+            aria-label="···"
+          >
+            ···
+          </button>
+        </div>
+
+        <!-- Panneau carte (Stripe Elements) -->
+        <div class="cart-checkout__payment-body" *ngIf="paymentTab === 'card'">
+
+          <!-- Succès paiement -->
+          <div *ngIf="paymentSuccess" class="stripe-success" role="status">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5f7047" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+            <p>Paiement accepté — merci pour votre commande !</p>
+          </div>
+
+          <ng-container *ngIf="!paymentSuccess">
+            <!-- Nom sur la carte -->
+            <div class="cart-checkout__field">
+              <label for="cc-name">{{ t.nameOnCard }}</label>
+              <input id="cc-name" type="text" name="nameOnCard" [(ngModel)]="nameOnCard"
+                     autocomplete="cc-name" placeholder="Jean Dupont"
+                     [disabled]="paymentProcessing" />
+            </div>
+
+            <!-- Numéro de carte Stripe Element -->
+            <div class="cart-checkout__field">
+              <label>{{ t.cardNumber }}</label>
+              <div class="stripe-element-wrap">
+                <div id="stripe-card-number" class="stripe-element"></div>
+                <span class="stripe-brands" aria-hidden="true">
+                  <svg width="34" height="22" viewBox="0 0 34 22" aria-label="Visa"><rect width="34" height="22" rx="3" fill="#1A1F71"/><text x="5" y="16" font-family="Arial" font-weight="700" font-size="11" fill="#fff" letter-spacing="-0.5">VISA</text></svg>
+                  <svg width="34" height="22" viewBox="0 0 34 22" aria-label="Mastercard"><rect width="34" height="22" rx="3" fill="#252525"/><circle cx="13" cy="11" r="7" fill="#EB001B"/><circle cx="21" cy="11" r="7" fill="#F79E1B"/><path d="M17 5.9a7 7 0 010 10.2A7 7 0 0117 5.9z" fill="#FF5F00"/></svg>
+                </span>
+              </div>
+            </div>
+
+            <!-- Expiration + CVC -->
+            <div class="cart-checkout__field-row">
+              <div class="cart-checkout__field">
+                <label>{{ t.expiry }}</label>
+                <div id="stripe-card-expiry" class="stripe-element"></div>
+              </div>
+              <div class="cart-checkout__field">
+                <label>{{ t.cvc }}
+                  <span class="stripe-cvc-hint" title="3 chiffres au dos de la carte (4 pour Amex)">?</span>
+                </label>
+                <div id="stripe-card-cvc" class="stripe-element"></div>
+              </div>
+            </div>
+
+            <!-- Téléphone -->
+            <div class="cart-checkout__field">
+              <label for="phone">{{ t.phone }}</label>
+              <div class="cart-checkout__phone">
+                <span class="cart-checkout__phone-prefix">+212</span>
+                <input id="phone" type="tel" name="phone" [(ngModel)]="phone"
+                       autocomplete="tel" placeholder="6 12 34 56 78"
+                       [disabled]="paymentProcessing" />
+              </div>
+            </div>
+            <p class="cart-checkout__phone-hint">{{ t.phoneHint }}</p>
+
+            <!-- Erreur Stripe -->
+            <p *ngIf="stripeError" class="stripe-error" role="alert">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              {{ stripeError }}
+            </p>
+          </ng-container>
+        </div>
+
+        <div class="cart-checkout__payment-alt" *ngIf="paymentTab !== 'card'">
+          <p class="cart-checkout__alt-msg">{{ paymentTab | uppercase }}</p>
+        </div>
+
+        <button
+          type="button"
+          class="cart-checkout__pay-btn"
+          [disabled]="paymentProcessing || paymentSuccess || vm.lines.length === 0"
+          (click)="payNow(vm)"
+        >
+          <ng-container *ngIf="paymentProcessing">
+            <svg class="stripe-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0110 10"/></svg>
+            Traitement en cours…
+          </ng-container>
+          <ng-container *ngIf="!paymentProcessing">{{ t.payNow }} · {{ vm.total | currencyDisplay }}</ng-container>
+        </button>
+
+        <nav class="cart-checkout__policies" [attr.aria-label]="t.payment">
+          <a href="#">{{ t.privacyPolicy }}</a>
+          <a href="#">{{ t.delivery }}</a>
+          <a href="#">{{ t.privacy }}</a>
+          <a href="#">{{ t.terms }}</a>
+        </nav>
+      </section>
+    </div>
+  </ng-container>
+
+
+  </ng-container>
+
+  <app-footer></app-footer>
+</div>

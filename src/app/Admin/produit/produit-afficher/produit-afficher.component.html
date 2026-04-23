@@ -1,0 +1,221 @@
+<section class="page">
+  <div class="sidebar-line"></div>
+
+  <header class="page-head">
+    <div class="page-head-left">
+      <p class="eyebrow">Gestion des contenus</p>
+      <h1>Produits</h1>
+      <p class="subtitle">Articles, prix et stocks</p>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="ajouter()">+ Nouveau produit</button>
+  </header>
+
+  <div class="deco-line"><span class="deco-line-text">liste</span></div>
+
+  @if (!loading && !errorMessage) {
+    <div class="card filters-card">
+      <!-- Ligne 1 : Catégories + Catalogues côte à côte -->
+      <div class="filters-row">
+        <div class="filter-group">
+          <p class="filter-label">Catégorie</p>
+          <div class="check-list">
+            @for (c of categories; track c.id) {
+              <label class="check-item" [class.active]="isCategorieSelected(c.id!)">
+                <input
+                  type="checkbox"
+                  [checked]="isCategorieSelected(c.id!)"
+                  (change)="toggleCategorie(c.id!)"
+                />
+                {{ c.nom }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <div class="filter-sep"></div>
+
+        <div class="filter-group">
+          <p class="filter-label">Catalogue</p>
+          <div class="check-list">
+            @for (cat of filteredCatalogues; track cat.id) {
+              <label class="check-item" [class.active]="isCatalogueSelected(cat.id)">
+                <input
+                  type="checkbox"
+                  [checked]="isCatalogueSelected(cat.id)"
+                  (change)="toggleCatalogue(cat.id)"
+                />
+                {{ cat.nom }}
+              </label>
+            }
+            @if (filteredCatalogues.length === 0) {
+              <span class="muted small">—</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Ligne 2 : Type de produit (visible seulement si 1 catalogue sélectionné) -->
+      @if (types.length > 0) {
+        <div class="filters-type-row">
+          <p class="filter-label">Type de produit</p>
+          <div class="check-list">
+            @for (t of types; track t.id) {
+              <label class="check-item" [class.active]="filters.typeProduitId === t.id">
+                <input
+                  type="radio"
+                  name="typeProduit"
+                  [checked]="filters.typeProduitId === t.id"
+                  (change)="filters.typeProduitId = t.id; onTypeChange()"
+                />
+                {{ t.nom }}
+              </label>
+            }
+            <label class="check-item" [class.active]="filters.typeProduitId === null">
+              <input
+                type="radio"
+                name="typeProduit"
+                [checked]="filters.typeProduitId === null"
+                (change)="filters.typeProduitId = null; onTypeChange()"
+              />
+              Tous
+            </label>
+          </div>
+        </div>
+      }
+
+      <div class="filters-actions">
+        <button type="button" class="btn btn-ghost" (click)="resetFilters()">Réinitialiser</button>
+      </div>
+    </div>
+  }
+
+  @if (actionError) {
+    <div class="alert alert-danger" role="alert">{{ actionError }}</div>
+  }
+
+  @if (loading) {
+    <div class="card loading-card">
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+      <div class="loading-dot"></div>
+    </div>
+  }
+
+  @if (errorMessage && !loading) {
+    <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (!loading && !errorMessage && displayedRows && displayedRows.length === 0) {
+    <div class="card empty">
+      <div class="empty-icon">📦</div>
+      <p>Aucun produit pour ces filtres.</p>
+      <button type="button" class="btn btn-ghost" (click)="resetFilters()">Réinitialiser</button>
+      <button type="button" class="btn btn-primary" (click)="ajouter()">Créer un produit</button>
+    </div>
+  }
+
+  @if (displayedRows && displayedRows.length > 0) {
+    <div class="table-wrap card">
+      <div class="table-header">
+        <p class="table-count">
+          <span>{{ displayedRows.length }}</span> produits trouvés
+        </p>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nom</th>
+              <th class="col-catalogue">Catalogue</th>
+              <th>Type</th>
+              <th class="num">Prix</th>
+              <th class="num">Qté</th>
+              <th class="num">Stock</th>
+              <th>Tailles</th>
+              <th class="num">Médias</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of displayedRows; track p.id) {
+              <tr>
+                <td><span class="mono">{{ p.id }}</span></td>
+                <td><strong>{{ p.nom }}</strong></td>
+                <td class="col-catalogue">
+                  @if (p.catalogueNom) {
+                    <span class="catalogue-cell">
+                      <span class="badge-cat">🌿 {{ p.catalogueNom }}</span>
+                      @if (p.categorieNom) {
+                        <span class="categorie-sub">{{ p.categorieNom }}</span>
+                      }
+                    </span>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td>
+                  @if (p.typeProduitNom) {
+                    <span class="badge-type">{{ p.typeProduitNom }}</span>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td class="num">
+                  @if (hasTailles(p)) {
+                    <span class="price">
+                      @if (taillePricesDiffer(p)) {
+                        {{ tailleMinPrix(p) | number:'1.2-2' }} - {{ tailleMaxPrix(p) | number:'1.2-2' }} €
+                      } @else {
+                        {{ tailleMinPrix(p) | number:'1.2-2' }} €
+                      }
+                    </span>
+                    <div class="muted small">prix par taille</div>
+                  } @else {
+                    <span class="price">{{ p.prix | number:'1.2-2' }} €</span>
+                  }
+                </td>
+                <td class="num">
+                  <span class="qty">{{ p.quantite ?? '—' }}</span>
+                </td>
+                <td class="num">
+                  <span class="stock-badge" [class.low]="totalStockForRow(p) < 5" [class.ok]="totalStockForRow(p) >= 5">
+                    {{ totalStockForRow(p) }}
+                  </span>
+                </td>
+                <td>
+                  @if (hasTailles(p)) {
+                    <div class="volumes-cell">
+                      @for (v of getVolumeRows(p); track v.tailleId) {
+                        <span class="volume-pill">
+                          <span class="volume-label">{{ v.tailleLabel || ('#' + v.tailleId) }}</span>
+                          <span class="volume-price">{{ v.prix | number:'1.2-2' }} €</span>
+                          <span class="volume-stock">({{ v.stock }})</span>
+                        </span>
+                      }
+                    </div>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td class="num">
+                  <span class="qty">{{ p.medias?.length ?? 0 }}</span>
+                </td>
+                <td class="col-actions">
+                  <div class="actions">
+                    <button type="button" class="btn-icon" (click)="modifier(p.id)" title="Modifier" aria-label="Modifier">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                    </button>
+                    <button type="button" class="btn-icon btn-icon-danger" (click)="supprimer(p)" title="Supprimer" aria-label="Supprimer">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</section>

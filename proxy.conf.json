@@ -1,0 +1,17 @@
+{
+  "/api": {
+    "target": "https://localhost:7169",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/WeatherForecast": {
+    "target": "https://localhost:7169",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/images": {
+    "target": "https://localhost:7169",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

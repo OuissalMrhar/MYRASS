@@ -1,0 +1,171 @@
+<app-navbar></app-navbar>
+
+<main class="contact-shell" [class.rtl]="isRtl" appReveal>
+
+  <!-- ── Panneau gauche — Coordonnées ── -->
+  <div class="contact-left">
+    <div class="contact-left-inner">
+
+      <p class="contact-pane-kicker">{{ labels.coordTitle }}</p>
+
+      <div class="contact-items">
+        <div class="contact-item">
+          <span class="contact-item__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>
+            </svg>
+          </span>
+          <div class="contact-item__text">
+            <div class="k">{{ labels.emailLabel }}</div>
+            <div class="v"><a [href]="'mailto:' + labels.emailValue" class="contact-link">{{ labels.emailValue }}</a></div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <span class="contact-item__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.15 10.8 19.8 19.8 0 0 1 .08 2.18 2 2 0 0 1 2.06 0h3a2 2 0 0 1 2 1.72c.12.86.31 1.7.57 2.5a2 2 0 0 1-.45 2.11L6.09 7.91a16 16 0 0 0 6 6l1.58-1.06a2 2 0 0 1 2.11-.45c.8.26 1.64.45 2.5.57A2 2 0 0 1 22 16.92Z"/>
+            </svg>
+          </span>
+          <div class="contact-item__text">
+            <div class="k">{{ labels.phoneLabel }}</div>
+            <div class="v"><a [href]="phoneTelHref" class="contact-link">{{ labels.phoneValue }}</a></div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <span class="contact-item__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11Z"/>
+              <circle cx="12" cy="10" r="2.2"/>
+            </svg>
+          </span>
+          <div class="contact-item__text">
+            <div class="k">{{ labels.addressLabel }}</div>
+            <div class="v">{{ labels.addressValue }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-follow">
+        <div class="contact-follow__title">{{ labels.followTitle }}</div>
+        <div class="contact-follow__sub">{{ labels.followSub }}</div>
+        <div class="contact-follow__icons" aria-label="Réseaux sociaux">
+          <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" target="_blank" aria-label="X"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok" aria-hidden="true"></i></a>
+          <a href="#" target="_blank" aria-label="Pinterest"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Panneau droit — Formulaires ── -->
+  <div class="contact-right">
+    <div class="contact-right-inner">
+
+      <!-- Switch underline -->
+      <div class="form-tabs" role="tablist">
+        <button
+          type="button"
+          class="form-tabs__btn"
+          [class.form-tabs__btn--active]="activeTab === 'contact'"
+          (click)="switchTab('contact')"
+          role="tab"
+          [attr.aria-selected]="activeTab === 'contact'"
+        >{{ labels.tabContact }}</button>
+        <button
+          type="button"
+          class="form-tabs__btn"
+          [class.form-tabs__btn--active]="activeTab === 'partnership'"
+          (click)="switchTab('partnership')"
+          role="tab"
+          [attr.aria-selected]="activeTab === 'partnership'"
+        >{{ labels.tabPartnership }}</button>
+      </div>
+
+      <!-- Formulaire Contact -->
+      <div class="form-stage" *ngIf="activeTab === 'contact'" role="tabpanel">
+        <div class="form-panel form-enter">
+          <p class="contact-pane-title">{{ labels.contactTitle }}</p>
+          <form class="contact-form" [formGroup]="form" (ngSubmit)="send()" autocomplete="on">
+            <label class="field">
+              <span>{{ labels.nameLabel }}</span>
+              <input type="text" formControlName="nomComplet" [placeholder]="labels.namePlaceholder" [readonly]="isAutofilled"/>
+            </label>
+            <label class="field">
+              <span>{{ labels.emailFormLabel }}</span>
+              <input type="email" formControlName="email" [placeholder]="labels.emailPlaceholder" [readonly]="isAutofilled"/>
+            </label>
+            <label class="field">
+              <span>{{ labels.phoneFormLabel }}</span>
+              <input type="tel" formControlName="telephone" [placeholder]="labels.phonePlaceholder" [readonly]="isAutofilled"/>
+            </label>
+            <label class="field">
+              <span>{{ labels.messageLabel }}</span>
+              <textarea rows="5" formControlName="message" [placeholder]="labels.messagePlaceholder"></textarea>
+            </label>
+            <p class="send-hint send-hint--error"   *ngIf="sendState === 'error'">{{ labels.errorMsg }}</p>
+            <p class="send-hint send-hint--success" *ngIf="sendState === 'success'">{{ labels.successMsg }}</p>
+            <div class="contact-actions">
+              <button type="submit" class="btn-send" [disabled]="isSending">
+                {{ isSending ? labels.sendingBtn : labels.sendBtn }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Formulaire Partenariat -->
+      <div class="form-stage" *ngIf="activeTab === 'partnership'" role="tabpanel">
+        <div class="form-panel form-enter">
+          <p class="contact-pane-title">{{ labels.partnerTitle }}</p>
+          <form class="contact-form" [formGroup]="partnerForm" (ngSubmit)="sendPartnership()" autocomplete="on">
+            <div class="field-row">
+              <label class="field">
+                <span>{{ labels.companyLabel }}</span>
+                <input type="text" formControlName="company" [placeholder]="labels.companyPlaceholder"/>
+              </label>
+              <label class="field">
+                <span>{{ labels.partnerTypeLabel }}</span>
+                <select formControlName="partnerType" class="field-select">
+                  <option value="" disabled selected></option>
+                  <option *ngFor="let t of labels.partnerTypes" [value]="t.value">{{ t.label }}</option>
+                </select>
+              </label>
+            </div>
+            <label class="field">
+              <span>{{ labels.partnerNameLabel }}</span>
+              <input type="text" formControlName="nomComplet" [placeholder]="labels.partnerNamePlaceholder" [readonly]="isAutofilled"/>
+            </label>
+            <label class="field">
+              <span>{{ labels.partnerEmailLabel }}</span>
+              <input type="email" formControlName="email" [placeholder]="labels.partnerEmailPlaceholder" [readonly]="isAutofilled"/>
+            </label>
+            <label class="field">
+              <span>{{ labels.partnerPhoneLabel }}</span>
+              <input type="tel" formControlName="telephone" [placeholder]="labels.partnerPhonePlaceholder" [readonly]="isAutofilled"/>
+            </label>
+            <label class="field">
+              <span>{{ labels.partnerMsgLabel }}</span>
+              <textarea rows="4" formControlName="message" [placeholder]="labels.partnerMsgPlaceholder"></textarea>
+            </label>
+            <p class="send-hint send-hint--error"   *ngIf="partnerSendState === 'error'">{{ labels.partnerErrorMsg }}</p>
+            <p class="send-hint send-hint--success" *ngIf="partnerSendState === 'success'">{{ labels.partnerSuccessMsg }}</p>
+            <div class="contact-actions">
+              <button type="submit" class="btn-send" [disabled]="isPartnerSending">
+                {{ isPartnerSending ? labels.partnerSendingBtn : labels.partnerSendBtn }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<app-footer></app-footer>

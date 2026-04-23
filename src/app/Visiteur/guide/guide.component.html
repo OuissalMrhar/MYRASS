@@ -1,0 +1,58 @@
+<div class="guide-page-host" [class.rtl]="isRtl">
+  <app-navbar></app-navbar>
+
+  <!-- Hero -->
+  <section class="guide-hero" appReveal>
+    <div class="guide-hero__bg"></div>
+    <div class="guide-hero__content">
+      <span class="guide-kicker">Guide</span>
+      <h1 class="guide-hero__title">{{ copy.heroTitle }}</h1>
+      <p class="guide-hero__subtitle">{{ copy.heroSubtitle }}</p>
+    </div>
+  </section>
+
+  <main class="guide-main">
+
+
+    <!-- Intro -->
+    <section class="guide-intro">
+      <h2 class="guide-intro__title">{{ copy.introTitle }}</h2>
+      <p class="guide-intro__subtitle">{{ copy.introSubtitle }}</p>
+      <p class="guide-intro__body">{{ copy.introBody }}</p>
+    </section>
+
+    <!-- Sections produits -->
+    <section
+      class="guide-catalog"
+      *ngFor="let s of copy.sections; trackBy: trackSection"
+      [class.guide-catalog--reverse]="!s.textFirst"
+    >
+      <div class="guide-catalog__text">
+        <h3 class="guide-catalog__heading">{{ s.title }}</h3>
+        <dl class="guide-catalog__meta">
+          <ng-container *ngFor="let row of s.lines">
+            <dt>{{ row.label }}</dt>
+            <dd>{{ row.value }}</dd>
+          </ng-container>
+        </dl>
+        <p class="guide-catalog__para" *ngIf="s.intro">{{ s.intro }}</p>
+        <ul class="guide-catalog__bullets">
+          <li *ngFor="let b of s.bullets">{{ b }}</li>
+        </ul>
+      </div>
+      <div class="guide-catalog__visual">
+        <img [src]="s.imageSrc" [alt]="s.imageAlt" loading="lazy" />
+      </div>
+    </section>
+
+    <!-- Voir plus -->
+    <div class="guide-cta-wrap">
+      <button type="button" class="guide-cta guide-cta--disabled" disabled>
+        {{ copy.seeMore }}
+      </button>
+    </div>
+
+  </main>
+
+  <app-footer></app-footer>
+</div>

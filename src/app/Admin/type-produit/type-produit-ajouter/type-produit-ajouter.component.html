@@ -1,0 +1,92 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <h1>Nouveau type de produit</h1>
+      <p class="subtitle">Donnez un libellé clair</p>
+    </div>
+  </header>
+
+  <div class="card form-card">
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+    }
+
+    <form (ngSubmit)="submit()" [formGroup]="form">
+      <div class="field">
+        <label>Langue</label>
+        <div class="segmented">
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='fr'" (click)="setLang('fr')">FR</button>
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='en'" (click)="setLang('en')">EN</button>
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='ar'" (click)="setLang('ar')">AR</button>
+        </div>
+        <p class="muted" style="margin: .25rem 0 0;">FR obligatoire · EN et AR optionnels (fallback FR).</p>
+      </div>
+
+      <div class="field">
+        <label for="nom">Nom <span class="req">*</span></label>
+        <input id="nom" type="text" formControlName="nom" class="input" placeholder="Ex. Vêtement, Accessoire…" />
+        @if (form.controls.nom.touched && form.controls.nom.invalid) {
+          <span class="field-error">Le nom est requis.</span>
+        }
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'en'">
+        <label for="nomEn">Nom (EN)</label>
+        <input id="nomEn" type="text" formControlName="nomEn" class="input" placeholder="Ex. Apparel, Accessory…" />
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'ar'" dir="rtl">
+        <label for="nomAr">الاسم (AR)</label>
+        <input id="nomAr" type="text" formControlName="nomAr" class="input" placeholder="مثال: ملابس، إكسسوار…" />
+      </div>
+
+      <div class="field">
+        <label for="cat">Catalogue <span class="req">*</span></label>
+        <select id="cat" formControlName="catalogueId" class="input">
+          <option [ngValue]="null">— Choisir —</option>
+          @for (c of catalogues; track c.id) {
+            <option [ngValue]="c.id">{{ c.nom }} ({{ c.categorieNom ?? '?' }})</option>
+          }
+        </select>
+      </div>
+
+      <div class="field field--check">
+        <label class="check-label">
+          <input type="checkbox" formControlName="statut" />
+          <span>Type actif (boutique)</span>
+        </label>
+      </div>
+
+      <div class="field">
+        <label for="histoire">Histoire</label>
+        <textarea id="histoire" rows="4" formControlName="histoire" class="input textarea" placeholder="Texte de l'histoire…"></textarea>
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'en'">
+        <label for="histoireEn">Histoire (EN)</label>
+        <textarea id="histoireEn" rows="4" formControlName="histoireEn" class="input textarea" placeholder="Story text…"></textarea>
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'ar'" dir="rtl">
+        <label for="histoireAr">القصة (AR)</label>
+        <textarea id="histoireAr" rows="4" formControlName="histoireAr" class="input textarea" placeholder="نص القصة…"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Photos (URLs cloud) — max 3</label>
+        <input type="url" class="input" placeholder="URL photo 1" formControlName="media1" />
+        <div style="height: 0.5rem"></div>
+        <input type="url" class="input" placeholder="URL photo 2" formControlName="media2" />
+        <div style="height: 0.5rem"></div>
+        <input type="url" class="input" placeholder="URL photo 3" formControlName="media3" />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" (click)="annuler()">Annuler</button>
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || saving || loadingRefs">
+          {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

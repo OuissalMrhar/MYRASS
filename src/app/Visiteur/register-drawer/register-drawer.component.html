@@ -1,0 +1,179 @@
+<div class="drawer-overlay" *ngIf="isOpen" (click)="close()"></div>
+
+<div class="login-drawer" [class.open]="isOpen" [attr.dir]="isRtl ? 'rtl' : 'ltr'">
+
+  <div class="drawer-header">
+    <div class="header-main">
+      <span class="title-label">{{ labels.registerRequiredFields }}</span>
+      <button class="close-icon" (click)="close()">✕</button>
+    </div>
+  </div>
+
+  <div class="header-divider"></div>
+
+  <div class="drawer-body">
+
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <form class="register-form" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-row">
+        <div class="form-group col-title">
+          <label>{{ labels.genderLabel }}</label>
+          <select class="custom-input" formControlName="title"
+                  [class.is-invalid]="submitted && f['title'].errors">
+            <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.nom }}</option>
+          </select>
+          <div *ngIf="submitted && f['title'].errors" class="invalid-feedback">{{ labels.genderRequired }}</div>
+        </div>
+        <div class="form-group col-name">
+          <label>{{ labels.nameLabel }}</label>
+          <input type="text" class="custom-input" formControlName="nomComplet"
+                 [class.is-invalid]="submitted && f['nomComplet'].errors">
+          <div *ngIf="submitted && f['nomComplet'].errors" class="invalid-feedback">{{ labels.nameRequired }}</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ labels.emailRegLabel }}</label>
+        <input
+          type="email"
+          class="custom-input"
+          formControlName="email"
+          [placeholder]="labels.emailPlaceholder"
+          [class.is-invalid]="submitted && f['email'].errors"
+        >
+        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+          <span *ngIf="f['email'].errors['required']">{{ labels.emailRequired }}</span>
+          <span *ngIf="f['email'].errors['email']">{{ labels.emailInvalid }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ labels.passwordRegLabel }}</label>
+        <div class="pass-wrap">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="custom-input"
+            formControlName="motDePasse"
+            autocomplete="new-password"
+            [class.is-invalid]="submitted && f['motDePasse'].errors"
+          >
+          <button type="button" class="toggle-pw" (click)="showPassword = !showPassword">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="submitted && f['motDePasse'].errors" class="invalid-feedback">
+          <span *ngIf="f['motDePasse'].errors['required']">{{ labels.passwordRequired }}</span>
+          <span *ngIf="f['motDePasse'].errors['minlength']">{{ labels.passwordMin }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ labels.confirmLabel }}</label>
+        <div class="pass-wrap">
+          <input
+            [type]="showConfirm ? 'text' : 'password'"
+            class="custom-input"
+            formControlName="confirmMotDePasse"
+            autocomplete="new-password"
+            [class.is-invalid]="submitted && (f['confirmMotDePasse'].errors || userForm.errors?.['passwordMismatch'])"
+          >
+          <button type="button" class="toggle-pw" (click)="showConfirm = !showConfirm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <div *ngIf="submitted && f['confirmMotDePasse'].errors" class="invalid-feedback">
+          {{ labels.confirmRequired }}
+        </div>
+        <div *ngIf="submitted && !f['confirmMotDePasse'].errors && userForm.errors?.['passwordMismatch']"
+             class="invalid-feedback">
+          {{ labels.passwordMismatch }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ labels.phoneLabel }}</label>
+        <div class="phone-row">
+          <div class="prefix-wrap">
+            <select class="custom-input" formControlName="phonePrefix">
+              <option *ngFor="let country of countries" [value]="country.dial">
+                {{ country.flag }} {{ country.dial }} {{ country.name }}
+              </option>
+            </select>
+          </div>
+          <input type="tel" class="custom-input phone-num" formControlName="telephone"
+                 [class.is-invalid]="submitted && f['telephone'].errors">
+        </div>
+        <div *ngIf="submitted && f['telephone'].errors" class="invalid-feedback">{{ labels.phoneRequired }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ labels.dobLabel }}</label>
+        <div class="date-row">
+
+          <div class="date-part">
+            <input #dayInput
+                   type="text"
+                   class="custom-input date-input"
+                   formControlName="dateDay"
+                   placeholder="00"
+                   maxlength="2"
+                   inputmode="numeric"
+                   (input)="onDateInput($event, 'day')"
+                   [class.is-invalid]="submitted && f['dateNaissance'].errors">
+          </div>
+
+          <span class="date-sep">/</span>
+
+          <div class="date-part">
+            <input #monthInput
+                   type="text"
+                   class="custom-input date-input"
+                   formControlName="dateMonth"
+                   placeholder="00"
+                   maxlength="2"
+                   inputmode="numeric"
+                   (input)="onDateInput($event, 'month')"
+                   [class.is-invalid]="submitted && f['dateNaissance'].errors">
+          </div>
+
+          <span class="date-sep">/</span>
+
+          <div class="date-part date-year">
+            <input #yearInput
+                   type="text"
+                   class="custom-input date-input"
+                   formControlName="dateYear"
+                   placeholder="0000"
+                   maxlength="4"
+                   inputmode="numeric"
+                   (input)="onDateInput($event, 'year')"
+                   [class.is-invalid]="submitted && f['dateNaissance'].errors">
+          </div>
+
+        </div>
+        <div *ngIf="submitted && f['dateNaissance'].errors" class="invalid-feedback">
+          {{ labels.dobRequired }}
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" class="btn-continue" [disabled]="submitted && !successMessage">
+          {{ labels.continueBtn }}
+        </button>
+        <p class="activation-text">
+          {{ labels.activationText }}
+        </p>
+      </div>
+
+    </form>
+  </div>
+</div>

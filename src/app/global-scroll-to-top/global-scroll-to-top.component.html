@@ -1,0 +1,19 @@
+@if (visible) {
+  <button
+    type="button"
+    class="global-scroll-to-top"
+    [class.global-scroll-to-top--visitor-mobile]="visitorSite"
+    (click)="scrollToTop()"
+    aria-label="Retour en haut de la page"
+  >
+    <svg class="global-scroll-to-top__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M8 16.5l4-4 4 4M8 11l4-4 4 4"
+        stroke="currentColor"
+        stroke-width="1.85"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+}

@@ -1,0 +1,64 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Demande d’accès</h1>
+      <p class="subtitle">
+        Soumettez une demande : un super-administrateur doit l’approuver avant que vous puissiez vous connecter.
+      </p>
+    </div>
+
+    <form (ngSubmit)="register()" class="auth-form">
+      <div class="field">
+        <label for="prenom">Prénom</label>
+        <input id="prenom" class="input" type="text" name="prenom" required [(ngModel)]="form.prenom" placeholder="Prénom" />
+      </div>
+
+      <div class="field">
+        <label for="nom">Nom</label>
+        <input id="nom" class="input" type="text" name="nom" required [(ngModel)]="form.nom" placeholder="Nom" />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          class="input"
+          type="email"
+          name="email"
+          required
+          [(ngModel)]="form.email"
+          placeholder="ex: admin@domaine.com"
+        />
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          name="password"
+          required
+          [(ngModel)]="form.password"
+          placeholder="Mot de passe (utilisé après approbation)"
+        />
+      </div>
+
+      @if (error) {
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+      }
+
+      @if (success) {
+        <div class="alert alert-success" role="alert">{{ success }}</div>
+      }
+
+      <button class="btn btn-primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Envoi…' : 'Envoyer la demande' }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <a routerLink="/admin/login" class="link">Retour à la connexion</a>
+    </div>
+  </div>
+</section>

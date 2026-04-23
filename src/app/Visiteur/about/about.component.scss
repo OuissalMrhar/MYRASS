@@ -1,0 +1,439 @@
+:host {
+  display: block;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  background: #ffffff;
+  color: #2a1f1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+.about-page {
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+}
+
+// ── Animations ───────────────────────────────────────────────
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-left {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fade-right {
+  from { opacity: 0; transform: translateX(22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.about-reveal        { animation: fade-up   0.72s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.about-reveal--d1    { animation-delay: 0.08s; }
+.about-reveal--d2    { animation-delay: 0.16s; }
+.about-reveal--d3    { animation-delay: 0.24s; }
+
+.about-block--dark   { animation: fade-left  0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.about-block--light  { animation: fade-left  0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.about-block--image  { animation: fade-right 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both; }
+.about-mission       { animation: fade-up    0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .about-reveal,
+  .about-block--dark,
+  .about-block--light,
+  .about-block--image,
+  .about-mission {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ── Hero ─────────────────────────────────────────────────────
+.about-hero {
+  position: relative;
+  width: 100%;
+  background: #1a1510;
+
+  &__img-wrap {
+    position: relative;
+    width: 100%;
+    line-height: 0;
+  }
+
+  &__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0.9;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(18, 13, 10, 0.18) 0%,
+      rgba(18, 13, 10, 0.62) 100%
+    );
+  }
+
+  &__caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    width: 90%;
+    max-width: 680px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  &__title {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(0.85rem, 3.5vw, 3rem);
+    font-weight: 400;
+    color: #ffffff;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    margin: 0;
+    text-shadow: 0 3px 28px rgba(0, 0, 0, 0.4);
+  }
+}
+
+// ── Main container ───────────────────────────────────────────
+.about-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 64px) clamp(16px, 4vw, 52px) clamp(40px, 6vw, 80px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2vw, 22px);
+  box-sizing: border-box;
+}
+
+// ── Sections ─────────────────────────────────────────────────
+.about-section { width: 100%; }
+
+.about-section__inner {
+  display: grid;
+  gap: clamp(10px, 1.8vw, 20px);
+  align-items: stretch;
+
+  &--histoire { grid-template-columns: 1.65fr 1fr; }
+  &--ambition { grid-template-columns: 1fr 1.65fr; }
+}
+
+
+// ── Blocks ───────────────────────────────────────────────────
+.about-block {
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: clamp(24px, 3.2vw, 52px) clamp(20px, 2.8vw, 44px);
+  font-family: 'Montserrat', system-ui, sans-serif;
+  box-sizing: border-box;
+  min-height: clamp(220px, 28vw, 360px);
+
+  &--dark {
+    background: #2a1f1a;
+    color: #ebe4dc;
+  }
+
+  &--light {
+    background: #f5f0e8;
+    color: #2a1f1a;
+  }
+
+  &--image {
+    padding: 0;
+    border-radius: 5px;
+    min-height: clamp(220px, 28vw, 360px);
+
+    img, .about-engagement-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    &:hover img,
+    &:hover .about-engagement-video { transform: scale(1.03); }
+  }
+
+  &__title {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(1.1rem, 2.2vw, 2rem);
+    font-weight: 400;
+    color: #f5f1eb;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 0 0 clamp(10px, 1.4vw, 18px);
+    text-align: center;
+
+    &--dark { color: #1f1814; }
+  }
+
+  &__text {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(12px, 1vw, 14.5px);
+    line-height: 1.85;
+    color: rgba(235, 228, 220, 0.84);
+    font-weight: 400;
+    margin: 0;
+    text-align: center;
+
+    & + & { margin-top: 0; }
+
+    &--dark { color: #5a4d44; }
+  }
+}
+
+// ── Mission ──────────────────────────────────────────────────
+.about-mission {
+  text-align: center;
+  padding: clamp(32px, 5vw, 68px) clamp(16px, 10vw, 140px);
+  border-top: 1px solid rgba(42, 31, 26, 0.07);
+  border-bottom: 1px solid rgba(42, 31, 26, 0.07);
+  margin-top: 4px;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  box-sizing: border-box;
+
+  &__title {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(1.35rem, 2.8vw, 2.4rem);
+    font-weight: 400;
+    color: #1f1814;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin: 0 0 clamp(14px, 1.8vw, 22px);
+  }
+
+  &__text {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(13px, 1.1vw, 15.5px);
+    line-height: 1.85;
+    color: #5c4e45;
+    max-width: 44em;
+    margin: 0 auto;
+    font-weight: 400;
+    text-align: center;
+
+    & + & { margin-top: 0; }
+  }
+}
+
+// ── Photos — caché uniquement sur grand desktop (>1024px) ────
+@media (min-width: 1025px) {
+  .about-photos--mobile-only { display: none !important; }
+}
+
+// ── RTL ──────────────────────────────────────────────────────
+.rtl {
+  direction: rtl;
+  font-family: 'Segoe UI', 'Tahoma', 'Arial Unicode MS', system-ui, sans-serif;
+
+  .about-hero__title {
+    font-size: clamp(1.25rem, 3.5vw, 2.5rem);
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .about-block__title {
+    font-size: clamp(1.2rem, 2.4vw, 2.1rem);
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  .about-block__text {
+    font-size: clamp(13px, 1.1vw, 16px);
+    line-height: 2.05;
+    text-align: right;
+    letter-spacing: 0;
+  }
+
+  .about-mission__title {
+    font-size: clamp(1.5rem, 3vw, 2.6rem);
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .about-mission__text {
+    font-size: clamp(13.5px, 1.1vw, 16.5px);
+    line-height: 2.1;
+    letter-spacing: 0;
+  }
+}
+
+// ── Responsive: large desktop ────────────────────────────────
+@media (min-width: 1400px) {
+  .about-main { max-width: 1340px; }
+
+  .about-block { min-height: 380px; }
+  .about-block--image { min-height: 380px; }
+}
+
+// ── Responsive: tablet + mobile (≤1024px) ───────────────────
+@media (max-width: 1024px) {
+
+  // Grilles → 1 colonne
+  .about-section__inner {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .about-block--hide-mobile { display: none; }
+
+  // Section photos visible et bien proportionnée
+  .about-photos--mobile-only {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(8px, 1.5vw, 16px);
+
+    .about-photos__item {
+      height: clamp(160px, 28vw, 320px);
+      border-radius: 5px;
+      overflow: hidden;
+
+      img, video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      &:hover img { transform: scale(1.03); }
+    }
+  }
+
+  // Blocs texte
+  .about-block {
+    min-height: auto;
+    border-radius: 8px;
+    padding: clamp(24px, 3.5vw, 44px) clamp(20px, 4vw, 60px);
+
+    &__title { font-size: clamp(1.1rem, 2.5vw, 1.7rem) !important; margin-bottom: 12px; }
+    &__text  { font-size: clamp(13px, 1.4vw, 15px) !important; line-height: 1.82; }
+  }
+
+  // Mission
+  .about-mission {
+    padding: clamp(28px, 4vw, 52px) clamp(16px, 6vw, 80px);
+
+    &__title { font-size: clamp(1.2rem, 3vw, 1.9rem); }
+    &__text  { font-size: clamp(13px, 1.4vw, 15px); max-width: 100%; }
+  }
+}
+
+// ── Responsive: mobile (≤768px) ─────────────────────────────
+@media (max-width: 768px) {
+
+  // Hero capé
+  .about-hero {
+    &__img-wrap {
+      height: 52vw;
+      min-height: 200px;
+      max-height: 340px;
+      overflow: hidden;
+    }
+
+    &__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
+
+    &__caption { width: 92%; padding: 0 12px; }
+    &__title   { font-size: clamp(0.95rem, 5vw, 1.4rem); }
+  }
+
+  .about-main {
+    padding: 22px 14px 52px;
+    gap: 12px;
+  }
+
+  .about-photos--mobile-only {
+    .about-photos__item { height: clamp(130px, 42vw, 220px); }
+  }
+
+  .about-block { padding: 26px 18px; }
+
+  .about-mission { padding: 30px 16px 44px; }
+}
+
+// ── Responsive: mobile (≤480px) ─────────────────────────────
+@media (max-width: 480px) {
+  .about-hero {
+    &__img-wrap {
+      height: 58vw;
+      min-height: 180px;
+      max-height: 280px;
+    }
+
+    &__title { font-size: clamp(0.88rem, 5.5vw, 1.25rem); }
+  }
+
+  .about-main {
+    padding: 18px 12px 44px;
+    gap: 10px;
+  }
+
+  .about-block {
+    padding: 24px 16px;
+    border-radius: 8px;
+
+    &__title { font-size: 1.1rem !important; margin-bottom: 10px; }
+    &__text  { font-size: 13px !important; line-height: 1.78; }
+
+  }
+
+  .about-photos--mobile-only {
+    .about-photos__item { height: clamp(120px, 38vw, 180px); }
+  }
+
+  .about-mission {
+    padding: 28px 12px 40px;
+
+    &__title { font-size: 1.2rem; margin-bottom: 12px; }
+    &__text  { font-size: 13px; line-height: 1.75; }
+  }
+}
+
+// ── Responsive: small mobile (≤360px) ───────────────────────
+@media (max-width: 360px) {
+  .about-hero {
+    &__img-wrap { height: 62vw; min-height: 160px; }
+    &__title    { font-size: 0.88rem; }
+  }
+
+  .about-main { padding: 16px 10px 40px; }
+
+  .about-block {
+    padding: 20px 14px;
+
+    &__title { font-size: 1rem !important; }
+    &__text  { font-size: 12.5px !important; }
+  }
+
+  .about-mission {
+    padding: 24px 10px 36px;
+
+    &__title { font-size: 1.1rem; }
+    &__text  { font-size: 12.5px; }
+  }
+}

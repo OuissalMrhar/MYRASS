@@ -1,0 +1,324 @@
+<div class="gift-detail-host">
+  <app-navbar></app-navbar>
+
+  <div class="gift-page">
+    @if (loading) {
+      <div class="gift-state">
+        <p class="muted">{{ labels.loading }}</p>
+      </div>
+    } @else if (errorMessage || !gift) {
+      <div class="gift-state">
+        <p class="alert-text">{{ errorMessage || labels.notFound }}</p>
+        <button type="button" class="back-link" (click)="goHome()">{{ labels.back }}</button>
+      </div>
+    } @else {
+      <section class="gift-hero" appReveal style="background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/v1776333444/pexels-daniel-clark-346904598-14134526_pyvgft.jpg')">
+        <div class="gift-hero__overlay">
+          <p class="gift-hero__kicker">{{ gift.heroKicker }}</p>
+          <h1 class="gift-hero__title">{{ gift.heroTitle }}</h1>
+          <p class="gift-hero__subtitle">{{ gift.heroSubtitle }}</p>
+        </div>
+      </section>
+
+      <section class="gift-main" appReveal [revealDelay]="120">
+        <nav class="gift-breadcrumb" aria-label="Navigation">
+          <button type="button" class="gift-breadcrumb__link" (click)="goHome()">{{ labels.homeLink }}</button>
+          <span class="gift-breadcrumb__sep" aria-hidden="true">/</span>
+          <span class="gift-breadcrumb__current">{{ labels.breadcrumbPack }}</span>
+        </nav>
+
+        <div class="gift-layout">
+          <div class="gift-media">
+            <div class="gift-media__main">
+              <img [src]="selectedMainImageUrl || gift.packImageUrl" [alt]="gift.title" />
+            </div>
+            <div class="gift-media__thumbs" *ngIf="packProductCards.length > 0">
+              <!-- Thumbnail image principale du pack -->
+              <button
+                type="button"
+                class="gift-thumb"
+                [class.gift-thumb--active]="(selectedMainImageUrl || gift.packImageUrl) === gift.packImageUrl"
+                (click)="selectMainImage(gift.packImageUrl)"
+                aria-label="Image principale du pack"
+              >
+                <img [src]="gift.packImageUrl" [alt]="gift.title" />
+              </button>
+              <!-- Thumbnails images des produits -->
+              <button
+                type="button"
+                class="gift-thumb"
+                [class.gift-thumb--active]="selectedMainImageUrl === p.imgSrc"
+                *ngFor="let p of packProductCards"
+                (click)="selectMainImage(p.imgSrc)"
+                [attr.aria-label]="'Voir photo — ' + p.name"
+              >
+                <img *ngIf="p.imgSrc" [src]="p.imgSrc" [alt]="p.name" />
+                <div *ngIf="!p.imgSrc" class="gift-thumb__placeholder" aria-hidden="true"></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="gift-info">
+            <h2 class="gift-title">{{ gift.title }}</h2>
+
+            <button type="button" class="gift-inline-rating" (click)="scrollToReviews()">
+              <span class="gift-inline-rating__stars">
+                <span *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= ratingStarsDisplay.full">&#9733;</span>
+              </span>
+              <span class="gift-inline-rating__score">{{ totalReviews > 0 ? averageRating : '—' }}</span>
+              <span class="gift-inline-rating__sep">|</span>
+              <span class="gift-inline-rating__count">{{ totalReviews }} {{ labels.reviewsUnit }}</span>
+            </button>
+
+            <p class="gift-price">{{ gift.priceLabel }}</p>
+
+            <div class="gift-actions" *ngIf="packProductCards.length > 0">
+              <button type="button" class="gift-add-btn" (click)="addPackToCart()">
+                {{ labels.addToCart }}
+              </button>
+              <button
+                type="button"
+                class="gift-fav-btn"
+                [class.gift-fav-btn--active]="isPackFavorite"
+                (click)="togglePackFavorites($event)"
+                [attr.aria-label]="isPackFavorite ? 'Retirer le pack des favoris' : 'Ajouter le pack aux favoris'"
+              >
+                <svg width="18" height="16" viewBox="0 0 18 16" fill="none" aria-hidden="true">
+                  <path
+                    class="gift-fav-btn__path"
+                    d="M9 14.5S1.5 9.5 1.5 5a3.75 3.75 0 017.5-1.09A3.75 3.75 0 0116.5 5c0 4.5-7.5 9.5-7.5 9.5z"
+                    stroke="currentColor"
+                    stroke-width="1.2"
+                    [attr.fill]="isPackFavorite ? 'currentColor' : 'none'"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div class="gift-accordion" role="region" aria-label="Informations">
+              <button
+                type="button"
+                class="gift-acc-head"
+                (click)="toggleAccordion('details')"
+                [attr.aria-expanded]="accordionOpenKey === 'details'"
+              >
+                {{ labels.details }}
+                <span class="gift-acc-chev" [class.open]="accordionOpenKey === 'details'" aria-hidden="true"></span>
+              </button>
+              <div class="gift-acc-body" *ngIf="accordionOpenKey === 'details'">
+                <div class="gift-pack-products">
+                  <a
+                    class="gift-pack-product"
+                    *ngFor="let p of packProductCards"
+                    [routerLink]="productRoutes.detailLink(p.name, p.id)"
+                  >
+                    <span class="gift-pack-product__name">{{ p.name }}</span>
+                    <span class="gift-pack-product__price">
+                      <span class="gift-pack-product__qty">&times;{{ p.quantite }}</span>
+                      <span class="gift-pack-product__taille" *ngIf="p.tailleLabel">({{ p.tailleLabel }})</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="gift-acc-head"
+                (click)="toggleAccordion('shipping')"
+                [attr.aria-expanded]="accordionOpenKey === 'shipping'"
+              >
+                {{ labels.shipping }}
+                <span class="gift-acc-chev" [class.open]="accordionOpenKey === 'shipping'" aria-hidden="true"></span>
+              </button>
+              <div class="gift-acc-body" *ngIf="accordionOpenKey === 'shipping'">
+                <p class="gift-acc-text">{{ labels.shippingText }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gift-related" *ngIf="packProductCards.length > 0" appReveal>
+        <h3 class="gift-related__title">{{ labels.packProducts }}</h3>
+        <div class="gift-related__grid">
+          <a class="gift-related-card" *ngFor="let p of packProductCards" [routerLink]="productRoutes.detailLink(p.name, p.id)">
+            <div class="gift-related-card__img">
+              <img *ngIf="p.imgSrc" [src]="p.imgSrc" [alt]="p.name" />
+              <div *ngIf="!p.imgSrc" class="gift-related-card__placeholder" aria-hidden="true"></div>
+            </div>
+            <p class="gift-related-card__name">{{ p.name }}</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="reviews-section" id="gift-reviews-section" appReveal>
+        <div class="reviews-summary">
+          <div class="rating-big">
+            <span class="rating-number">{{ totalReviews > 0 ? averageRating : '&mdash;' }}</span>
+            <div class="rating-stars-big">
+              <span class="star filled" *ngFor="let s of starsArray(ratingStarsDisplay.full)">&#9733;</span>
+              <span class="star star--half" *ngIf="ratingStarsDisplay.half" aria-hidden="true">
+                <svg viewBox="0 0 24 24" class="star-half-svg">
+                  <defs>
+                    <linearGradient [attr.id]="'giftHalfStar-' + gift.id" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="50%" stop-color="#d4af37" />
+                      <stop offset="50%" stop-color="#e8e0d4" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    [attr.fill]="'url(#giftHalfStar-' + gift.id + ')'"
+                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                  />
+                </svg>
+              </span>
+            </div>
+            <p class="reviews-summary__hint muted" *ngIf="totalReviews === 0">{{ labels.noReviews }}</p>
+          </div>
+
+          <div class="rating-breakdown">
+            <div class="breakdown-row" *ngFor="let row of ratingBreakdownRows">
+              <span class="breakdown-label">{{ row.stars }}</span>
+              <div class="breakdown-bar-wrap">
+                <div class="breakdown-bar-fill" [style.width.%]="(row.count / maxCount()) * 100"></div>
+              </div>
+              <span class="breakdown-count">{{ row.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reviews-sort" *ngIf="productComments.length > 0">
+          <span class="reviews-sort__label">{{ labels.commentsTitle }}</span>
+          <span class="reviews-sort__count" aria-live="polite">
+            {{ productComments.length }} {{ labels.reviewsPublished }}
+          </span>
+        </div>
+
+        <div class="reviews-list">
+          <div class="review-item review-item--dynamic" *ngFor="let c of pagedProductComments">
+            <time class="review-item__date" [attr.datetime]="c.createdAt">{{ formatCommentDate(c.createdAt) }}</time>
+            <div class="review-item__body">
+              <div class="review-item__head">
+                <span class="review-author">{{ c.authorName }}</span>
+                <div class="review-stars" role="img" [attr.aria-label]="'Note ' + c.rating + ' sur 5'">
+                  <span class="star filled" *ngFor="let s of starsArray(c.rating)">&#9733;</span>
+                </div>
+                <button
+                  type="button"
+                  class="review-item__delete"
+                  *ngIf="userAuth.currentUser?.id === c.userId"
+                  (click)="deleteComment(c)"
+                >
+                  {{ labels.deleteBtn }}
+                </button>
+              </div>
+              <p class="review-body">{{ c.body }}</p>
+            </div>
+          </div>
+        </div>
+
+        <nav class="reviews-pagination" *ngIf="reviewsTotalPages > 1" aria-label="Pagination des commentaires">
+          <button
+            type="button"
+            class="page-btn"
+            [disabled]="reviewsPageIndex === 0"
+            (click)="goReviewsPrev()"
+            aria-label="Page pr&eacute;c&eacute;dente"
+          >
+            &lsaquo;
+          </button>
+          <button
+            type="button"
+            class="page-btn"
+            *ngFor="let p of reviewsPageNumbers"
+            [class.active]="p === reviewsPageIndex"
+            (click)="goReviewsPage(p)"
+            [attr.aria-label]="'Page ' + (p + 1)"
+            [attr.aria-current]="p === reviewsPageIndex ? 'page' : null"
+          >
+            {{ p + 1 }}
+          </button>
+          <button
+            type="button"
+            class="page-btn next"
+            [disabled]="reviewsPageIndex >= reviewsTotalPages - 1"
+            (click)="goReviewsNext()"
+            aria-label="Page suivante"
+          >
+            &rsaquo;
+          </button>
+        </nav>
+
+        <div class="avis-form-block">
+          <p class="avis-form-block__title">{{ labels.yourReview }}</p>
+          <p class="avis-form-block__hint muted">
+            @if (userAuth.currentUser) {
+              {{ labels.reviewHintLoggedIn }}
+            } @else {
+              {{ labels.reviewHintGuest }} <strong>{{ guestDisplayName }}</strong>.
+            }
+          </p>
+          <div class="avis-form-block__stars" role="radiogroup" [attr.aria-label]="labels.yourReview">
+            <button
+              type="button"
+              class="avis-form-block__star-btn"
+              *ngFor="let s of starPickValues"
+              [class.avis-form-block__star-btn--active]="avisDraftRating >= s"
+              (click)="setAvisDraftRating(s)"
+              [attr.aria-pressed]="avisDraftRating >= s"
+            >
+              &#9733;
+            </button>
+          </div>
+
+          <label class="comment-form__label" for="gift-comment-body">{{ labels.commentLabel }}</label>
+          <textarea
+            id="gift-comment-body"
+            class="comment-form__textarea"
+            rows="3"
+            [(ngModel)]="newCommentBody"
+            (keydown)="onCommentEnter($event)"
+            [placeholder]="labels.commentPlaceholder"
+          ></textarea>
+
+          <p class="comment-form__one-only muted" *ngIf="hasMyComment && userAuth.currentUser">
+            {{ labels.alreadyCommented }}
+          </p>
+
+          <button type="button" class="avis-form-block__submit" (click)="submitReview()">{{ labels.submitBtn }}</button>
+        </div>
+      </section>
+    }
+  </div>
+
+  <app-footer></app-footer>
+</div>
+
+@if (feedbackThankYou) {
+  <div
+    class="feedback-thanks-backdrop"
+    (click)="closeThankYouModal()"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="gift-thanks-title"
+    aria-describedby="gift-thanks-subtitle"
+  >
+    <div class="feedback-thanks-card" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="feedback-thanks-close"
+        (click)="closeThankYouModal()"
+        [attr.aria-label]="thankYouCloseAriaLabel"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="feedback-thanks-body">
+        <div class="feedback-thanks-icon" aria-hidden="true">&#11088;</div>
+        <h2 id="gift-thanks-title" class="feedback-thanks-title">{{ feedbackThankYou.title }}</h2>
+        <p id="gift-thanks-subtitle" class="feedback-thanks-subtitle">{{ feedbackThankYou.subtitle }}</p>
+        <button type="button" class="feedback-thanks-cta" (click)="continueShoppingAfterThanks()">
+          {{ thankYouContinueLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

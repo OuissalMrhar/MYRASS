@@ -1,0 +1,87 @@
+<section class="page">
+  <div class="sidebar-line"></div>
+
+  <header class="page-head">
+    <div class="page-head-left">
+      <p class="eyebrow">Gestion des contenus</p>
+      <h1>{{ id ? 'Modifier' : 'Ajouter' }} une catégorie</h1>
+      <p class="subtitle">{{ id ? 'Mettre à jour les informations' : 'Renseignez les informations de la catégorie' }}</p>
+    </div>
+  </header>
+
+  <div class="deco-line"><span class="deco-line-text">formulaire</span></div>
+
+  <div class="card form-card">
+    <form (ngSubmit)="save()">
+
+      @if (errorMessage) {
+        <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+      }
+
+      <div class="field">
+        <label>Langue</label>
+        <div class="segmented">
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='fr'" (click)="setLang('fr')">FR</button>
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='en'" (click)="setLang('en')">EN</button>
+          <button type="button" class="btn btn-sm" [class.btn-primary]="activeLang==='ar'" (click)="setLang('ar')">AR</button>
+        </div>
+        <p class="muted" style="margin: .25rem 0 0;">FR obligatoire · EN et AR optionnels (fallback FR).</p>
+      </div>
+
+      <div class="field">
+        <label for="nom">Nom <span class="req">*</span></label>
+        <input id="nom" type="text" [(ngModel)]="form.nom"
+               name="nom" required class="input"
+               placeholder="Ex. Saisonnier" />
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'en'">
+        <label for="nomEn">Nom (EN)</label>
+        <input id="nomEn" type="text" [(ngModel)]="form.nomEn"
+               name="nomEn" class="input"
+               placeholder="Ex. Seasonal" />
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'ar'" dir="rtl">
+        <label for="nomAr">الاسم (AR)</label>
+        <input id="nomAr" type="text" [(ngModel)]="form.nomAr"
+               name="nomAr" class="input"
+               placeholder="مثال: موسمي" />
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="form.description"
+                  name="description" class="input textarea"
+                  rows="3" placeholder="Texte optionnel"></textarea>
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'en'">
+        <label for="descriptionEn">Description (EN)</label>
+        <textarea id="descriptionEn" [(ngModel)]="form.descriptionEn"
+                  name="descriptionEn" class="input textarea"
+                  rows="3" placeholder="Optional text"></textarea>
+      </div>
+
+      <div class="field" *ngIf="activeLang === 'ar'" dir="rtl">
+        <label for="descriptionAr">الوصف (AR)</label>
+        <textarea id="descriptionAr" [(ngModel)]="form.descriptionAr"
+                  name="descriptionAr" class="input textarea"
+                  rows="3" placeholder="نص اختياري"></textarea>
+      </div>
+
+      <div class="field field--check">
+        <label class="check-label">
+          <input type="checkbox" [(ngModel)]="form.statut" name="statut" />
+          <span>Catégorie active (visible et sélectionnable sur la boutique)</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" (click)="annuler()">Annuler</button>
+        <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Enregistrement…' : 'Enregistrer' }}</button>
+      </div>
+
+    </form>
+  </div>
+</section>

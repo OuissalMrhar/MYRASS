@@ -1,0 +1,92 @@
+﻿@import '../../../../scss/luxe-pages.scss';
+
+/* Table produits plus large : scrollbar horizontale élégante */
+.table-scroll table {
+  min-width: 1080px;
+}
+
+/* ─── Filtres checkbox multi-select ─── */
+.filters-row {
+  display: flex;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-sep {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+  margin: 0 1.25rem;
+  flex-shrink: 0;
+}
+
+.filter-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 0.55rem;
+}
+
+.check-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.check-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  white-space: nowrap;
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    accent-color: var(--crimson);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  &.active,
+  &:has(input:checked) {
+    border-color: var(--crimson);
+    background: rgba(113, 7, 13, 0.07);
+    color: var(--crimson);
+  }
+
+  &:hover:not(.active) {
+    border-color: color-mix(in srgb, var(--crimson) 40%, var(--border));
+  }
+}
+
+.filters-type-row {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 700px) {
+  .filters-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .filter-sep {
+    display: none;
+  }
+}

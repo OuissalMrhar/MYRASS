@@ -1,0 +1,89 @@
+<div class="my-orders-host">
+  <app-navbar></app-navbar>
+
+  <ng-container *ngIf="labels$ | async as t">
+  <div class="my-orders-page">
+    <ng-container *ngIf="currentUser$ | async as user; else guestBlock">
+      <header class="my-orders-header" appReveal>
+        <h1>{{ t.title }}</h1>
+        <p class="my-orders-sub">{{ t.subtitle }}</p>
+      </header>
+
+      <ng-container *ngIf="orders$ | async as pack">
+        <p *ngIf="pack.error" class="my-orders-api-error" role="alert">{{ pack.error }}</p>
+
+        <div *ngIf="!pack.error && pack.rows.length === 0" class="my-orders-empty">
+          <p>{{ t.empty }}</p>
+          <p class="my-orders-empty__hint">{{ t.emptyHint }}</p>
+          <a routerLink="/produit" class="cta-btn cta-btn--secondary">{{ t.seeProducts }}</a>
+          <a routerLink="/panier" class="cta-btn">{{ t.goToCart }}</a>
+        </div>
+
+        <ul *ngIf="pack.rows.length > 0" class="order-list" role="list" appReveal [revealDelay]="120">
+          <li *ngFor="let order of pack.rows; trackBy: trackByOrderId" class="order-card">
+            <div class="order-card__head">
+              <div>
+                <span class="order-card__id">{{ t.orderId }}</span>
+                <span class="order-card__ref">{{ order.id }}</span>
+              </div>
+              <time class="order-card__date" [attr.datetime]="order.dateCommande">{{
+                formatDate(order.dateCommande)
+              }}</time>
+            </div>
+            <div class="order-card__meta">
+              <span class="badge-status">{{ statutLabel(order.statut, t) }}</span>
+              <span class="order-card__points" *ngIf="order.pointsGagnes > 0"
+                >+{{ order.pointsGagnes }} {{ order.pointsGagnes > 1 ? t.loyaltyPts : t.loyaltyPt }}</span
+              >
+            </div>
+
+            <p class="order-card__products-title">{{ t.products }}</p>
+            <ul class="order-lines" role="list">
+              <li *ngFor="let line of order.lignes" class="order-line">
+                <div class="order-line__body">
+                  <span class="order-line__name">{{ line.produitNom }}</span>
+                  <span class="order-line__qty">{{ t.qty }} {{ line.quantite }} · {{ line.prixUnitaire | currencyDisplay }} / u.</span>
+                </div>
+                <div class="order-line__price">{{ line.sousTotal | currencyDisplay }}</div>
+              </li>
+            </ul>
+
+            <dl class="order-totals">
+              <div class="order-totals__row">
+                <dt>{{ t.subtotalItems }}</dt>
+                <dd>{{ order.sousTotalArticles | currencyDisplay }}</dd>
+              </div>
+              <div class="order-totals__row" *ngIf="(order.remiseAppliquee ?? 0) > 0">
+                <dt>
+                  {{ t.discount }}
+                  <span *ngIf="order.codePromoUtilise" class="order-totals__code">({{ order.codePromoUtilise }})</span>
+                </dt>
+                <dd>− {{ order.remiseAppliquee | currencyDisplay }}</dd>
+              </div>
+              <div class="order-totals__row">
+                <dt>{{ t.shipping }}</dt>
+                <dd>{{ order.fraisLivraison | currencyDisplay }}</dd>
+              </div>
+              <div class="order-totals__row order-totals__row--total">
+                <dt>{{ t.total }}</dt>
+                <dd>{{ order.totalCommande | currencyDisplay }}</dd>
+              </div>
+            </dl>
+          </li>
+        </ul>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #guestBlock>
+      <div class="my-orders-guest">
+        <h1>{{ t.guestTitle }}</h1>
+        <p>{{ t.guestText }}</p>
+        <button type="button" class="cta-btn" (click)="openLogin()">{{ t.signIn }}</button>
+        <a routerLink="/home" class="cta-link">{{ t.backHome }}</a>
+      </div>
+    </ng-template>
+  </div>
+  </ng-container>
+
+  <app-footer></app-footer>
+</div>
