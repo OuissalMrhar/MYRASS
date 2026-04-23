@@ -38,6 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
   private badgePulseTimer: ReturnType<typeof setTimeout> | null = null;
+  private scrollRaf = 0;
 
   constructor(
     private userAuthService: UserAuthService,
@@ -88,6 +89,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.badgePulseTimer != null) clearTimeout(this.badgePulseTimer);
+    if (this.scrollRaf) cancelAnimationFrame(this.scrollRaf);
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -176,12 +178,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    if (this.isMobileMenuOpen && window.innerWidth <= 992) {
-      this.closeMobileMenu();
-    }
-    if (this.isProfileMenuOpen) this.isProfileMenuOpen = false;
-    if (this.isLangOpen) this.isLangOpen = false;
-    if (this.isCurrencyOpen) this.isCurrencyOpen = false;
+    if (this.scrollRaf) return;
+    this.scrollRaf = requestAnimationFrame(() => {
+      this.scrollRaf = 0;
+      if (this.isMobileMenuOpen && window.innerWidth <= 992) {
+        this.closeMobileMenu();
+      }
+      if (this.isProfileMenuOpen) this.isProfileMenuOpen = false;
+      if (this.isLangOpen) this.isLangOpen = false;
+      if (this.isCurrencyOpen) this.isCurrencyOpen = false;
+    });
   }
 
   get userInitials(): string {

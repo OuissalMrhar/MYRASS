@@ -17,6 +17,7 @@ export class GlobalScrollToTopComponent implements OnInit, AfterViewInit, OnDest
   visible = false;
   private readonly thresholdPx = 280;
   private navSub?: Subscription;
+  private scrollRaf = 0;
 
   constructor(private readonly router: Router) {}
 
@@ -31,17 +32,26 @@ export class GlobalScrollToTopComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngOnDestroy(): void {
+    if (this.scrollRaf) cancelAnimationFrame(this.scrollRaf);
     this.navSub?.unsubscribe();
   }
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.syncVisibility();
+    this.scheduleSync();
   }
 
   @HostListener('window:resize')
   onResize(): void {
-    this.syncVisibility();
+    this.scheduleSync();
+  }
+
+  private scheduleSync(): void {
+    if (this.scrollRaf) return;
+    this.scrollRaf = requestAnimationFrame(() => {
+      this.scrollRaf = 0;
+      this.syncVisibility();
+    });
   }
 
   scrollToTop(): void {
