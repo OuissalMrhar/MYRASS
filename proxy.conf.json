@@ -1,17 +1,12 @@
 {
   "/api": {
-    "target": "https://localhost:7169",
-    "secure": false,
-    "changeOrigin": true
-  },
-  "/WeatherForecast": {
-    "target": "https://localhost:7169",
-    "secure": false,
+    "target": "https://myrass-backend-production.up.railway.app",
+    "secure": true,
     "changeOrigin": true
   },
   "/images": {
-    "target": "https://localhost:7169",
-    "secure": false,
+    "target": "https://myrass-backend-production.up.railway.app",
+    "secure": true,
     "changeOrigin": true
   }
 }
