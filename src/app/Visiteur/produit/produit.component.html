@@ -208,7 +208,7 @@
   <section class="gifts-section" *ngIf="cadeauxGifts.length > 0 || isGiftsLoading" appReveal>
     <div class="gifts-section__inner">
       <span class="gifts-section__kicker">{{ labels.giftKicker }}</span>
-      <h3 class="gifts-section__title">{{ giftName(cadeauxGifts[0]) || labels.giftTitle }}</h3>
+      <h3 class="gifts-section__title">{{ cadeauxGifts[0] ? giftName(cadeauxGifts[0]) : labels.giftTitle }}</h3>
       <p class="gifts-section__text" *ngIf="giftDescription(cadeauxGifts[0]) || labels.giftText">
         {{ giftDescription(cadeauxGifts[0]) || labels.giftText }}
       </p>

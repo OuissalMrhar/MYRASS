@@ -212,7 +212,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
     return gift.produits?.find(p => !!p.produitImageUrl)?.produitImageUrl?.trim() || '/assets/pack1.jpeg';
   }
 
-  giftName(gift: Gift): string {
+  giftName(gift: Gift | undefined): string {
+    if (!gift) return '';
     return pick(gift.nom, gift.nomEn, gift.nomAr, this.currentLang) || gift.nom || '';
   }
 
