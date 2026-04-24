@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  /** URL publique de l'API Myrass (doit pointer vers ton backend deploye). */
   apiBaseUrl: 'https://myrass-backend-production.up.railway.app',
   stripePublishableKey: '',
   /** OAuth Google (Google Identity Services) */
