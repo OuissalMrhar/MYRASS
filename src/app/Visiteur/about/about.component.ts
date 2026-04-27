@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { SiteLanguageService } from '../../core/site-language.service';
 import { SiteLang } from '../../core/visitor-i18n';
+import { SeoService } from '../../core/seo.service';
 
 export interface AboutLabels {
   heroKicker: string;
@@ -68,12 +69,23 @@ export class AboutComponent implements OnInit, OnDestroy {
   labels: AboutLabels = ABOUT_LABELS['fr'];
   isRtl = false;
 
-  constructor(private readonly langService: SiteLanguageService) {}
+  constructor(
+    private readonly langService: SiteLanguageService,
+    private readonly seo: SeoService,
+  ) {}
+
+  get heroTitleLines(): string[] {
+    return (this.labels.heroTitle || '').split('\n');
+  }
 
   ngOnInit(): void {
     this.langService.lang$.pipe(takeUntil(this.destroy$)).subscribe((lang) => {
       this.labels = ABOUT_LABELS[lang];
       this.isRtl = lang === 'ar';
+      this.seo.set({
+        title: lang === 'ar' ? 'من نحن' : lang === 'en' ? 'Our Story' : 'Notre histoire',
+        description: this.labels.histoireText.slice(0, 155),
+      });
     });
   }
 

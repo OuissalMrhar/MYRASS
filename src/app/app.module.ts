@@ -28,6 +28,7 @@ import { LangValuePipe } from './core/lang-value.pipe';
 import { LangPipe } from './core/lang.pipe';
 import { DetailsGiftComponent } from './Visiteur/details-gift/details-gift.component';
 import { GuideComponent } from './Visiteur/guide/guide.component';
+import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.component';
 import { CurrencyDisplayPipe } from './pipes/currency-display.pipe';
 import { RevealDirective } from './directives/reveal.directive';
 
@@ -52,6 +53,7 @@ import { RevealDirective } from './directives/reveal.directive';
     LangPipe,
     DetailsGiftComponent,
     GuideComponent,
+    ProfilePageComponent,
     RevealDirective,
   ],
   imports: [

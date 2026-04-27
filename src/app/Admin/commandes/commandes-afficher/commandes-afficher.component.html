@@ -1,0 +1,110 @@
+<div class="sidebar-line"></div>
+<section class="page cmd-page">
+
+  <header class="cmd-header">
+    <h1 class="cmd-header__title">Commandes</h1>
+    <button class="cmd-header__refresh" type="button" (click)="load()" title="Rafraîchir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="16" height="16">
+        <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Feedback -->
+  <div class="cmd-success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="cmd-error" *ngIf="error">{{ error }}</div>
+
+  <!-- Filtres -->
+  <div class="cmd-filters">
+    <div class="cmd-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+      </svg>
+      <input
+        type="search"
+        placeholder="ID commande, client…"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+    <select class="cmd-select" [(ngModel)]="statutFilter" (ngModelChange)="applyFilters()">
+      <option value="">Tous les statuts</option>
+      <option *ngFor="let s of statuts" [value]="s">{{ statutLabel(s) }}</option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <div class="cmd-loading" *ngIf="loading">Chargement des commandes…</div>
+
+  <!-- Vide -->
+  <p class="cmd-empty" *ngIf="!loading && filtered.length === 0">Aucune commande trouvée.</p>
+
+  <!-- Table -->
+  <div class="cmd-table-wrap" *ngIf="!loading && filtered.length > 0">
+    <table class="cmd-table">
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Date</th>
+          <th>Client (ID)</th>
+          <th>Total</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let c of filtered">
+          <!-- Ligne principale -->
+          <tr class="cmd-row" [class.cmd-row--expanded]="expandedId === c.id" (click)="toggleExpand(c.id)">
+            <td class="cmd-id">#{{ c.id }}</td>
+            <td>{{ formatDate(c.dateCommande) }}</td>
+            <td>{{ c.userId }}</td>
+            <td class="cmd-total">{{ c.totalCommande | number:'1.2-2' }} MAD</td>
+            <td>
+              <span class="badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span>
+            </td>
+            <td class="cmd-actions" (click)="$event.stopPropagation()">
+              <select
+                class="cmd-statut-select"
+                [value]="c.statut"
+                [disabled]="updatingId === c.id"
+                (change)="setStatut(c, $any($event.target).value)"
+              >
+                <option *ngFor="let s of statuts" [value]="s">{{ statutLabel(s) }}</option>
+              </select>
+              <span class="cmd-spinner" *ngIf="updatingId === c.id">…</span>
+            </td>
+          </tr>
+
+          <!-- Détail expandé -->
+          <tr *ngIf="expandedId === c.id" class="cmd-detail-row">
+            <td colspan="6">
+              <div class="cmd-detail">
+                <div class="cmd-detail__meta">
+                  <span *ngIf="c.codePromoUtilise">Code promo : <strong>{{ c.codePromoUtilise }}</strong></span>
+                  <span>Livraison : {{ c.fraisLivraison | number:'1.2-2' }} MAD</span>
+                  <span *ngIf="c.remiseAppliquee">Remise : -{{ c.remiseAppliquee | number:'1.2-2' }} MAD</span>
+                  <span>Points gagnés : {{ c.pointsGagnes }}</span>
+                </div>
+                <table class="cmd-lines">
+                  <thead>
+                    <tr><th>Produit</th><th>Qté</th><th>P.U.</th><th>Sous-total</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let l of c.lignes">
+                      <td>{{ l.produitNom }}</td>
+                      <td>{{ l.quantite }}</td>
+                      <td>{{ l.prixUnitaire | number:'1.2-2' }} MAD</td>
+                      <td>{{ l.sousTotal | number:'1.2-2' }} MAD</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+</section>

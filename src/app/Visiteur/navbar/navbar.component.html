@@ -248,7 +248,7 @@
   <div class="profile-menu__identity">
     <span class="profile-menu__email-icon profile-menu__identity-avatar" aria-hidden="true">{{ userInitials }}</span>
     <div class="profile-menu__identity-meta">
-      <span class="profile-menu__identity-title">{{ user.email }}</span>
+      <a routerLink="/mon-profil" class="profile-menu__identity-title profile-menu__identity-title--link" (click)="closeProfileMenu()">{{ user.email || user.telephone }}</a>
       <span class="profile-menu__identity-sub">{{ pl.myAccountSubtitle }}</span>
     </div>
   </div>
@@ -258,25 +258,26 @@
   </div>
   <nav class="profile-menu__nav profile-menu__nav--sheet" aria-label="Navigation rapide">
     <a routerLink="/home" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.home }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.home }}</span>
     </a>
     <a routerLink="/produit" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.product }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.product }}</span>
     </a>
     <a routerLink="/about" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.whoWeAre }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.whoWeAre }}</span>
+    </a>
+    <a routerLink="/guide" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
+      <span class="mobile-menu__link-text--case">{{ nav.ourGuide }}</span>
+    </a>
+    <a routerLink="/faq" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
+      <span class="mobile-menu__link-text--case">{{ nav.faq }}</span>
     </a>
     <a routerLink="/contact" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.contact }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.contact }}</span>
     </a>
   </nav>
   <a routerLink="/mes-commandes" class="profile-menu__sheet-link profile-menu__sheet-link--last" role="menuitem" (click)="closeProfileMenu()">
     <span>{{ pl.myOrders }}</span>
-    <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
   </a>
   <div class="profile-menu__sheet-actions">
     <button type="button" class="profile-menu__cta profile-menu__cta--logout" role="menuitem" (click)="logout($event)">{{ pl.logout }}</button>
@@ -293,20 +294,22 @@
   </div>
   <nav class="profile-menu__nav profile-menu__nav--sheet" aria-label="Navigation mobile">
     <a routerLink="/home" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.home }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.home }}</span>
     </a>
     <a routerLink="/produit" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.product }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.product }}</span>
     </a>
     <a routerLink="/about" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.whoWeAre }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.whoWeAre }}</span>
+    </a>
+    <a routerLink="/guide" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
+      <span class="mobile-menu__link-text--case">{{ nav.ourGuide }}</span>
+    </a>
+    <a routerLink="/faq" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
+      <span class="mobile-menu__link-text--case">{{ nav.faq }}</span>
     </a>
     <a routerLink="/contact" class="profile-menu__sheet-link" role="menuitem" (click)="closeProfileMenu()">
-      <span>{{ nav.contact }}</span>
-      <span class="profile-menu__sheet-chevron" aria-hidden="true"></span>
+      <span class="mobile-menu__link-text--case">{{ nav.contact }}</span>
     </a>
   </nav>
   <div class="profile-menu__sheet-actions">
@@ -340,20 +343,22 @@
     <div class="mobile-menu__scroll">
       <nav class="mobile-menu__nav" aria-label="Navigation principale">
         <a routerLink="/home" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text">{{ vm.nav.home }}</span>
-          <span class="mobile-menu__chevron" aria-hidden="true"></span>
+          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.home }}</span>
         </a>
         <a routerLink="/produit" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text">{{ vm.nav.product }}</span>
-          <span class="mobile-menu__chevron" aria-hidden="true"></span>
+          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.product }}</span>
         </a>
         <a routerLink="/about" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text">{{ vm.nav.whoWeAre }}</span>
-          <span class="mobile-menu__chevron" aria-hidden="true"></span>
+          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.whoWeAre }}</span>
+        </a>
+        <a routerLink="/guide" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
+          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.ourGuide }}</span>
+        </a>
+        <a routerLink="/faq" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
+          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.faq }}</span>
         </a>
         <a routerLink="/contact" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text">{{ vm.nav.contact }}</span>
-          <span class="mobile-menu__chevron" aria-hidden="true"></span>
+          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.contact }}</span>
         </a>
       </nav>
     </div>

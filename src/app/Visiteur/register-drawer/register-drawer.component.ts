@@ -1,370 +1,326 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import {
+  Component, Input, Output, EventEmitter,
+  OnInit, OnDestroy
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { apiUrl } from '../../core/api-url';
-import { parseApiError } from '../../core/http-error';
+import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 import { SiteLanguageService } from '../../core/site-language.service';
-import { AUTH_LABELS, AuthLabels, SiteLang } from '../../core/visitor-i18n';
+import { SiteLang } from '../../core/visitor-i18n';
 import { UserAuthService } from '../../services/user-auth.service';
+import { parseApiError } from '../../core/http-error';
+import { apiUrl } from '../../core/api-url';
 import { environment } from '../../../environments/environment';
 
-declare global {
-  interface Window {
-    google?: any;
-    FB?: any;
-    fbAsyncInit?: () => void;
-  }
-}
+type Step = 1 | 2 | 3;
+type Method = 'email' | 'phone';
 
-export interface Country {
+interface OtpState {
   code: string;
-  flag: string;
-  dial: string;
-  name: string;
-}
-
-function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
-  const pw  = group.get('motDePasse')?.value;
-  const cpw = group.get('confirmMotDePasse')?.value;
-  return pw && cpw && pw !== cpw ? { passwordMismatch: true } : null;
+  expiresAt: number; // ms timestamp
 }
 
 @Component({
   selector: 'app-register-drawer',
   templateUrl: './register-drawer.component.html',
-  styleUrls: ['./register-drawer.component.scss']
+  styleUrls: ['./register-drawer.component.scss'],
 })
 export class RegisterDrawerComponent implements OnInit, OnDestroy {
   @Input() isOpen = false;
   @Output() isOpenChange = new EventEmitter<boolean>();
   @Output() closeDrawer = new EventEmitter<void>();
 
-  @ViewChild('dayInput') dayInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('monthInput') monthInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('yearInput') yearInput!: ElementRef<HTMLInputElement>;
-
-  userForm!: FormGroup;
-  submitted = false;
-  successMessage = '';
-  errorMessage = '';
-  showPassword = false;
-  showConfirm = false;
-  selectedFlag = '🇫🇷';
-  labels: AuthLabels = AUTH_LABELS['fr'];
+  step: Step = 1;
+  method: Method = 'email';
+  lang: SiteLang = 'fr';
   isRtl = false;
 
-  private readonly destroy$ = new Subject<void>();
-  genres: any[] = [];
-  private static googleSdkPromise: Promise<void> | null = null;
-  private static facebookSdkPromise: Promise<void> | null = null;
+  emailValue = '';
+  phoneValue = '';
+  sendingCode = false;
+  step1Error = '';
 
-  countries: Country[] = [
-    { code: 'FR', flag: '🇫🇷', dial: '+33', name: 'France' },
-    { code: 'MA', flag: '🇲🇦', dial: '+212', name: 'Maroc' },
-    { code: 'BE', flag: '🇧🇪', dial: '+32', name: 'Belgique' },
-    { code: 'CH', flag: '🇨🇭', dial: '+41', name: 'Suisse' },
-    { code: 'DZ', flag: '🇩🇿', dial: '+213', name: 'Algérie' },
-    { code: 'TN', flag: '🇹🇳', dial: '+216', name: 'Tunisie' },
-    { code: 'SN', flag: '🇸🇳', dial: '+221', name: 'Sénégal' },
-    { code: 'CI', flag: '🇨🇮', dial: '+225', name: "Côte d'Ivoire" },
-    { code: 'CM', flag: '🇨🇲', dial: '+237', name: 'Cameroun' },
-    { code: 'GB', flag: '🇬🇧', dial: '+44', name: 'Royaume-Uni' },
-    { code: 'DE', flag: '🇩🇪', dial: '+49', name: 'Allemagne' },
-    { code: 'ES', flag: '🇪🇸', dial: '+34', name: 'Espagne' },
-    { code: 'IT', flag: '🇮🇹', dial: '+39', name: 'Italie' },
-    { code: 'PT', flag: '🇵🇹', dial: '+351', name: 'Portugal' },
-    { code: 'NL', flag: '🇳🇱', dial: '+31', name: 'Pays-Bas' },
-    { code: 'SE', flag: '🇸🇪', dial: '+46', name: 'Suède' },
-    { code: 'NO', flag: '🇳🇴', dial: '+47', name: 'Norvège' },
-    { code: 'DK', flag: '🇩🇰', dial: '+45', name: 'Danemark' },
-    { code: 'PL', flag: '🇵🇱', dial: '+48', name: 'Pologne' },
-    { code: 'RU', flag: '🇷🇺', dial: '+7', name: 'Russie' },
-    { code: 'US', flag: '🇺🇸', dial: '+1', name: 'États-Unis' },
-    { code: 'CA', flag: '🇨🇦', dial: '+1', name: 'Canada' },
-    { code: 'MX', flag: '🇲🇽', dial: '+52', name: 'Mexique' },
-    { code: 'BR', flag: '🇧🇷', dial: '+55', name: 'Brésil' },
-    { code: 'AR', flag: '🇦🇷', dial: '+54', name: 'Argentine' },
-    { code: 'AE', flag: '🇦🇪', dial: '+971', name: 'Émirats arabes unis' },
-    { code: 'SA', flag: '🇸🇦', dial: '+966', name: 'Arabie saoudite' },
-    { code: 'QA', flag: '🇶🇦', dial: '+974', name: 'Qatar' },
-    { code: 'EG', flag: '🇪🇬', dial: '+20', name: 'Égypte' },
-    { code: 'LB', flag: '🇱🇧', dial: '+961', name: 'Liban' },
-    { code: 'TR', flag: '🇹🇷', dial: '+90', name: 'Turquie' },
-    { code: 'IN', flag: '🇮🇳', dial: '+91', name: 'Inde' },
-    { code: 'CN', flag: '🇨🇳', dial: '+86', name: 'Chine' },
-    { code: 'JP', flag: '🇯🇵', dial: '+81', name: 'Japon' },
-    { code: 'KR', flag: '🇰🇷', dial: '+82', name: 'Corée du Sud' },
-    { code: 'AU', flag: '🇦🇺', dial: '+61', name: 'Australie' },
-    { code: 'NZ', flag: '🇳🇿', dial: '+64', name: 'Nouvelle-Zélande' },
-    { code: 'ZA', flag: '🇿🇦', dial: '+27', name: 'Afrique du Sud' },
-    { code: 'NG', flag: '🇳🇬', dial: '+234', name: 'Nigeria' },
-    { code: 'KE', flag: '🇰🇪', dial: '+254', name: 'Kenya' },
-    { code: 'GH', flag: '🇬🇭', dial: '+233', name: 'Ghana' },
-    { code: 'CL', flag: '🇨🇱', dial: '+56', name: 'Chili' },
-    { code: 'CO', flag: '🇨🇴', dial: '+57', name: 'Colombie' },
-    { code: 'IL', flag: '🇮🇱', dial: '+972', name: 'Israël' },
-    { code: 'PK', flag: '🇵🇰', dial: '+92', name: 'Pakistan' },
-    { code: 'BD', flag: '🇧🇩', dial: '+880', name: 'Bangladesh' },
-    { code: 'SG', flag: '🇸🇬', dial: '+65', name: 'Singapour' },
-    { code: 'MY', flag: '🇲🇾', dial: '+60', name: 'Malaisie' },
-    { code: 'TH', flag: '🇹🇭', dial: '+66', name: 'Thaïlande' },
-  ];
+  otpCode = '';
+  otpError = '';
+  otpVerifying = false;
+  resendCooldown = 0;
+  private cooldownTimer: ReturnType<typeof setInterval> | null = null;
+  readonly OTP_TTL = 300;
+  otpSecondsLeft = this.OTP_TTL;
+  private otpTimer: ReturnType<typeof setInterval> | null = null;
+  private otpState: OtpState | null = null;
+
+  emailjsMissing = false;
+
+  password = '';
+  confirm = '';
+  showPw = false;
+  showConfirm = false;
+  submitting = false;
+  step3Error = '';
+
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private formBuilder: FormBuilder,
+    private auth: UserAuthService,
     private http: HttpClient,
-    private userAuthService: UserAuthService,
+    private router: Router,
     private siteLang: SiteLanguageService,
   ) {}
 
   ngOnInit(): void {
-    this.siteLang.lang$.pipe(takeUntil(this.destroy$)).subscribe((lang: SiteLang) => {
-      this.labels = AUTH_LABELS[lang];
-      this.isRtl = lang === 'ar';
+    this.siteLang.lang$.pipe(takeUntil(this.destroy$)).subscribe((l) => {
+      this.lang = l;
+      this.isRtl = l === 'ar';
     });
-
-    this.userForm = this.formBuilder.group({
-      title: ['', Validators.required],
-      nomComplet: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      motDePasse: ['', [Validators.required, Validators.minLength(8)]],
-      confirmMotDePasse: ['', Validators.required],
-      phonePrefix: ['+33'],
-      telephone: ['', Validators.required],
-      dateDay: [''],
-      dateMonth: [''],
-      dateYear: [''],
-      dateNaissance: ['', Validators.required]
-    }, { validators: passwordMatchValidator });
-
-    this.loadGenres();
-  }
-
-  loadGenres(): void {
-    this.http.get<any[]>(apiUrl('/api/genres')).subscribe({
-      next: (data) => { this.genres = data; },
-      error: () => {
-        this.genres = [
-          { id: 1, nom: 'M.' },
-          { id: 2, nom: 'Mme' },
-          { id: 3, nom: 'Mx' },
-          { id: 4, nom: 'Dr' },
-        ];
-      }
-    });
-  }
-
-  get f() { return this.userForm.controls; }
-
-  onDateInput(event: Event, field: 'day' | 'month' | 'year'): void {
-    const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/\D/g, '');
-
-    const maxLen = field === 'year' ? 4 : 2;
-
-    if (input.value.length >= maxLen) {
-      const padded = field === 'year'
-        ? input.value.slice(0, 4)
-        : input.value.slice(0, 2).padStart(2, '0');
-      input.value = padded;
-
-      const ctrl = field === 'day' ? 'dateDay' : field === 'month' ? 'dateMonth' : 'dateYear';
-      this.userForm.patchValue({ [ctrl]: padded });
-
-      if (field === 'day') { this.monthInput.nativeElement.focus(); this.monthInput.nativeElement.select(); }
-      if (field === 'month') { this.yearInput.nativeElement.focus(); this.yearInput.nativeElement.select(); }
-
-      this.buildDateNaissance();
-    } else {
-      const ctrl = field === 'day' ? 'dateDay' : field === 'month' ? 'dateMonth' : 'dateYear';
-      this.userForm.patchValue({ [ctrl]: input.value });
-    }
-  }
-
-  private buildDateNaissance(): void {
-    const d = String(this.userForm.get('dateDay')?.value || '');
-    const m = String(this.userForm.get('dateMonth')?.value || '');
-    const y = String(this.userForm.get('dateYear')?.value || '');
-    if (d.length === 2 && m.length === 2 && y.length === 4) {
-      this.userForm.patchValue({ dateNaissance: `${y}-${m}-${d}` });
-    }
   }
 
   ngOnDestroy(): void {
+    this.clearTimers();
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  close(): void {
-    this.isOpen = false;
-    this.isOpenChange.emit(this.isOpen);
-    this.closeDrawer.emit();
-    this.submitted = false;
-    this.errorMessage = '';
-    this.successMessage = '';
-    this.showPassword = false;
-    this.showConfirm = false;
-    this.selectedFlag = '🇫🇷';
-    this.userForm.reset({ phonePrefix: '+33' });
+  get inputValue(): string {
+    return this.method === 'email' ? this.emailValue : this.phoneValue;
   }
 
-  onSubmit(): void {
-    this.submitted = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+  get otpMinSec(): string {
+    const m = Math.floor(this.otpSecondsLeft / 60);
+    const s = this.otpSecondsLeft % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
 
-    if (this.userForm.invalid) return;
+  get pwConditions(): { label: string; ok: boolean }[] {
+    return [
+      { label: this.l('pwMin'),    ok: this.password.length >= 8 },
+      { label: this.l('pwUpper'),  ok: /[A-Z]/.test(this.password) },
+      { label: this.l('pwNumber'), ok: /[0-9]/.test(this.password) },
+    ];
+  }
 
-    const rawPhone = `${this.userForm.value.phonePrefix ?? ''}${String(this.userForm.value.telephone ?? '').replace(/\s/g, '')}`;
-    const genreId = parseInt(String(this.userForm.value.title), 10);
-    if (!Number.isFinite(genreId) || genreId < 1) {
-      this.errorMessage = 'Veuillez choisir un genre.';
+  get pwValid(): boolean {
+    return this.pwConditions.every((c) => c.ok) && this.password === this.confirm && this.confirm.length > 0;
+  }
+
+  setMethod(m: Method): void {
+    this.method = m;
+    this.step1Error = '';
+  }
+
+  sendCode(): void {
+    const value = this.inputValue.trim();
+    if (!value) { this.step1Error = this.l('fieldRequired'); return; }
+    if (this.method === 'email' && !this.validEmail(value)) {
+      this.step1Error = this.l('emailInvalid'); return;
+    }
+    if (this.method === 'phone' && value.length < 6) {
+      this.step1Error = this.l('phoneInvalid'); return;
+    }
+    const { serviceId, otpTemplateId, publicKey } = environment.emailjs;
+    if (!serviceId || !otpTemplateId || !publicKey) {
+      this.emailjsMissing = true;
+      this.step1Error = this.l('emailjsNotConfigured');
       return;
     }
+    this.emailjsMissing = false;
+    this.step1Error = '';
+    this.sendingCode = true;
 
-    const userData = {
-      nomComplet: String(this.userForm.value.nomComplet ?? '').trim(),
-      email: String(this.userForm.value.email ?? '').trim(),
-      motDePasse: this.userForm.value.motDePasse,
-      telephone: rawPhone,
-      genreId,
-      dateNaissance: this.userForm.value.dateNaissance,
+    const code = this.generateOtp();
+    this.otpState = { code, expiresAt: Date.now() + this.OTP_TTL * 1000 };
+
+    this.dispatchOtp(value, code).then(() => {
+      this.sendingCode = false;
+      this.step = 2;
+      this.startOtpTimer();
+      this.startResendCooldown();
+    }).catch((err) => {
+      this.sendingCode = false;
+      this.step1Error = this.l('emailSendFailed');
+      this.otpState = null;
+    });
+  }
+
+  verifyOtp(): void {
+    if (!this.otpState) { this.otpError = this.l('otpExpired'); return; }
+    if (Date.now() > this.otpState.expiresAt) {
+      this.otpError = this.l('otpExpired');
+      this.otpState = null;
+      return;
+    }
+    if (this.otpCode.trim().length < 4) { this.otpError = this.l('otpRequired'); return; }
+    if (this.otpCode.trim() !== this.otpState.code) {
+      this.otpError = this.l('otpWrong'); return;
+    }
+    this.otpError = '';
+    this.otpVerifying = true;
+    setTimeout(() => { this.otpVerifying = false; this.step = 3; }, 350);
+  }
+
+  resendCode(): void {
+    if (this.resendCooldown > 0) return;
+    const value = this.inputValue.trim();
+    const code = this.generateOtp();
+    this.otpState = { code, expiresAt: Date.now() + this.OTP_TTL * 1000 };
+    this.otpCode = '';
+    this.otpError = '';
+
+    this.dispatchOtp(value, code).finally(() => {
+      this.startOtpTimer();
+      this.startResendCooldown();
+    });
+  }
+
+  register(): void {
+    if (!this.pwValid) { this.step3Error = this.l('pwInvalid'); return; }
+    this.step3Error = '';
+    this.submitting = true;
+
+    const payload: Record<string, unknown> = {
+      motDePasse: this.password,
     };
 
-    this.userAuthService.register(userData).subscribe({
-      next: () => {
-        this.successMessage = "Compte créé avec succès ! Un code d'activation a été envoyé à votre email.";
-        setTimeout(() => this.close(), 3000);
+    if (this.method === 'email') {
+      payload['email'] = this.inputValue.trim();
+    } else {
+      payload['telephone'] = this.inputValue.trim();
+    }
+
+    this.http.post<{ accessToken?: string; id: number; nomComplet: string; email: string; telephone?: string }>(
+      apiUrl('/api/users'), payload
+    ).subscribe({
+      next: (resp) => {
+        const credentials = this.method === 'email'
+          ? { email: this.inputValue.trim(), motDePasse: this.password }
+          : { telephone: this.inputValue.trim(), motDePasse: this.password };
+
+        const loginObs = this.method === 'email'
+          ? this.auth.login(credentials as { email: string; motDePasse: string })
+          : this.auth.loginWithPhone({ telephone: this.inputValue.trim(), motDePasse: this.password });
+
+        loginObs.subscribe({
+          next: () => { this.submitting = false; this.close(); this.router.navigate(['/home']); },
+          error: () => { this.submitting = false; this.close(); this.router.navigate(['/home']); },
+        });
       },
       error: (e) => {
-        this.errorMessage = parseApiError(e);
+        this.submitting = false;
+        this.step3Error = parseApiError(e);
       },
     });
   }
 
-  onGoogleRegister(): void {
-    void this.startGoogleSignup();
+  close(): void {
+    this.reset();
+    this.isOpen = false;
+    this.isOpenChange.emit(false);
+    this.closeDrawer.emit();
   }
 
-  onFacebookRegister(): void {
-    void this.startFacebookSignup();
+  private generateOtp(): string {
+    return String(Math.floor(100000 + Math.random() * 900000));
   }
 
-  private async startGoogleSignup(): Promise<void> {
-    this.errorMessage = '';
-    const clientId = (environment.googleClientId ?? '').trim();
-    if (!clientId) {
-      this.errorMessage = 'Google OAuth non configuré (googleClientId manquant).';
-      return;
-    }
+  private async dispatchOtp(to: string, code: string): Promise<void> {
+    const { serviceId, otpTemplateId, publicKey } = environment.emailjs;
+    const emailjs = await this.loadEmailJs();
+    if (!emailjs) throw new Error('emailjs_load_failed');
 
-    try {
-      await this.loadGoogleSdk();
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: (resp: any) => {
-          const idToken = String(resp?.credential ?? '').trim();
-          if (!idToken) {
-            this.errorMessage = 'Inscription Google échouée.';
-            return;
-          }
-          this.userAuthService.loginWithGoogle(idToken).subscribe({
-            next: () => this.close(),
-            error: (e) => {
-              this.errorMessage = parseApiError(e);
-            },
-          });
-        },
-      });
-      window.google.accounts.id.prompt();
-    } catch {
-      this.errorMessage = "Impossible de charger Google. Réessaye plus tard.";
-    }
+    const target = this.method === 'email' ? to : (this.emailValue.trim() || to);
+    await emailjs.send(serviceId, otpTemplateId, {
+      to_email: target,
+      otp_code: code,
+      expiry_minutes: '5',
+    }, publicKey);
   }
 
-  private async startFacebookSignup(): Promise<void> {
-    this.errorMessage = '';
-    const appId = (environment.facebookAppId ?? '').trim();
-    if (!appId) {
-      this.errorMessage = 'Facebook OAuth non configuré (facebookAppId manquant).';
-      return;
-    }
-
-    try {
-      await this.loadFacebookSdk(appId);
-      window.FB.login(
-        (response: any) => {
-          const accessToken = String(response?.authResponse?.accessToken ?? '').trim();
-          if (!accessToken) {
-            this.errorMessage = 'Inscription Facebook annulée.';
-            return;
-          }
-          this.userAuthService.loginWithFacebook(accessToken).subscribe({
-            next: () => this.close(),
-            error: (e) => {
-              this.errorMessage = parseApiError(e);
-            },
-          });
-        },
-        { scope: 'email,public_profile' },
-      );
-    } catch {
-      this.errorMessage = "Impossible de charger Facebook. Réessaye plus tard.";
-    }
-  }
-
-  private loadGoogleSdk(): Promise<void> {
-    if (RegisterDrawerComponent.googleSdkPromise) return RegisterDrawerComponent.googleSdkPromise;
-    RegisterDrawerComponent.googleSdkPromise = new Promise<void>((resolve, reject) => {
-      if (window.google?.accounts?.id) {
-        resolve();
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('google sdk'));
-      document.head.appendChild(script);
+  private loadEmailJs(): Promise<any> {
+    return new Promise((resolve) => {
+      if ((window as any).emailjs) { resolve((window as any).emailjs); return; }
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      s.onload = () => resolve((window as any).emailjs);
+      s.onerror = () => resolve(null);
+      document.head.appendChild(s);
     });
-    return RegisterDrawerComponent.googleSdkPromise;
   }
 
-  private loadFacebookSdk(appId: string): Promise<void> {
-    if (RegisterDrawerComponent.facebookSdkPromise) return RegisterDrawerComponent.facebookSdkPromise;
-    RegisterDrawerComponent.facebookSdkPromise = new Promise<void>((resolve, reject) => {
-      if (window.FB) {
-        try {
-          window.FB.init({ appId, cookie: true, xfbml: false, version: 'v19.0' });
-          resolve();
-        } catch {
-          reject(new Error('fb init'));
-        }
-        return;
-      }
-
-      window.fbAsyncInit = () => {
-        try {
-          window.FB.init({ appId, cookie: true, xfbml: false, version: 'v19.0' });
-          resolve();
-        } catch {
-          reject(new Error('fb init'));
-        }
-      };
-
-      const script = document.createElement('script');
-      script.src = 'https://connect.facebook.net/en_US/sdk.js';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        // fbAsyncInit will resolve.
-      };
-      script.onerror = () => reject(new Error('facebook sdk'));
-      document.head.appendChild(script);
-    });
-    return RegisterDrawerComponent.facebookSdkPromise;
+  private reset(): void {
+    this.step = 1; this.method = 'email';
+    this.emailValue = ''; this.phoneValue = '';
+    this.otpCode = ''; this.password = ''; this.confirm = '';
+    this.step1Error = ''; this.otpError = ''; this.step3Error = '';
+    this.sendingCode = false; this.otpVerifying = false; this.submitting = false;
+    this.showPw = false; this.showConfirm = false;
+    this.otpState = null; this.emailjsMissing = false;
+    this.clearTimers();
+    this.otpSecondsLeft = this.OTP_TTL; this.resendCooldown = 0;
   }
 
+  private startOtpTimer(): void {
+    this.clearTimer('otp');
+    this.otpSecondsLeft = this.OTP_TTL;
+    this.otpTimer = setInterval(() => {
+      this.otpSecondsLeft = Math.max(0, this.otpSecondsLeft - 1);
+      if (this.otpSecondsLeft === 0) this.clearTimer('otp');
+    }, 1000);
+  }
+
+  private startResendCooldown(): void {
+    this.resendCooldown = 60;
+    this.clearTimer('cooldown');
+    this.cooldownTimer = setInterval(() => {
+      this.resendCooldown = Math.max(0, this.resendCooldown - 1);
+      if (this.resendCooldown === 0) this.clearTimer('cooldown');
+    }, 1000);
+  }
+
+  private clearTimer(w: 'otp' | 'cooldown'): void {
+    if (w === 'otp' && this.otpTimer)         { clearInterval(this.otpTimer); this.otpTimer = null; }
+    if (w === 'cooldown' && this.cooldownTimer) { clearInterval(this.cooldownTimer); this.cooldownTimer = null; }
+  }
+
+  private clearTimers(): void { this.clearTimer('otp'); this.clearTimer('cooldown'); }
+
+  private validEmail(v: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  l(key: string): string {
+    const map: Record<string, Record<SiteLang, string>> = {
+      fieldRequired:  { fr: 'Ce champ est requis.',                         en: 'This field is required.',            ar: 'هذا الحقل مطلوب.' },
+      emailInvalid:   { fr: 'Adresse email invalide.',                       en: 'Invalid email address.',             ar: 'بريد إلكتروني غير صالح.' },
+      phoneInvalid:   { fr: 'Numéro invalide (min. 6 chiffres).',           en: 'Invalid phone number (min. 6 digits).', ar: 'رقم غير صالح.' },
+      otpRequired:    { fr: 'Saisissez le code reçu.',                       en: 'Enter the code you received.',       ar: 'أدخل الرمز الذي تلقيته.' },
+      otpWrong:       { fr: 'Code incorrect. Vérifiez et réessayez.',        en: 'Incorrect code. Check and try again.', ar: 'الرمز غير صحيح. تحقق وحاول مجدداً.' },
+      otpExpired:     { fr: 'Code expiré. Renvoyez un nouveau code.',        en: 'Code expired. Resend a new code.',   ar: 'انتهت صلاحية الرمز. أرسل رمزاً جديداً.' },
+      pwMin:          { fr: 'Au moins 8 caractères',                         en: 'At least 8 characters',             ar: '8 أحرف على الأقل' },
+      pwUpper:        { fr: 'Au moins 1 lettre majuscule',                   en: 'At least 1 uppercase letter',       ar: 'حرف كبير واحد على الأقل' },
+      pwNumber:       { fr: 'Au moins 1 chiffre',                            en: 'At least 1 number',                 ar: 'رقم واحد على الأقل' },
+      pwInvalid:      { fr: 'Vérifiez les conditions du mot de passe.',       en: 'Check the password requirements.',  ar: 'تحقق من شروط كلمة المرور.' },
+      sendCode:       { fr: 'Envoyer le code',                               en: 'Send code',                         ar: 'إرسال الرمز' },
+      sending:        { fr: 'Envoi…',                                        en: 'Sending…',                          ar: 'جارٍ الإرسال…' },
+      resend:         { fr: 'Renvoyer le code',                              en: 'Resend code',                       ar: 'إعادة إرسال الرمز' },
+      verify:         { fr: 'Continuer',                                     en: 'Continue',                          ar: 'متابعة' },
+      createAccount:  { fr: 'Créer mon compte',                              en: 'Create account',                    ar: 'إنشاء حساب' },
+      creating:       { fr: 'Création…',                                     en: 'Creating…',                         ar: 'جارٍ الإنشاء…' },
+      step1Title:     { fr: 'Créer un compte',                               en: 'Create an account',                 ar: 'إنشاء حساب' },
+      step2Title:     { fr: 'Vérification',                                  en: 'Verification',                      ar: 'التحقق' },
+      step3Title:     { fr: 'Choisissez un mot de passe',                    en: 'Choose a password',                 ar: 'اختر كلمة مرور' },
+      byEmail:        { fr: 'Email',                                         en: 'Email',                             ar: 'البريد الإلكتروني' },
+      byPhone:        { fr: 'Téléphone',                                     en: 'Phone',                             ar: 'الهاتف' },
+      emailPh:        { fr: 'votre@email.com',                               en: 'your@email.com',                    ar: 'بريدك@الإلكتروني.com' },
+      phonePh:        { fr: '+33 6 00 00 00 00',                             en: '+1 555 000 0000',                   ar: '+212 6 00 00 00 00' },
+      step2Hint:      { fr: 'Code envoyé à',                                 en: 'Code sent to',                      ar: 'تم إرسال الرمز إلى' },
+      pwLabel:        { fr: 'Mot de passe',                                  en: 'Password',                          ar: 'كلمة المرور' },
+      confirmLabel:   { fr: 'Confirmation',                                  en: 'Confirm password',                  ar: 'تأكيد كلمة المرور' },
+      confirmMatch:   { fr: '✓ Les mots de passe correspondent',             en: '✓ Passwords match',                 ar: '✓ كلمتا المرور متطابقتان' },
+      chooseMeth:     { fr: 'Choisissez comment vous inscrire',              en: 'Choose how to sign up',             ar: 'اختر طريقة التسجيل' },
+      otpLabel:            { fr: 'Code de vérification',   en: 'Verification code',    ar: 'رمز التحقق' },
+      emailjsNotConfigured:{ fr: 'Envoi d\'email non configuré. Renseignez serviceId, otpTemplateId et publicKey dans environment.ts.', en: 'Email sending not configured. Fill in serviceId, otpTemplateId and publicKey in environment.ts.', ar: 'إرسال البريد غير مُهيَّأ. يرجى إعداد EmailJS.' },
+      emailSendFailed:     { fr: 'L\'envoi du code a échoué. Vérifiez votre configuration EmailJS.', en: 'Failed to send the code. Check your EmailJS configuration.', ar: 'فشل إرسال الرمز. تحقق من إعداد EmailJS.' },
+    };
+    return map[key]?.[this.lang] ?? key;
+  }
 }

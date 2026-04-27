@@ -33,6 +33,8 @@ export interface NavLabels {
   home: string;
   product: string;
   whoWeAre: string;
+  ourGuide: string;
+  faq: string;
   contact: string;
 }
 
@@ -71,18 +73,24 @@ export const NAV_LABELS: Record<SiteLang, NavLabels> = {
     home: 'ACCUEIL',
     product: 'PRODUITS',
     whoWeAre: 'NOTRE HISTOIRE',
+    ourGuide: 'NOTRE GUIDE',
+    faq: 'FAQ',
     contact: 'CONTACT',
   },
   en: {
     home: 'HOME',
     product: 'PRODUCTS',
     whoWeAre: 'OUR STORY',
+    ourGuide: 'OUR GUIDE',
+    faq: 'FAQ',
     contact: 'CONTACT',
   },
   ar: {
     home: 'الرئيسية',
     product: 'منتجات',
     whoWeAre: 'قصتنا',
+    ourGuide: 'دليلنا',
+    faq: 'الأسئلة الشائعة',
     contact: 'اتصل بنا',
   },
 };
@@ -151,6 +159,8 @@ export interface HomeLabels {
   bestsellersTitle: string;
   bestSellerBadge: string;
   giftsTitle: string;
+  giftKicker: string;
+  giftSpecialTitle: string;
   viewGift: string;
   loading: string;
   newsletterTitle: string;
@@ -177,6 +187,8 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     bestsellersTitle: 'Meilleures ventes',
     bestSellerBadge: 'Best-seller',
     giftsTitle: 'Packs cadeaux',
+    giftKicker: '❤ Cadeaux',
+    giftSpecialTitle: 'CADEAUX POUR QUELQU\'UN DE SPÉCIAL',
     viewGift: 'Voir',
     loading: 'Chargement…',
     newsletterTitle: 'Get more and connect.',
@@ -201,6 +213,8 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     bestsellersTitle: 'Best sellers',
     bestSellerBadge: 'Best-seller',
     giftsTitle: 'Gift packs',
+    giftKicker: '❤ Gifts',
+    giftSpecialTitle: 'GIFTS FOR SOMEONE SPECIAL',
     viewGift: 'View',
     loading: 'Loading…',
     newsletterTitle: 'Get more and connect.',
@@ -225,6 +239,8 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     bestsellersTitle: 'الأكثر مبيعاً',
     bestSellerBadge: 'الأكثر مبيعاً',
     giftsTitle: 'حزم الهدايا',
+    giftKicker: '❤ هدايا',
+    giftSpecialTitle: 'هدايا لشخص مميز',
     viewGift: 'عرض',
     loading: 'تحميل…',
     newsletterTitle: 'تواصل معنا واحصل على المزيد.',

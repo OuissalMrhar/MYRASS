@@ -1093,15 +1093,13 @@
     min-width: 0;
   }
 
-  .mobile-menu__chevron {
-    flex-shrink: 0;
-    width: 7px;
-    height: 7px;
-    border-right: 2px solid #c9c2ba;
-    border-bottom: 2px solid #c9c2ba;
-    transform: rotate(-45deg);
-    margin-right: 4px;
+  .mobile-menu__link-text--case {
+    display: block;
+    text-transform: lowercase;
+    &::first-letter { text-transform: uppercase; }
   }
+
+  .mobile-menu__chevron { display: none; }
 
   .mobile-menu__lang-row {
     display: flex;

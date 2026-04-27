@@ -1,179 +1,141 @@
-<div class="drawer-overlay" *ngIf="isOpen" (click)="close()"></div>
+<div class="reg-overlay" *ngIf="isOpen" (click)="close()"></div>
 
-<div class="login-drawer" [class.open]="isOpen" [attr.dir]="isRtl ? 'rtl' : 'ltr'">
+<div class="reg-drawer" [class.open]="isOpen" [attr.dir]="isRtl ? 'rtl' : 'ltr'">
 
-  <div class="drawer-header">
-    <div class="header-main">
-      <span class="title-label">{{ labels.registerRequiredFields }}</span>
-      <button class="close-icon" (click)="close()">✕</button>
+  <button type="button" class="reg-drawer__close" (click)="close()" aria-label="Fermer">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </svg>
+  </button>
+
+  <div class="reg-drawer__body">
+
+    <div class="reg-drawer__logo">
+      <img src="/assets/logo.png" alt="Myrass" />
     </div>
-  </div>
 
-  <div class="header-divider"></div>
+    <div class="reg-stepper">
+      <span class="reg-stepper__dot" [class.active]="step >= 1" [class.done]="step > 1"></span>
+      <span class="reg-stepper__line"></span>
+      <span class="reg-stepper__dot" [class.active]="step >= 2" [class.done]="step > 2"></span>
+      <span class="reg-stepper__line"></span>
+      <span class="reg-stepper__dot" [class.active]="step >= 3"></span>
+    </div>
 
-  <div class="drawer-body">
+    <!-- STEP 1 -->
+    <ng-container *ngIf="step === 1">
+      <h2 class="reg-title">{{ l('step1Title') }}</h2>
+      <p class="reg-subtitle">{{ l('chooseMeth') }}</p>
 
-    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-    <form class="register-form" [formGroup]="userForm" (ngSubmit)="onSubmit()">
-
-      <div class="form-row">
-        <div class="form-group col-title">
-          <label>{{ labels.genderLabel }}</label>
-          <select class="custom-input" formControlName="title"
-                  [class.is-invalid]="submitted && f['title'].errors">
-            <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.nom }}</option>
-          </select>
-          <div *ngIf="submitted && f['title'].errors" class="invalid-feedback">{{ labels.genderRequired }}</div>
-        </div>
-        <div class="form-group col-name">
-          <label>{{ labels.nameLabel }}</label>
-          <input type="text" class="custom-input" formControlName="nomComplet"
-                 [class.is-invalid]="submitted && f['nomComplet'].errors">
-          <div *ngIf="submitted && f['nomComplet'].errors" class="invalid-feedback">{{ labels.nameRequired }}</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>{{ labels.emailRegLabel }}</label>
-        <input
-          type="email"
-          class="custom-input"
-          formControlName="email"
-          [placeholder]="labels.emailPlaceholder"
-          [class.is-invalid]="submitted && f['email'].errors"
-        >
-        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-          <span *ngIf="f['email'].errors['required']">{{ labels.emailRequired }}</span>
-          <span *ngIf="f['email'].errors['email']">{{ labels.emailInvalid }}</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>{{ labels.passwordRegLabel }}</label>
-        <div class="pass-wrap">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            class="custom-input"
-            formControlName="motDePasse"
-            autocomplete="new-password"
-            [class.is-invalid]="submitted && f['motDePasse'].errors"
-          >
-          <button type="button" class="toggle-pw" (click)="showPassword = !showPassword">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
-        </div>
-        <div *ngIf="submitted && f['motDePasse'].errors" class="invalid-feedback">
-          <span *ngIf="f['motDePasse'].errors['required']">{{ labels.passwordRequired }}</span>
-          <span *ngIf="f['motDePasse'].errors['minlength']">{{ labels.passwordMin }}</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>{{ labels.confirmLabel }}</label>
-        <div class="pass-wrap">
-          <input
-            [type]="showConfirm ? 'text' : 'password'"
-            class="custom-input"
-            formControlName="confirmMotDePasse"
-            autocomplete="new-password"
-            [class.is-invalid]="submitted && (f['confirmMotDePasse'].errors || userForm.errors?.['passwordMismatch'])"
-          >
-          <button type="button" class="toggle-pw" (click)="showConfirm = !showConfirm">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
-        </div>
-        <div *ngIf="submitted && f['confirmMotDePasse'].errors" class="invalid-feedback">
-          {{ labels.confirmRequired }}
-        </div>
-        <div *ngIf="submitted && !f['confirmMotDePasse'].errors && userForm.errors?.['passwordMismatch']"
-             class="invalid-feedback">
-          {{ labels.passwordMismatch }}
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>{{ labels.phoneLabel }}</label>
-        <div class="phone-row">
-          <div class="prefix-wrap">
-            <select class="custom-input" formControlName="phonePrefix">
-              <option *ngFor="let country of countries" [value]="country.dial">
-                {{ country.flag }} {{ country.dial }} {{ country.name }}
-              </option>
-            </select>
-          </div>
-          <input type="tel" class="custom-input phone-num" formControlName="telephone"
-                 [class.is-invalid]="submitted && f['telephone'].errors">
-        </div>
-        <div *ngIf="submitted && f['telephone'].errors" class="invalid-feedback">{{ labels.phoneRequired }}</div>
-      </div>
-
-      <div class="form-group">
-        <label>{{ labels.dobLabel }}</label>
-        <div class="date-row">
-
-          <div class="date-part">
-            <input #dayInput
-                   type="text"
-                   class="custom-input date-input"
-                   formControlName="dateDay"
-                   placeholder="00"
-                   maxlength="2"
-                   inputmode="numeric"
-                   (input)="onDateInput($event, 'day')"
-                   [class.is-invalid]="submitted && f['dateNaissance'].errors">
-          </div>
-
-          <span class="date-sep">/</span>
-
-          <div class="date-part">
-            <input #monthInput
-                   type="text"
-                   class="custom-input date-input"
-                   formControlName="dateMonth"
-                   placeholder="00"
-                   maxlength="2"
-                   inputmode="numeric"
-                   (input)="onDateInput($event, 'month')"
-                   [class.is-invalid]="submitted && f['dateNaissance'].errors">
-          </div>
-
-          <span class="date-sep">/</span>
-
-          <div class="date-part date-year">
-            <input #yearInput
-                   type="text"
-                   class="custom-input date-input"
-                   formControlName="dateYear"
-                   placeholder="0000"
-                   maxlength="4"
-                   inputmode="numeric"
-                   (input)="onDateInput($event, 'year')"
-                   [class.is-invalid]="submitted && f['dateNaissance'].errors">
-          </div>
-
-        </div>
-        <div *ngIf="submitted && f['dateNaissance'].errors" class="invalid-feedback">
-          {{ labels.dobRequired }}
-        </div>
-      </div>
-
-      <div class="form-footer">
-        <button type="submit" class="btn-continue" [disabled]="submitted && !successMessage">
-          {{ labels.continueBtn }}
+      <div class="reg-tabs">
+        <button type="button" class="reg-tab" [class.active]="method === 'email'" (click)="setMethod('email')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
+            <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/>
+          </svg>
+          {{ l('byEmail') }}
         </button>
-        <p class="activation-text">
-          {{ labels.activationText }}
-        </p>
+        <button type="button" class="reg-tab" [class.active]="method === 'phone'" (click)="setMethod('phone')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.37 10.7a19.79 19.79 0 01-3.07-8.67A2 2 0 012.28 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.1 6.1l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          {{ l('byPhone') }}
+        </button>
       </div>
 
-    </form>
+      <div class="reg-field-wrap">
+        <label class="reg-label">{{ method === 'email' ? l('byEmail') : l('byPhone') }}</label>
+        <input *ngIf="method === 'email'" type="email" class="reg-input"
+          [placeholder]="l('emailPh')" [(ngModel)]="emailValue"
+          autocomplete="email" (keyup.enter)="sendCode()" />
+        <input *ngIf="method === 'phone'" type="tel" class="reg-input"
+          [placeholder]="l('phonePh')" [(ngModel)]="phoneValue"
+          autocomplete="tel" (keyup.enter)="sendCode()" />
+        <p class="reg-error" *ngIf="step1Error">{{ step1Error }}</p>
+      </div>
+
+      <button type="button" class="reg-btn" [disabled]="sendingCode" (click)="sendCode()">
+        {{ sendingCode ? l('sending') : l('sendCode') }}
+      </button>
+    </ng-container>
+
+    <!-- STEP 2 : OTP -->
+    <ng-container *ngIf="step === 2">
+      <h2 class="reg-title">{{ l('step2Title') }}</h2>
+      <p class="reg-subtitle">{{ l('step2Hint') }} <strong>{{ inputValue }}</strong></p>
+
+      <div class="reg-otp-timer">
+        <svg class="reg-otp-timer__ring" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r="24" fill="none" stroke="#f0ece8" stroke-width="3"/>
+          <circle cx="28" cy="28" r="24" fill="none" stroke="#553b31" stroke-width="3"
+            stroke-linecap="round" stroke-dasharray="150.8"
+            [style.stroke-dashoffset]="150.8 * (1 - otpSecondsLeft / OTP_TTL)"
+            transform="rotate(-90 28 28)"/>
+        </svg>
+        <span class="reg-otp-timer__text">{{ otpMinSec }}</span>
+      </div>
+
+      <div class="reg-field-wrap">
+        <label class="reg-label">{{ l('otpLabel') }}</label>
+        <input type="text" class="reg-input reg-input--otp"
+          placeholder="000000" [(ngModel)]="otpCode"
+          maxlength="8" inputmode="numeric" autocomplete="one-time-code"
+          (keyup.enter)="verifyOtp()" />
+        <p class="reg-error" *ngIf="otpError">{{ otpError }}</p>
+      </div>
+
+      <button type="button" class="reg-btn" [disabled]="otpVerifying" (click)="verifyOtp()">
+        {{ otpVerifying ? l('sending') : l('verify') }}
+      </button>
+
+      <button type="button" class="reg-link" [disabled]="resendCooldown > 0" (click)="resendCode()">
+        {{ l('resend') }}{{ resendCooldown > 0 ? ' (' + resendCooldown + 's)' : '' }}
+      </button>
+
+      <button type="button" class="reg-back" (click)="step = 1">← Retour</button>
+    </ng-container>
+
+    <!-- STEP 3 : Mot de passe -->
+    <ng-container *ngIf="step === 3">
+      <h2 class="reg-title">{{ l('step3Title') }}</h2>
+
+      <div class="reg-field-wrap">
+        <label class="reg-label">{{ l('pwLabel') }}</label>
+        <div class="reg-pass-wrap">
+          <input [type]="showPw ? 'text' : 'password'" class="reg-input"
+            [(ngModel)]="password" autocomplete="new-password" />
+          <button type="button" class="reg-eye" (click)="showPw = !showPw">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <ul class="reg-conditions">
+          <li *ngFor="let c of pwConditions" [class.ok]="c.ok">
+            <span class="reg-conditions__icon">{{ c.ok ? '✓' : '○' }}</span> {{ c.label }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="reg-field-wrap">
+        <label class="reg-label">{{ l('confirmLabel') }}</label>
+        <div class="reg-pass-wrap">
+          <input [type]="showConfirm ? 'text' : 'password'" class="reg-input"
+            [(ngModel)]="confirm" autocomplete="new-password" />
+          <button type="button" class="reg-eye" (click)="showConfirm = !showConfirm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <p class="reg-match" *ngIf="confirm && password === confirm && password.length > 0">{{ l('confirmMatch') }}</p>
+      </div>
+
+      <p class="reg-error" *ngIf="step3Error">{{ step3Error }}</p>
+
+      <button type="button" class="reg-btn" [disabled]="submitting || !pwValid" (click)="register()">
+        {{ submitting ? l('creating') : l('createAccount') }}
+      </button>
+    </ng-container>
+
   </div>
 </div>

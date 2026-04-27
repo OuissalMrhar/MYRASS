@@ -12,6 +12,29 @@
     </div>
   </section>
 
+  <!-- Barre de recherche -->
+  <div class="search-bar" appReveal [revealDelay]="60">
+    <div class="search-bar__wrap">
+      <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+      </svg>
+      <input
+        class="search-bar__input"
+        type="search"
+        [placeholder]="currentLang === 'ar' ? 'بحث…' : currentLang === 'en' ? 'Search products…' : 'Rechercher un produit…'"
+        [value]="searchTerm"
+        (input)="onSearch($any($event.target).value)"
+        autocomplete="off"
+        aria-label="Rechercher un produit"
+      />
+      <button *ngIf="searchTerm" class="search-bar__clear" type="button" (click)="onSearch('')" aria-label="Effacer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14" aria-hidden="true">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <!-- Barre filtres -->
   <div class="filter-bar" appReveal [revealDelay]="120">
     <button type="button" class="filter-btn filter-btn--main" (click)="openFilters()">
@@ -208,17 +231,15 @@
   <section class="gifts-section" *ngIf="cadeauxGifts.length > 0 || isGiftsLoading" appReveal>
     <div class="gifts-section__inner">
       <span class="gifts-section__kicker">{{ labels.giftKicker }}</span>
-      <h3 class="gifts-section__title">{{ cadeauxGifts[0] ? giftName(cadeauxGifts[0]) : labels.giftTitle }}</h3>
+      <h2 class="gifts-section__title">{{ labels.giftTitle }}</h2>
       <p class="gifts-section__text" *ngIf="giftDescription(cadeauxGifts[0]) || labels.giftText">
         {{ giftDescription(cadeauxGifts[0]) || labels.giftText }}
       </p>
+      <a *ngIf="cadeauxGifts[0]" [routerLink]="['/details-gift', cadeauxGifts[0].id]" class="gifts-section__cta">{{ labels.viewBtn }}</a>
     </div>
     <ng-container *ngFor="let gift of cadeauxGifts">
       <div class="gifts-section__banner">
         <img [src]="giftImageUrl(gift)" [alt]="giftName(gift)" loading="lazy"/>
-        <div class="gifts-section__overlay">
-          <a [routerLink]="['/details-gift', gift.id]" class="gifts-section__view-btn">{{ labels.viewBtn }}</a>
-        </div>
       </div>
     </ng-container>
   </section>

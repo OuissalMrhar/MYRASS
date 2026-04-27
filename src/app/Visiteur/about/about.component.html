@@ -8,7 +8,7 @@
       <div class="about-hero__overlay"></div>
     </div>
     <div class="about-hero__caption">
-      <h1 class="about-hero__title" [innerHTML]="labels.heroTitle.replace('\n', '<br>')"></h1>
+      <h1 class="about-hero__title"><ng-container *ngFor="let line of heroTitleLines; let last = last">{{ line }}<br *ngIf="!last"/></ng-container></h1>
     </div>
   </section>
 

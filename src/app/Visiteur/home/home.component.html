@@ -225,8 +225,8 @@
     </ng-container>
   </div>
 
-  <div class="ramadan-container" [class.ramadan-container--single]="gifts.length === 1" *ngIf="gifts.length > 0">
-    <div class="ramadan-item large" *ngFor="let gift of gifts">
+  <div class="ramadan-container ramadan-container--single" *ngIf="gifts.length > 0">
+    <div class="ramadan-item large" *ngFor="let gift of gifts | slice:0:1">
       <div class="img-wrapper main-banner">
         <img [src]="giftImageUrl(gift)" [alt]="gift | lang: 'nom' : currentLang" fetchpriority="high" width="3" height="2" />
         <div class="overlay-content">

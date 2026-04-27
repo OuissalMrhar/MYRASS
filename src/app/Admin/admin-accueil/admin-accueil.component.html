@@ -1,8 +1,73 @@
 <div class="sidebar-line"></div>
 <section class="page accueil-page">
+
+  <!-- Carte de bienvenue -->
   <div class="accueil-card">
     <p class="accueil-greeting">{{ greeting }},</p>
     <h1 class="accueil-name">{{ displayName() }}</h1>
-    <p class="accueil-sub">Vous êtes connecté à l’espace d’administration Myrass.</p>
+    <p class="accueil-sub">Espace d'administration Myrass</p>
   </div>
+
+  <!-- Stats cards -->
+  <div class="stats-grid" *ngIf="!statsLoading">
+    <div class="stat-card">
+      <span class="stat-card__icon">📦</span>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ totalProduits }}</p>
+        <p class="stat-card__label">Produits</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__icon">🛒</span>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ totalCommandes }}</p>
+        <p class="stat-card__label">Commandes</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__icon">🎁</span>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ totalGifts }}</p>
+        <p class="stat-card__label">Coffrets</p>
+      </div>
+    </div>
+    <div class="stat-card stat-card--accent">
+      <span class="stat-card__icon">💰</span>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ chiffreAffaires | number:'1.0-0' }} MAD</p>
+        <p class="stat-card__label">Chiffre d'affaires</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-loading" *ngIf="statsLoading">Chargement des statistiques…</div>
+
+  <!-- Dernières commandes -->
+  <div class="recent-orders" *ngIf="!statsLoading && recentCommandes.length > 0">
+    <h2 class="recent-orders__title">Dernières commandes</h2>
+    <div class="recent-orders__table-wrap">
+      <table class="recent-orders__table">
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Total</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of recentCommandes">
+            <td>#{{ c.id }}</td>
+            <td>{{ formatDate(c.dateCommande) }}</td>
+            <td>{{ c.userId }}</td>
+            <td>{{ c.totalCommande | number:'1.2-2' }} MAD</td>
+            <td><span class="st-badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <a routerLink="/commandes" class="recent-orders__link">Voir toutes les commandes →</a>
+  </div>
+
 </section>

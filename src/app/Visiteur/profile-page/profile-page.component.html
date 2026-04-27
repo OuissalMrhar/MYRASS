@@ -1,0 +1,184 @@
+<app-navbar></app-navbar>
+
+<div class="profile-page" [attr.dir]="isRtl ? 'rtl' : 'ltr'" *ngIf="user">
+
+  <!-- Hero identité -->
+  <div class="profile-hero">
+    <div class="profile-hero__inner">
+      <div class="profile-avatar">{{ initials }}</div>
+      <div class="profile-hero__meta">
+        <h1 class="profile-hero__name">{{ user.nomComplet || displayIdentifier }}</h1>
+        <p class="profile-hero__email">{{ displayIdentifier }}</p>
+
+        <!-- Barre de complétion -->
+        <div class="profile-completion">
+          <div class="profile-completion__bar">
+            <div class="profile-completion__fill" [style.width.%]="profileCompletion"></div>
+          </div>
+          <span class="profile-completion__label">{{ t('completion') }} {{ profileCompletion }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation sections -->
+  <div class="profile-nav">
+    <div class="profile-nav__inner">
+      <button type="button" class="profile-nav__tab" [class.active]="activeSection === 'info'" (click)="setSection('info')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        {{ t('infoTab') }}
+      </button>
+      <button type="button" class="profile-nav__tab" [class.active]="activeSection === 'password'" (click)="setSection('password')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        {{ t('pwTab') }}
+      </button>
+      <button type="button" class="profile-nav__tab" [class.active]="activeSection === 'orders'" (click)="setSection('orders')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        {{ t('ordersTab') }}
+      </button>
+    </div>
+  </div>
+
+  <div class="profile-content">
+
+    <!-- ── INFO ──────────────────────────────────────────────────── -->
+    <section class="profile-card" *ngIf="activeSection === 'info'">
+
+      <!-- Hint complétion -->
+      <div class="profile-hint" *ngIf="profileCompletion < 100">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p>{{ t('profileHint') }}</p>
+      </div>
+
+      <div class="profile-success" *ngIf="profileSuccess">{{ profileSuccess }}</div>
+      <div class="profile-error"   *ngIf="profileError">{{ profileError }}</div>
+
+      <!-- View mode -->
+      <ng-container *ngIf="!editMode">
+        <dl class="profile-fields">
+          <div class="profile-field">
+            <dt>{{ t('fullName') }}</dt>
+            <dd>{{ user.nomComplet || '—' }}</dd>
+          </div>
+          <div class="profile-field">
+            <dt>{{ t('emailLabel') }}</dt>
+            <dd>{{ user.email || '—' }}</dd>
+          </div>
+          <div class="profile-field">
+            <dt>{{ t('phoneLabel') }}</dt>
+            <dd>{{ user.telephone || '—' }}</dd>
+          </div>
+          <div class="profile-field">
+            <dt>{{ t('dobLabel') }}</dt>
+            <dd>{{ user.dateNaissance || '—' }}</dd>
+          </div>
+        </dl>
+        <button type="button" class="profile-btn profile-btn--primary" (click)="startEdit()">{{ t('editProfile') }}</button>
+      </ng-container>
+
+      <!-- Edit mode -->
+      <ng-container *ngIf="editMode">
+        <div class="profile-form">
+          <div class="profile-form__field">
+            <label>{{ t('fullName') }}</label>
+            <input type="text" [(ngModel)]="profileForm.nomComplet" />
+          </div>
+          <div class="profile-form__field">
+            <label>{{ t('emailLabel') }}</label>
+            <input type="email" [(ngModel)]="profileForm.email" />
+          </div>
+          <div class="profile-form__field">
+            <label>{{ t('phoneLabel') }}</label>
+            <input type="tel" [(ngModel)]="profileForm.telephone" />
+          </div>
+          <div class="profile-form__field">
+            <label>{{ t('dobLabel') }}</label>
+            <input type="date" [(ngModel)]="profileForm.dateNaissance" />
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button type="button" class="profile-btn profile-btn--primary" [disabled]="profileLoading" (click)="saveProfile()">
+            {{ profileLoading ? '…' : t('save') }}
+          </button>
+          <button type="button" class="profile-btn profile-btn--ghost" (click)="cancelEdit()">{{ t('cancel') }}</button>
+        </div>
+      </ng-container>
+    </section>
+
+    <!-- ── MOT DE PASSE ───────────────────────────────────────────── -->
+    <section class="profile-card" *ngIf="activeSection === 'password'">
+      <div class="profile-success" *ngIf="pwSuccess">{{ pwSuccess }}</div>
+      <div class="profile-error"   *ngIf="pwError">{{ pwError }}</div>
+
+      <div class="profile-form">
+        <div class="profile-form__field">
+          <label>{{ t('oldPw') }}</label>
+          <div class="profile-form__pass-wrap">
+            <input [type]="showOldPw ? 'text' : 'password'" [(ngModel)]="oldPw" autocomplete="current-password" />
+            <button type="button" class="profile-form__eye" (click)="showOldPw = !showOldPw">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-form__field">
+          <label>{{ t('newPw') }}</label>
+          <div class="profile-form__pass-wrap">
+            <input [type]="showNewPw ? 'text' : 'password'" [(ngModel)]="newPw" autocomplete="new-password" />
+            <button type="button" class="profile-form__eye" (click)="showNewPw = !showNewPw">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <ul class="profile-conditions">
+            <li *ngFor="let c of pwConditions" [class.ok]="c.ok">
+              {{ c.ok ? '✓' : '○' }} {{ c.label }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="profile-form__field">
+          <label>{{ t('confirmPw') }}</label>
+          <div class="profile-form__pass-wrap">
+            <input [type]="showConfirmPw ? 'text' : 'password'" [(ngModel)]="confirmPw" autocomplete="new-password" />
+            <button type="button" class="profile-form__eye" (click)="showConfirmPw = !showConfirmPw">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button type="button" class="profile-btn profile-btn--primary" [disabled]="pwLoading" (click)="changePassword()">
+          {{ pwLoading ? '…' : t('changePw') }}
+        </button>
+        <button type="button" class="profile-btn profile-btn--ghost" (click)="forgotPassword()" [disabled]="forgotLoading">
+          {{ t('forgotPw') }}
+        </button>
+      </div>
+
+      <p class="profile-forgot-sent" *ngIf="forgotSuccess">{{ forgotSuccess }}</p>
+      <p class="profile-error" *ngIf="forgotError">{{ forgotError }}</p>
+    </section>
+
+    <!-- ── COMMANDES ─────────────────────────────────────────────── -->
+    <section class="profile-card profile-card--orders" *ngIf="activeSection === 'orders'">
+      <p class="profile-orders-hint">{{ t('viewOrders') }}</p>
+      <a routerLink="/mes-commandes" class="profile-btn profile-btn--primary">{{ t('ordersTab') }}</a>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="profile-footer">
+    <button type="button" class="profile-logout" (click)="logout()">{{ t('logout') }}</button>
+  </div>
+
+</div>
+
+<app-footer></app-footer>

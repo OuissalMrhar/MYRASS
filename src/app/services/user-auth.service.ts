@@ -9,7 +9,9 @@ export interface VisitorUser {
   nomComplet: string;
   email: string;
   telephone?: string | null;
-  /** Points fidélité côté serveur (présent après login). */
+  genreId?: number | null;
+  dateNaissance?: string | null;
+  registrationMethod?: 'email' | 'phone';
   pointsTotal?: number;
 }
 
@@ -18,8 +20,31 @@ interface UserAuthApiResponse {
   nomComplet: string;
   email: string;
   telephone?: string | null;
+  genreId?: number | null;
+  dateNaissance?: string | null;
+  registrationMethod?: 'email' | 'phone';
   pointsTotal?: number;
   accessToken?: string;
+}
+
+export interface OtpRequestDto {
+  method: 'email' | 'phone';
+  value: string;
+}
+
+export interface RegisterWithOtpDto {
+  method: 'email' | 'phone';
+  value: string;
+  otpCode: string;
+  motDePasse: string;
+}
+
+export interface UpdateProfileDto {
+  nomComplet?: string;
+  email?: string;
+  telephone?: string;
+  genreId?: number | null;
+  dateNaissance?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -42,6 +67,49 @@ export class UserAuthService {
 
   register(payload: unknown): Observable<unknown> {
     return this.http.post(apiUrl('/api/users'), payload);
+  }
+
+  requestOtp(dto: OtpRequestDto): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(apiUrl('/api/users/request-otp'), dto);
+  }
+
+  registerWithOtp(dto: RegisterWithOtpDto): Observable<VisitorUser> {
+    return this.http.post<UserAuthApiResponse>(apiUrl('/api/users/register-otp'), dto).pipe(
+      tap((resp) => this.setCurrentUser(this.mapToVisitor(resp), resp.accessToken?.trim() || null)),
+      map((resp) => this.mapToVisitor(resp)),
+    );
+  }
+
+  loginWithPhone(payload: { telephone: string; motDePasse: string }): Observable<VisitorUser> {
+    return this.http.post<UserAuthApiResponse>(apiUrl('/api/users/login'), payload).pipe(
+      tap((resp) => this.setCurrentUser(this.mapToVisitor(resp), resp.accessToken?.trim() || null)),
+      map((resp) => this.mapToVisitor(resp)),
+    );
+  }
+
+  getProfile(): Observable<VisitorUser> {
+    return this.http.get<UserAuthApiResponse>(apiUrl('/api/users/me')).pipe(
+      map((resp) => this.mapToVisitor(resp)),
+    );
+  }
+
+  updateProfile(dto: UpdateProfileDto): Observable<VisitorUser> {
+    return this.http.put<UserAuthApiResponse>(apiUrl('/api/users/me'), dto).pipe(
+      tap((resp) => this.setCurrentUser(this.mapToVisitor(resp), this.getAccessToken())),
+      map((resp) => this.mapToVisitor(resp)),
+    );
+  }
+
+  changePassword(payload: { ancienMotDePasse: string; nouveauMotDePasse: string }): Observable<unknown> {
+    return this.http.patch(apiUrl('/api/users/me/password'), payload);
+  }
+
+  requestPasswordReset(dto: OtpRequestDto): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(apiUrl('/api/users/forgot-password'), dto);
+  }
+
+  resetPassword(payload: { otpCode: string; method: string; value: string; nouveauMotDePasse: string }): Observable<unknown> {
+    return this.http.post(apiUrl('/api/users/reset-password'), payload);
   }
 
   login(payload: { email: string; motDePasse: string }): Observable<VisitorUser> {
@@ -115,6 +183,9 @@ export class UserAuthService {
       nomComplet: resp.nomComplet,
       email: resp.email,
       telephone: resp.telephone,
+      genreId: resp.genreId,
+      dateNaissance: resp.dateNaissance,
+      registrationMethod: resp.registrationMethod,
       pointsTotal: resp.pointsTotal,
     };
   }

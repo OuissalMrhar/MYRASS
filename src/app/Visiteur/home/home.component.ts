@@ -12,6 +12,7 @@ import { GiftService } from '../../services/gift.service';
 import { SiteLanguageService } from '../../core/site-language.service';
 import { SiteLang, pick } from '../../core/visitor-i18n';
 import { CurrencyService } from '../../services/currency.service';
+import { SeoService } from '../../core/seo.service';
 
 interface HomeCategoryCard extends Categorie {
   isComingSoon?: boolean;
@@ -114,6 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private productRoutes: ProductRoutingHelper,
     private siteLang: SiteLanguageService,
     private currencyService: CurrencyService,
+    private seo: SeoService,
   ) {}
 
   switchToRegister() {
@@ -284,6 +286,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.seo.set({
+      title: 'Accueil',
+      description: "Myrass – Coffrets cadeaux et produits gourmets marocains d'exception : huile d'argan, miel, amlou.",
+    });
     this.updateViewportFlags();
     this.loadCategories();
     this.loadBestsellers();

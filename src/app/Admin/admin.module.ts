@@ -27,6 +27,7 @@ import { GiftAjouterComponent } from './gift/gift-ajouter/gift-ajouter.component
 import { GiftModifierComponent } from './gift/gift-modifier/gift-modifier.component';
 import { CodePromoAfficherComponent } from './code-promo/code-promo-afficher/code-promo-afficher.component';
 import { CodePromoFormComponent } from './code-promo/code-promo-form/code-promo-form.component';
+import { CommandesAfficherComponent } from './commandes/commandes-afficher/commandes-afficher.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { CodePromoFormComponent } from './code-promo/code-promo-form/code-promo-
     GiftModifierComponent,
     CodePromoAfficherComponent,
     CodePromoFormComponent,
+    CommandesAfficherComponent,
   ],
   imports: [
     CommonModule,

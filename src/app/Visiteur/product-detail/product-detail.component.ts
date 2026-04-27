@@ -1561,24 +1561,16 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   private resolveSingleImage(product: Produit): string {
-    if (product.id === this.raffinProductId) {
-      return this.raffinImage;
-    }
-    if (product.id === this.naturelProductId) {
-      return this.naturelImage;
-    }
-    if (product.id === this.mielProductId) {
-      return this.mielImage;
-    }
-    if (product.id === this.amlouProductId) {
-      return this.amlouImage;
-    }
-    if (product.id === this.visageProductId) {
-      return this.visageImage;
-    }
-    if (product.id === this.moyenneGalleryProductId) {
-      return this.moyenne1Image;
-    }
+    const images = (product.medias ?? []).filter((m) => m.kind === 'image' && !!m.url);
+    const principal = images.find((m) => m.estPrincipale) ?? images[0];
+    if (principal?.url) return principal.url;
+
+    if (product.id === this.raffinProductId) return this.raffinImage;
+    if (product.id === this.naturelProductId) return this.naturelImage;
+    if (product.id === this.mielProductId) return this.mielImage;
+    if (product.id === this.amlouProductId) return this.amlouImage;
+    if (product.id === this.visageProductId) return this.visageImage;
+    if (product.id === this.moyenneGalleryProductId) return this.moyenne1Image;
     return STATIC_PRODUCT_IMAGE_URL;
   }
 

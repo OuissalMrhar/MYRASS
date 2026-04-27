@@ -12,6 +12,7 @@ import { FavoritesPageComponent } from './Visiteur/favorites-page/favorites-page
 import { MyOrdersPageComponent } from './Visiteur/my-orders-page/my-orders-page.component';
 import { DetailsGiftComponent } from './Visiteur/details-gift/details-gift.component';
 import { GuideComponent } from './Visiteur/guide/guide.component';
+import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'panier', component: CartPageComponent },
   { path: 'favoris', component: FavoritesPageComponent },
   { path: 'mes-commandes', component: MyOrdersPageComponent },
+  { path: 'mon-profil', component: ProfilePageComponent },
 
   {
     path: '',

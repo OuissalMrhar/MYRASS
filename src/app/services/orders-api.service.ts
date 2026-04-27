@@ -49,4 +49,16 @@ export class OrdersApiService {
   getMy(): Observable<CommandeResponseDto[]> {
     return this.http.get<CommandeResponseDto[]>(apiUrl('/api/commandes/my'));
   }
+
+  getAllAdmin(): Observable<CommandeResponseDto[]> {
+    return this.http.get<CommandeResponseDto[]>(apiUrl('/api/commandes'));
+  }
+
+  getByIdAdmin(id: number): Observable<CommandeResponseDto> {
+    return this.http.get<CommandeResponseDto>(apiUrl(`/api/commandes/${id}`));
+  }
+
+  updateStatut(id: number, statut: string): Observable<CommandeResponseDto> {
+    return this.http.patch<CommandeResponseDto>(apiUrl(`/api/commandes/${id}/statut`), { statut });
+  }
 }

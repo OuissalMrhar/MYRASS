@@ -12,6 +12,65 @@
   background: #ffffff;
 }
 
+// ── Search bar ──────────────────────────────────────────────────
+.search-bar {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px clamp(16px, 4vw, 48px) 0;
+  box-sizing: border-box;
+
+  &__wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #f7f4f1;
+    border: 1px solid #e8e0d8;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+      border-color: #9e8e84;
+      background: #fff;
+    }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: #9e8e84;
+    margin: 0 12px;
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: 13px;
+    color: #2a1f1a;
+    padding: 11px 0;
+    outline: none;
+
+    &::placeholder { color: #b5ada5; }
+    &::-webkit-search-cancel-button { display: none; }
+  }
+
+  &__clear {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 14px;
+    color: #9e8e84;
+    display: flex;
+    align-items: center;
+    transition: color 0.18s;
+
+    &:hover { color: #1a1512; }
+  }
+}
+
 // ── Hero ────────────────────────────────────────────────────────
 .hero {
   position: relative;
@@ -193,7 +252,7 @@
 
 // ── Section produits ─────────────────────────────────────────────
 .products-section {
-  padding: 12px clamp(16px, 4vw, 48px) 56px;
+  padding: 12px clamp(16px, 4vw, 48px) 0;
   max-width: 1400px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -454,109 +513,95 @@
 // ── Section cadeaux ──────────────────────────────────────────────
 .gifts-section {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  max-width: 1400px;
-  margin: 0 auto 64px;
-  padding: 0 clamp(16px, 4vw, 48px);
-  gap: clamp(20px, 3vw, 40px);
-  align-items: center;
-  box-sizing: border-box;
+  grid-template-columns: 1fr 1.35fr;
+  margin: 0 0 80px;
+  padding: 0;
+  gap: 0;
+  align-items: stretch;
 
   &__inner {
-    padding: clamp(20px, 3vw, 40px) 0;
-    
+    background: #f7f3ef;
+    padding: clamp(28px, 4vw, 52px) clamp(32px, 5vw, 72px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   &__kicker {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 14px;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #8a7a6e;
-    margin-bottom: 14px;
+    color: #9e8e84;
+    margin-bottom: 28px;
+
+    &::before {
+      content: '';
+      flex-shrink: 0;
+      width: 30px;
+      height: 1px;
+      background: #c4b0a4;
+    }
   }
 
   &__title {
-    font-size: clamp(1.1rem, 2.2vw, 1.7rem);
-    font-weight: 400;
+    font-size: clamp(1.45rem, 2.8vw, 2.2rem);
+    font-weight: 300;
+    letter-spacing: 0.07em;
+    line-height: 1.2;
     color: #1a1512;
-    letter-spacing: 0.06em;
-    line-height: 1.25;
-    margin: 0 0 18px;
+    margin: 0 0 26px;
     text-transform: uppercase;
   }
 
   &__text {
-    font-size: clamp(12px, 0.9vw, 14px);
-    line-height: 1.85;
+    font-size: clamp(12px, 0.92vw, 14px);
+    line-height: 1.9;
     color: #6b6158;
     font-weight: 400;
-    margin: 0;
-    max-width: 38em;
+    margin: 0 0 40px;
+    max-width: 34em;
+  }
+
+  &__cta {
+    display: inline-block;
+    align-self: flex-start;
+    border: 1px solid #1a1512;
+    color: #1a1512;
+    padding: 12px 32px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-family: 'Montserrat', system-ui, sans-serif;
+    transition: background 0.24s, color 0.24s;
+
+    &:hover {
+      background: #1a1512;
+      color: #fff;
+    }
   }
 
   &__banner {
     position: relative;
-    border-radius: 4px;
     overflow: hidden;
     width: 100%;
-    height: 100%;
-    min-height: 320px;
+    min-height: 300px;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     &:hover img {
-      transform: scale(1.03);
-    }
-  }
-
-  &__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(18, 10, 6, 0.62) 0%, transparent 55%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    padding: clamp(18px, 3vw, 36px);
-    text-align: center;
-  }
-
-  &__desc {
-    font-size: clamp(9.5px, 0.9vw, 12px);
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.92);
-    line-height: 1.5;
-    margin: 0 0 16px;
-    max-width: 28em;
-  }
-
-  &__view-btn {
-    border: 1px solid rgba(255, 255, 255, 0.85);
-    background: transparent;
-    color: #ffffff;
-    padding: 9px 24px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 2px;
-    font-family: 'Montserrat', system-ui, sans-serif;
-    transition: background 0.22s, color 0.22s;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.14);
+      transform: scale(1.04);
     }
   }
 }
@@ -834,10 +879,31 @@
 @media (max-width: 992px) {
   .gifts-section {
     grid-template-columns: 1fr;
-    
+  }
+
+  .gifts-section__inner {
+    text-align: center;
+    align-items: center;
+    padding: clamp(36px, 6vw, 64px) clamp(24px, 5vw, 56px);
+  }
+
+  .gifts-section__kicker {
+    justify-content: center;
+
+    &::before { display: none; }
+  }
+
+  .gifts-section__text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .gifts-section__cta {
+    align-self: center;
   }
 
   .gifts-section__banner {
+    min-height: 260px;
     aspect-ratio: 16 / 9;
   }
 
@@ -896,12 +962,8 @@
     gap: 10px;
   }
 
-  .gifts-section {
-    padding: 0 12px;
-
-    &__title {
-      font-size: 1rem;
-    }
+  .gifts-section__title {
+    font-size: 1.1rem;
   }
 }
 

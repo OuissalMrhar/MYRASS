@@ -8,9 +8,10 @@ export const environment = {
   facebookAppId: '',
   /** EmailJS : toEmail = destinataire des messages (variable du template). */
   emailjs: {
-    serviceId: '',
+    serviceId: 'service_pcc1xjb',
     templateId: '',
-    publicKey: '',
+    otpTemplateId: 'template_r0jm8f8',
+    publicKey: 'NdDMUBMyoAJ5TOLOe',
     toEmail: '',
   },
 };

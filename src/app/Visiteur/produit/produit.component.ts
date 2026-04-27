@@ -27,6 +27,7 @@ import { RecentlyViewedService } from '../../services/recently-viewed.service';
 import { SiteLanguageService } from '../../core/site-language.service';
 import { PRODUIT_PAGE_LABELS, ProduitPageLabels, SiteLang, pick } from '../../core/visitor-i18n';
 import { CurrencyService } from '../../services/currency.service';
+import { SeoService } from '../../core/seo.service';
 
 export type ProductSortMode =
   | 'recommended'
@@ -132,6 +133,8 @@ export class ProduitComponent implements OnInit, OnDestroy {
   private readonly visageProductId = 12;
   private readonly visageImage = '/assets/visage.png';
 
+  searchTerm = '';
+
   constructor(
     private readonly produitService: ProduitService,
     private readonly categorieService: CategorieService,
@@ -148,6 +151,7 @@ export class ProduitComponent implements OnInit, OnDestroy {
     private readonly siteLang: SiteLanguageService,
     readonly productRoutes: ProductRoutingHelper,
     private readonly currencyService: CurrencyService,
+    private readonly seo: SeoService,
   ) {}
 
   ngOnInit(): void {
@@ -155,6 +159,10 @@ export class ProduitComponent implements OnInit, OnDestroy {
       this.currentLang = l;
       this.isRtl = l === 'ar';
       this.labels = PRODUIT_PAGE_LABELS[l];
+      this.seo.set({
+        title: l === 'ar' ? 'منتجاتنا' : l === 'en' ? 'Our Products' : 'Nos Produits',
+        description: this.labels.heroSubtitle,
+      });
       this.recomputeFiltered();
     });
     this.currencyService.currency$.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -725,10 +733,26 @@ export class ProduitComponent implements OnInit, OnDestroy {
       .filter((s) => s.items.length > 0);
   }
 
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.recomputeFiltered();
+  }
+
   private recomputeFiltered(): void {
     let list = this.allProduits.filter(
       (p) => (p.rubriqueVisiteur ?? 'disponible') !== 'masque',
     );
+
+    if (this.searchTerm.trim()) {
+      const q = this.searchTerm.trim().toLowerCase();
+      list = list.filter(
+        (p) =>
+          (p.nom || '').toLowerCase().includes(q) ||
+          (p.nomEn || '').toLowerCase().includes(q) ||
+          (p.nomAr || '').toLowerCase().includes(q) ||
+          (p.description || '').toLowerCase().includes(q),
+      );
+    }
 
     if (this.selectedCategoryIds.size > 0) {
       list = list.filter((p) => p.categorieId != null && this.selectedCategoryIds.has(p.categorieId));
