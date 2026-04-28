@@ -171,16 +171,20 @@
   <div class="nav-profile-wrap" [class.nav-profile-wrap--open]="isProfileMenuOpen">
     <button
       type="button"
-      class="icon-btn"
+      class="icon-btn guest-icon-btn"
       aria-label="Menu compte"
       [attr.aria-expanded]="isProfileMenuOpen"
       (click)="onGuestUserClick($event)"
     >
-      <!-- Sur mobile, on montre le même style 3 tirets que le menu -->
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <svg class="guest-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
         <circle cx="12" cy="7" r="4"></circle>
       </svg>
+      <span class="guest-hamburger" aria-hidden="true">
+        <span class="guest-hamburger__line"></span>
+        <span class="guest-hamburger__line"></span>
+        <span class="guest-hamburger__line"></span>
+      </span>
     </button>
     <div
       *ngIf="isProfileMenuOpen"

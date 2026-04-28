@@ -150,15 +150,44 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: #fdf8f0;
+  background: linear-gradient(135deg, #fdf8f0 0%, #fdf4e8 100%);
   border: 1px solid #e8d8c0;
-  border-radius: 8px;
-  padding: 14px 16px;
+  border-radius: 10px;
+  padding: 16px 18px;
   margin-bottom: 24px;
 
-  svg { flex-shrink: 0; color: #b8860b; margin-top: 1px; }
+  svg { flex-shrink: 0; color: #b8860b; margin-top: 2px; }
 
-  p { margin: 0; font-size: 13px; color: #6b5030; line-height: 1.55; }
+  &__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #7a5010;
+    margin: 0 0 4px;
+  }
+
+  &__text { margin: 0; font-size: 12px; color: #6b5030; line-height: 1.6; }
+}
+
+.profile-forgot-desc {
+  font-size: 13px;
+  color: #6b6158;
+  line-height: 1.6;
+  margin: 0 0 24px;
+
+  strong { color: #1a1512; }
+}
+
+.profile-field__empty { color: #b5ada5; font-style: italic; }
+
+.profile-form--single {
+  grid-template-columns: 1fr !important;
+}
+
+.profile-form__otp {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
 }
 
 .profile-success {
@@ -231,7 +260,7 @@
       color: #9e8e84;
     }
 
-    input {
+    input, select {
       padding: 11px 14px;
       border: 1px solid #e0d8d2;
       border-radius: 4px;
@@ -241,9 +270,25 @@
       color: #1a1512;
       outline: none;
       transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+      box-sizing: border-box;
 
       &:focus { border-color: #9e8e84; background: #fff; }
       &::placeholder { color: #c4b8b0; }
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239e8e84' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    .profile-form__field--full {
+      grid-column: 1 / -1;
     }
   }
 

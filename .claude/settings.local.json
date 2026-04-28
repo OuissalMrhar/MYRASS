@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx ng *)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(xargs grep *)",
+      "Bash(gh api *)",
+      "Bash(python -c \"import sys,json; [print\\(f['path']\\) for f in json.load\\(sys.stdin\\)['tree'] if 'user' in f['path'].lower\\(\\) or 'User' in f['path']]\")",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh repo *)",
+      "Bash(git clone *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git config *)",
+      "Bash(git ls-remote *)"
+    ]
+  }
+}

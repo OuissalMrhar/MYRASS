@@ -169,12 +169,17 @@ export class UserAuthService {
   }
 
   get userInitials(): string {
-    const fullName = (this.currentUser?.nomComplet ?? '').trim();
-    if (!fullName) return '';
-
-    // "2 premières lettres" du nom complet, sans espaces.
-    const condensed = fullName.replace(/\s+/g, '');
-    return condensed.slice(0, 2).toUpperCase();
+    const name = (this.currentUser?.nomComplet ?? '').trim();
+    if (name && name !== 'Utilisateur') {
+      const words = name.split(/\s+/).filter(Boolean);
+      if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+      return name[0].toUpperCase();
+    }
+    const email = (this.currentUser?.email ?? '').trim();
+    if (email && !email.startsWith('placeholder.')) return email[0].toUpperCase();
+    const phone = (this.currentUser?.telephone ?? '').trim();
+    if (phone) return phone.slice(0, 2);
+    return '?';
   }
 
   private mapToVisitor(resp: UserAuthApiResponse): VisitorUser {
