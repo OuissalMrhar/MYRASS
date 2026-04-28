@@ -15,7 +15,11 @@
       "Bash(git remote *)",
       "Bash(git branch *)",
       "Bash(git config *)",
-      "Bash(git ls-remote *)"
+      "Bash(git ls-remote *)",
+      "Bash(vercel --version)",
+      "Bash(vercel link *)",
+      "Bash(vercel --prod --yes)",
+      "Bash(git commit *)"
     ]
   }
 }

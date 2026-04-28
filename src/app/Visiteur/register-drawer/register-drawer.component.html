@@ -63,35 +63,54 @@
       <h2 class="reg-title">{{ l('step2Title') }}</h2>
       <p class="reg-subtitle">{{ l('step2Hint') }} <strong>{{ inputValue }}</strong></p>
 
-      <div class="reg-otp-timer">
-        <svg class="reg-otp-timer__ring" viewBox="0 0 56 56">
-          <circle cx="28" cy="28" r="24" fill="none" stroke="#f0ece8" stroke-width="3"/>
-          <circle cx="28" cy="28" r="24" fill="none" stroke="#553b31" stroke-width="3"
-            stroke-linecap="round" stroke-dasharray="150.8"
-            [style.stroke-dashoffset]="150.8 * (1 - otpSecondsLeft / OTP_TTL)"
-            transform="rotate(-90 28 28)"/>
-        </svg>
-        <span class="reg-otp-timer__text">{{ otpMinSec }}</span>
-      </div>
+      <!-- Timer ou message expiré -->
+      <ng-container *ngIf="otpSecondsLeft > 0; else otpExpiredBlock">
+        <div class="reg-otp-timer">
+          <svg class="reg-otp-timer__ring" viewBox="0 0 56 56">
+            <circle cx="28" cy="28" r="24" fill="none" stroke="#f0ece8" stroke-width="3"/>
+            <circle cx="28" cy="28" r="24" fill="none" stroke="#553b31" stroke-width="3"
+              stroke-linecap="round" stroke-dasharray="150.8"
+              [style.stroke-dashoffset]="150.8 * (1 - otpSecondsLeft / OTP_TTL)"
+              transform="rotate(-90 28 28)"/>
+          </svg>
+          <span class="reg-otp-timer__text">{{ otpMinSec }}</span>
+        </div>
+      </ng-container>
 
-      <div class="reg-field-wrap">
-        <label class="reg-label">{{ l('otpLabel') }}</label>
-        <input type="text" class="reg-input reg-input--otp"
-          placeholder="000000" [(ngModel)]="otpCode"
-          maxlength="8" inputmode="numeric" autocomplete="one-time-code"
-          (keyup.enter)="verifyOtp()" />
-        <p class="reg-error" *ngIf="otpError">{{ otpError }}</p>
-      </div>
+      <!-- Code expiré -->
+      <ng-template #otpExpiredBlock>
+        <div class="reg-expired-msg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+          </svg>
+          <p>{{ l('otpExpiredMsg') }}</p>
+        </div>
+        <button type="button" class="reg-btn" (click)="resendCode()">
+          {{ l('resend') }}
+        </button>
+        <button type="button" class="reg-back" (click)="step = 1">← Retour</button>
+      </ng-template>
 
-      <button type="button" class="reg-btn" [disabled]="otpVerifying" (click)="verifyOtp()">
-        {{ otpVerifying ? l('sending') : l('verify') }}
-      </button>
+      <ng-container *ngIf="otpSecondsLeft > 0">
+        <div class="reg-field-wrap">
+          <label class="reg-label">{{ l('otpLabel') }}</label>
+          <input type="text" class="reg-input reg-input--otp"
+            placeholder="000000" [(ngModel)]="otpCode"
+            maxlength="8" inputmode="numeric" autocomplete="one-time-code"
+            (keyup.enter)="verifyOtp()" />
+          <p class="reg-error" *ngIf="otpError">{{ otpError }}</p>
+        </div>
 
-      <button type="button" class="reg-link" [disabled]="resendCooldown > 0" (click)="resendCode()">
-        {{ l('resend') }}{{ resendCooldown > 0 ? ' (' + resendCooldown + 's)' : '' }}
-      </button>
+        <button type="button" class="reg-btn" [disabled]="otpVerifying" (click)="verifyOtp()">
+          {{ otpVerifying ? l('sending') : l('verify') }}
+        </button>
 
-      <button type="button" class="reg-back" (click)="step = 1">← Retour</button>
+        <button type="button" class="reg-link" [disabled]="resendCooldown > 0" (click)="resendCode()">
+          {{ l('resend') }}{{ resendCooldown > 0 ? ' (' + resendCooldown + 's)' : '' }}
+        </button>
+
+        <button type="button" class="reg-back" (click)="step = 1">← Retour</button>
+      </ng-container>
     </ng-container>
 
     <!-- STEP 3 : Mot de passe -->

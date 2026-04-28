@@ -317,7 +317,8 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
       confirmLabel:   { fr: 'Confirmation',                                  en: 'Confirm password',                  ar: 'تأكيد كلمة المرور' },
       confirmMatch:   { fr: '✓ Les mots de passe correspondent',             en: '✓ Passwords match',                 ar: '✓ كلمتا المرور متطابقتان' },
       chooseMeth:     { fr: 'Choisissez comment vous inscrire',              en: 'Choose how to sign up',             ar: 'اختر طريقة التسجيل' },
-      otpLabel:            { fr: 'Code de vérification',   en: 'Verification code',    ar: 'رمز التحقق' },
+      otpLabel:            { fr: 'Code de vérification',                              en: 'Verification code',                              ar: 'رمز التحقق' },
+      otpExpiredMsg:       { fr: 'Code expiré. Demandez un nouveau code.',             en: 'Code expired. Request a new code.',               ar: 'انتهت صلاحية الرمز. اطلب رمزاً جديداً.' },
       emailjsNotConfigured:{ fr: 'Envoi d\'email non configuré. Renseignez serviceId, otpTemplateId et publicKey dans environment.ts.', en: 'Email sending not configured. Fill in serviceId, otpTemplateId and publicKey in environment.ts.', ar: 'إرسال البريد غير مُهيَّأ. يرجى إعداد EmailJS.' },
       emailSendFailed:     { fr: 'L\'envoi du code a échoué. Vérifiez votre configuration EmailJS.', en: 'Failed to send the code. Check your EmailJS configuration.', ar: 'فشل إرسال الرمز. تحقق من إعداد EmailJS.' },
     };

@@ -31,6 +31,7 @@ import { GuideComponent } from './Visiteur/guide/guide.component';
 import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.component';
 import { CurrencyDisplayPipe } from './pipes/currency-display.pipe';
 import { RevealDirective } from './directives/reveal.directive';
+import { SecureImageDirective } from './directives/secure-image.directive';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { RevealDirective } from './directives/reveal.directive';
     GuideComponent,
     ProfilePageComponent,
     RevealDirective,
+    SecureImageDirective,
   ],
   imports: [
     BrowserModule,

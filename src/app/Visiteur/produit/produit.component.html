@@ -20,10 +20,10 @@
       </svg>
       <input
         class="search-bar__input"
-        type="search"
+        type="text"
         [placeholder]="currentLang === 'ar' ? 'بحث…' : currentLang === 'en' ? 'Search products…' : 'Rechercher un produit…'"
-        [value]="searchTerm"
-        (input)="onSearch($any($event.target).value)"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch($event)"
         autocomplete="off"
         aria-label="Rechercher un produit"
       />
