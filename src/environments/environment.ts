@@ -12,10 +12,10 @@ export const environment = {
    * toEmail = adresse qui reçoit les messages du formulaire Contact (variable du template EmailJS).
    */
   emailjs: {
-    serviceId: 'service_pcc1xjb',
+    serviceId: 'service_g44qq6c',
     templateId: '',
-    otpTemplateId: 'template_r0jm8f8',
-    publicKey: 'NdDMUBMyoAJ5TOLOe',
+    otpTemplateId: 'template_2eyim77',
+    publicKey: 'ew6ylnM-a0b66Ajxa',
     toEmail: '',
   },
 };
