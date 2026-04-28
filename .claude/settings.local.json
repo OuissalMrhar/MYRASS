@@ -19,7 +19,8 @@
       "Bash(vercel --version)",
       "Bash(vercel link *)",
       "Bash(vercel --prod --yes)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(dotnet add *)"
     ]
   }
 }
