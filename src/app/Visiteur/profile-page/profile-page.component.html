@@ -8,7 +8,7 @@
       <div class="profile-avatar">{{ initials }}</div>
       <div class="profile-hero__meta">
         <h1 class="profile-hero__name">
-          {{ (user.nomComplet && user.nomComplet !== 'Utilisateur') ? user.nomComplet : displayIdentifier }}
+          {{ nomComplet || displayIdentifier }}
         </h1>
         <p class="profile-hero__email">{{ displayIdentifier }}</p>
         <div class="profile-completion">
@@ -21,239 +21,217 @@
     </div>
   </div>
 
-  <!-- Tabs -->
-  <div class="profile-nav">
-    <div class="profile-nav__inner">
-      <button type="button" class="profile-nav__tab" [class.active]="activeSection === 'info'" (click)="setSection('info')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        {{ t('infoTab') }}
-      </button>
-      <button type="button" class="profile-nav__tab" [class.active]="activeSection === 'password'" (click)="setSection('password')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        {{ t('pwTab') }}
-      </button>
-      <button type="button" class="profile-nav__tab" [class.active]="activeSection === 'orders'" (click)="setSection('orders')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/></svg>
-        {{ t('ordersTab') }}
-      </button>
+  <div class="profile-body">
+
+    <!-- ── Feedback globaux ─────────────────────────────────────── -->
+    <div class="profile-success" *ngIf="profileSuccess || pwSuccess">
+      {{ profileSuccess || pwSuccess }}
     </div>
-  </div>
 
-  <div class="profile-content">
+    <!-- ── Hint complétion ──────────────────────────────────────── -->
+    <div class="profile-hint" *ngIf="profileCompletion < 100">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+      </svg>
+      <div>
+        <p class="profile-hint__title">Débloquez vos avantages</p>
+        <p class="profile-hint__text">{{ t('profileHint') }}</p>
+      </div>
+    </div>
 
-    <!-- ── INFORMATIONS ──────────────────────────────────────────── -->
-    <section class="profile-card" *ngIf="activeSection === 'info'">
-
-      <!-- Hint complétion -->
-      <div class="profile-hint" *ngIf="profileCompletion < 100">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
-        <div>
-          <p class="profile-hint__title">Débloquez vos avantages</p>
-          <p class="profile-hint__text">{{ t('profileHint') }}</p>
-        </div>
+    <!-- ── Informations ─────────────────────────────────────────── -->
+    <section class="profile-section">
+      <div class="profile-section__head">
+        <h2 class="profile-section__title">Informations</h2>
+        <button *ngIf="!editMode" type="button" class="profile-edit-btn" (click)="startEdit()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          {{ t('editProfile') }}
+        </button>
       </div>
 
-      <div class="profile-success" *ngIf="profileSuccess">{{ profileSuccess }}</div>
-      <div class="profile-error"   *ngIf="profileError">{{ profileError }}</div>
+      <div class="profile-error" *ngIf="profileError">{{ profileError }}</div>
 
       <!-- View mode -->
       <ng-container *ngIf="!editMode">
-        <dl class="profile-fields">
-          <div class="profile-field">
-            <dt>{{ t('fullName') }}</dt>
-            <dd [class.profile-field__empty]="!nomComplet">{{ nomComplet || t('notSet') }}</dd>
+        <div class="profile-info-list">
+          <div class="profile-info-item">
+            <span class="profile-info-item__label">{{ t('fullName') }}</span>
+            <span class="profile-info-item__val" [class.empty]="!nomComplet">{{ nomComplet || t('notSet') }}</span>
           </div>
-          <div class="profile-field">
-            <dt>{{ t('genreLabel') }}</dt>
-            <dd [class.profile-field__empty]="genreId === 3">
-              {{ genreLabel }}
-            </dd>
+          <div class="profile-info-item">
+            <span class="profile-info-item__label">{{ t('genreLabel') }}</span>
+            <span class="profile-info-item__val" [class.empty]="genreId === 3">{{ genreLabel }}</span>
           </div>
-          <div class="profile-field">
-            <dt>{{ t('emailLabel') }}</dt>
-            <dd [class.profile-field__empty]="!email">{{ email || t('notSet') }}</dd>
+          <div class="profile-info-item">
+            <span class="profile-info-item__label">{{ t('emailLabel') }}</span>
+            <span class="profile-info-item__val" [class.empty]="!email">{{ email || t('notSet') }}</span>
           </div>
-          <div class="profile-field">
-            <dt>{{ t('phoneLabel') }}</dt>
-            <dd [class.profile-field__empty]="!telephone">{{ telephone || t('notSet') }}</dd>
+          <div class="profile-info-item">
+            <span class="profile-info-item__label">{{ t('phoneLabel') }}</span>
+            <span class="profile-info-item__val" [class.empty]="!telephone">{{ telephone || t('notSet') }}</span>
           </div>
-          <div class="profile-field">
-            <dt>{{ t('dobLabel') }}</dt>
-            <dd [class.profile-field__empty]="!dateNaissance">{{ dateNaissance || t('notSet') }}</dd>
+          <div class="profile-info-item">
+            <span class="profile-info-item__label">{{ t('dobLabel') }}</span>
+            <span class="profile-info-item__val" [class.empty]="!dateNaissance">{{ dateNaissance || t('notSet') }}</span>
           </div>
-        </dl>
-        <button type="button" class="profile-btn profile-btn--primary" (click)="startEdit()">{{ t('editProfile') }}</button>
+          <div class="profile-info-item">
+            <span class="profile-info-item__label">{{ t('villeLabel') }}</span>
+            <span class="profile-info-item__val" [class.empty]="!ville">{{ ville || t('notSet') }}</span>
+          </div>
+        </div>
       </ng-container>
 
       <!-- Edit mode -->
       <ng-container *ngIf="editMode">
-        <div class="profile-form">
-
-          <div class="profile-form__field profile-form__field--full">
+        <div class="profile-form-col">
+          <div class="pf-field">
             <label>{{ t('fullName') }}</label>
             <input type="text" [(ngModel)]="nomComplet" [placeholder]="t('fullName')" />
           </div>
-
-          <div class="profile-form__field">
+          <div class="pf-field">
             <label>{{ t('genreLabel') }}</label>
             <select [(ngModel)]="genreId">
               <option *ngFor="let g of genres" [value]="g.id">{{ g.label }}</option>
             </select>
           </div>
-
-          <div class="profile-form__field">
-            <label>{{ t('dobLabel') }}</label>
-            <input type="date" [(ngModel)]="dateNaissance" />
-          </div>
-
-          <!-- Email : affiché seulement si inscrit par téléphone -->
-          <div class="profile-form__field" *ngIf="!registeredByEmail">
+          <div class="pf-field" *ngIf="!registeredByEmail">
             <label>{{ t('emailLabel') }}</label>
-            <input type="email" [(ngModel)]="email" [placeholder]="'votre@email.com'" />
+            <input type="email" [(ngModel)]="email" placeholder="votre@email.com" />
           </div>
-
-          <!-- Téléphone : affiché seulement si inscrit par email -->
-          <div class="profile-form__field" *ngIf="registeredByEmail">
+          <div class="pf-field" *ngIf="registeredByEmail">
             <label>{{ t('phoneLabel') }}</label>
             <input type="tel" [(ngModel)]="telephone" placeholder="+33 6 00 00 00 00" />
           </div>
-
+          <div class="pf-field">
+            <label>{{ t('dobLabel') }}</label>
+            <input type="date" [(ngModel)]="dateNaissance" />
+          </div>
+          <div class="pf-field">
+            <label>{{ t('villeLabel') }}</label>
+            <input type="text" [(ngModel)]="ville" [placeholder]="t('villeLabel')" />
+          </div>
         </div>
-
-        <div class="profile-actions">
-          <button type="button" class="profile-btn profile-btn--primary" [disabled]="profileLoading" (click)="saveProfile()">
+        <div class="pf-actions">
+          <button type="button" class="pf-btn pf-btn--primary" [disabled]="profileLoading" (click)="saveProfile()">
             {{ profileLoading ? '…' : t('save') }}
           </button>
-          <button type="button" class="profile-btn profile-btn--ghost" (click)="cancelEdit()">{{ t('cancel') }}</button>
+          <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelEdit()">{{ t('cancel') }}</button>
         </div>
       </ng-container>
     </section>
 
-    <!-- ── SÉCURITÉ ───────────────────────────────────────────────── -->
-    <section class="profile-card" *ngIf="activeSection === 'password'">
+    <!-- ── Mot de passe ─────────────────────────────────────────── -->
+    <section class="profile-section">
+      <div class="profile-section__head profile-section__head--toggle" (click)="togglePwSection()">
+        <h2 class="profile-section__title">{{ t('pwSection') }}</h2>
+        <svg class="profile-section__chevron" [class.open]="pwOpen"
+          viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" width="12" height="8">
+          <path d="M1 1l5 5 5-5"/>
+        </svg>
+      </div>
 
-      <div class="profile-success" *ngIf="pwSuccess">{{ pwSuccess }}</div>
-
-      <!-- Mode normal : ancien mot de passe -->
-      <ng-container *ngIf="!forgotMode">
+      <div class="pw-panel" [class.pw-panel--open]="pwOpen">
         <div class="profile-error" *ngIf="pwError">{{ pwError }}</div>
+        <div class="profile-success" *ngIf="pwSuccess">{{ pwSuccess }}</div>
 
-        <div class="profile-form profile-form--single">
-          <div class="profile-form__field profile-form__field--full">
-            <label>{{ t('oldPw') }}</label>
-            <div class="profile-form__pass-wrap">
-              <input [type]="showOldPw ? 'text' : 'password'" [(ngModel)]="oldPw" autocomplete="current-password" />
-              <button type="button" class="profile-form__eye" (click)="showOldPw = !showOldPw">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="profile-form__field profile-form__field--full">
-            <label>{{ t('newPw') }}</label>
-            <div class="profile-form__pass-wrap">
-              <input [type]="showNewPw ? 'text' : 'password'" [(ngModel)]="newPw" autocomplete="new-password" />
-              <button type="button" class="profile-form__eye" (click)="showNewPw = !showNewPw">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
-            </div>
-            <ul class="profile-conditions">
-              <li *ngFor="let c of pwConditions" [class.ok]="c.ok">{{ c.ok ? '✓' : '○' }} {{ c.label }}</li>
-            </ul>
-          </div>
-
-          <div class="profile-form__field profile-form__field--full">
-            <label>{{ t('confirmPw') }}</label>
-            <div class="profile-form__pass-wrap">
-              <input [type]="showConfirmPw ? 'text' : 'password'" [(ngModel)]="confirmPw" autocomplete="new-password" />
-              <button type="button" class="profile-form__eye" (click)="showConfirmPw = !showConfirmPw">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="profile-actions">
-          <button type="button" class="profile-btn profile-btn--primary" [disabled]="pwLoading" (click)="changePassword()">
-            {{ pwLoading ? '…' : t('changePw') }}
-          </button>
-          <button type="button" class="profile-btn profile-btn--ghost" (click)="enterForgotMode()">
-            {{ t('forgotPw') }}
-          </button>
-        </div>
-      </ng-container>
-
-      <!-- Mode mot de passe oublié -->
-      <ng-container *ngIf="forgotMode">
-        <div class="profile-error"   *ngIf="forgotError">{{ forgotError }}</div>
-        <div class="profile-success" *ngIf="forgotSuccess">{{ forgotSuccess }}</div>
-
-        <!-- Étape 1 : envoyer le code -->
-        <ng-container *ngIf="forgotStep === 'send'">
-          <p class="profile-forgot-desc">
-            Un code de vérification sera envoyé à <strong>{{ displayIdentifier }}</strong>.
-          </p>
-          <div class="profile-actions">
-            <button type="button" class="profile-btn profile-btn--primary" [disabled]="forgotLoading" (click)="sendForgotOtp()">
-              {{ forgotLoading ? t('sending') : t('sendCode') }}
-            </button>
-            <button type="button" class="profile-btn profile-btn--ghost" (click)="cancelForgot()">{{ t('cancel') }}</button>
-          </div>
-        </ng-container>
-
-        <!-- Étape 2 : entrer le code + nouveau mot de passe -->
-        <ng-container *ngIf="forgotStep === 'verify'">
-          <div class="profile-form profile-form--single">
-            <div class="profile-form__field profile-form__field--full">
-              <label>{{ t('codeLabel') }}</label>
-              <input type="text" class="profile-form__otp" [(ngModel)]="resetOtpCode"
-                placeholder="000000" inputmode="numeric" maxlength="8" autocomplete="one-time-code" />
-            </div>
-
-            <div class="profile-form__field profile-form__field--full">
-              <label>{{ t('newPw') }}</label>
-              <div class="profile-form__pass-wrap">
-                <input [type]="showResetPw ? 'text' : 'password'" [(ngModel)]="resetNewPw" autocomplete="new-password" />
-                <button type="button" class="profile-form__eye" (click)="showResetPw = !showResetPw">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                  </svg>
+        <!-- Normal change -->
+        <ng-container *ngIf="!forgotMode">
+          <div class="profile-form-col">
+            <div class="pf-field">
+              <label>{{ t('oldPw') }}</label>
+              <div class="pf-pass">
+                <input [type]="showOldPw ? 'text' : 'password'" [(ngModel)]="oldPw" autocomplete="current-password" />
+                <button type="button" (click)="showOldPw = !showOldPw">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
-              <ul class="profile-conditions">
+            </div>
+            <div class="pf-field">
+              <label>{{ t('newPw') }}</label>
+              <div class="pf-pass">
+                <input [type]="showNewPw ? 'text' : 'password'" [(ngModel)]="newPw" autocomplete="new-password" />
+                <button type="button" (click)="showNewPw = !showNewPw">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <ul class="pw-conditions">
                 <li *ngFor="let c of pwConditions" [class.ok]="c.ok">{{ c.ok ? '✓' : '○' }} {{ c.label }}</li>
               </ul>
             </div>
-
-            <div class="profile-form__field profile-form__field--full">
-              <label>{{ t('confirmReset') }}</label>
-              <input type="password" [(ngModel)]="resetConfirmPw" autocomplete="new-password" />
+            <div class="pf-field">
+              <label>{{ t('confirmPw') }}</label>
+              <div class="pf-pass">
+                <input [type]="showConfirmPw ? 'text' : 'password'" [(ngModel)]="confirmPw" autocomplete="new-password" />
+                <button type="button" (click)="showConfirmPw = !showConfirmPw">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
             </div>
           </div>
-
-          <div class="profile-actions">
-            <button type="button" class="profile-btn profile-btn--primary" [disabled]="forgotLoading" (click)="confirmResetPassword()">
-              {{ forgotLoading ? '…' : t('save') }}
+          <div class="pf-actions">
+            <button type="button" class="pf-btn pf-btn--primary" [disabled]="pwLoading" (click)="changePassword()">
+              {{ pwLoading ? '…' : t('changePw') }}
             </button>
-            <button type="button" class="profile-btn profile-btn--ghost" (click)="cancelForgot()">{{ t('cancel') }}</button>
+            <button type="button" class="pf-btn pf-btn--ghost" (click)="enterForgotMode()">{{ t('forgotPw') }}</button>
           </div>
         </ng-container>
-      </ng-container>
+
+        <!-- Forgot -->
+        <ng-container *ngIf="forgotMode">
+          <div class="profile-error" *ngIf="forgotError">{{ forgotError }}</div>
+          <div class="profile-success" *ngIf="forgotSuccess">{{ forgotSuccess }}</div>
+
+          <ng-container *ngIf="forgotStep === 'send'">
+            <p class="pw-forgot-desc">Code envoyé à <strong>{{ displayIdentifier }}</strong></p>
+            <div class="pf-actions">
+              <button type="button" class="pf-btn pf-btn--primary" [disabled]="forgotLoading" (click)="sendForgotOtp()">
+                {{ forgotLoading ? t('sending') : t('sendCode') }}
+              </button>
+              <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelForgot()">{{ t('cancel') }}</button>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="forgotStep === 'verify'">
+            <div class="profile-form-col">
+              <div class="pf-field">
+                <label>{{ t('codeLabel') }}</label>
+                <input type="text" class="pf-otp" [(ngModel)]="resetOtpCode" placeholder="000000"
+                  inputmode="numeric" maxlength="8" autocomplete="one-time-code" />
+              </div>
+              <div class="pf-field">
+                <label>{{ t('newPw') }}</label>
+                <div class="pf-pass">
+                  <input [type]="showResetPw ? 'text' : 'password'" [(ngModel)]="resetNewPw" autocomplete="new-password" />
+                  <button type="button" (click)="showResetPw = !showResetPw">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <ul class="pw-conditions">
+                  <li *ngFor="let c of pwConditions" [class.ok]="c.ok">{{ c.ok ? '✓' : '○' }} {{ c.label }}</li>
+                </ul>
+              </div>
+              <div class="pf-field">
+                <label>{{ t('confirmPw') }}</label>
+                <input type="password" [(ngModel)]="resetConfirmPw" autocomplete="new-password" />
+              </div>
+            </div>
+            <div class="pf-actions">
+              <button type="button" class="pf-btn pf-btn--primary" [disabled]="forgotLoading" (click)="confirmResetPassword()">
+                {{ forgotLoading ? '…' : t('save') }}
+              </button>
+              <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelForgot()">{{ t('cancel') }}</button>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
     </section>
 
-    <!-- ── COMMANDES ─────────────────────────────────────────────── -->
-    <section class="profile-card profile-card--orders" *ngIf="activeSection === 'orders'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="48" height="48" style="opacity:.25">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
-      </svg>
-      <p class="profile-orders-hint">{{ t('viewOrders') }}</p>
-      <a routerLink="/mes-commandes" class="profile-btn profile-btn--primary">{{ t('ordersTab') }}</a>
+    <!-- ── Commandes ────────────────────────────────────────────── -->
+    <section class="profile-section profile-section--orders">
+      <a routerLink="/mes-commandes" class="pf-btn pf-btn--primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/></svg>
+        {{ t('ordersBtn') }}
+      </a>
     </section>
 
   </div>

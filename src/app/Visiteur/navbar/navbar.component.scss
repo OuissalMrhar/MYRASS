@@ -905,8 +905,7 @@
     }
 
     .mobile-menu-trigger {
-      /* Sur écrans <= 992px, on affiche la navbar complète (pas le drawer hamburger). */
-      display: none;
+      display: flex;
     }
 
     .nav-links {
@@ -932,32 +931,17 @@
         cursor: pointer;
       }
 
-      /* Guest icon: cacher le SVG personne, afficher hamburger */
-      .guest-icon-svg { display: none; }
-      .guest-hamburger {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        width: 18px;
-        height: 18px;
-      }
-      .guest-hamburger__line {
-        display: block;
-        width: 16px;
-        height: 2px;
-        border-radius: 99px;
-        background: #8e867e;
-      }
+      /* Guest icon: garder le SVG personne sur mobile aussi */
+      .guest-icon-svg  { display: block; }
+      .guest-hamburger { display: none; }
 
-      /* Sur mobile, on remplace le texte OM/OU par l’icône 3 tirets. */
+      /* User connecté : afficher les initiales, cacher le hamburger */
       .user-bubble__text {
-        display: none;
+        display: flex;
       }
 
       .user-bubble__hamburger {
-        display: flex !important;
+        display: none !important;
       }
 
       /* Icône menu mobile: sans fond, traits noirs. */
