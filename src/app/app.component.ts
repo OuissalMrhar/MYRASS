@@ -41,7 +41,8 @@ export class AppComponent implements OnInit, OnDestroy {
         url.startsWith('/faq') ||
         url.startsWith('/panier') ||
         url.startsWith('/favoris') ||
-        url.startsWith('/mes-commandes');
+        url.startsWith('/mes-commandes') ||
+        url.startsWith('/mon-profil');
       const isAdminAuthPage =
         url.startsWith('/admin/login') || url.startsWith('/admin/inscription');
       this.showSidebar = !this.isVisitorPage && !isAdminAuthPage;

@@ -108,6 +108,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     return (!e.startsWith('placeholder.') && e) ? e : p;
   }
 
+  get genreLabel(): string {
+    return this.genres.find(g => g.id === this.genreId)?.label ?? this.t('notSet');
+  }
+
   get registeredByEmail(): boolean {
     const e = this.user?.email ?? '';
     return !!e && !e.startsWith('placeholder.');

@@ -66,7 +66,7 @@
           <div class="profile-field">
             <dt>{{ t('genreLabel') }}</dt>
             <dd [class.profile-field__empty]="genreId === 3">
-              {{ genreId !== 3 ? (genres | slice:0:3)[genreId - 1]?.label : t('notSet') }}
+              {{ genreLabel }}
             </dd>
           </div>
           <div class="profile-field">
