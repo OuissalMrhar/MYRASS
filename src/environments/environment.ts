@@ -16,6 +16,6 @@ export const environment = {
     templateId: '',
     otpTemplateId: 'template_2eyim77',
     publicKey: 'ew6ylnM-a0b66Ajxa',
-    toEmail: '',
+    toEmail: 'myrasscode@gmail.com',
   },
 };
