@@ -54,11 +54,6 @@
         <a href="#" class="forgot-link">{{ labels.forgotPw }}</a>
       </div>
 
-      <div class="login-link-hint">
-        {{ labels.loginLinkHint }}
-        <a href="#" class="login-link-action">{{ labels.loginLinkAction }}</a>
-      </div>
-
       <button class="btn-black" type="submit" [disabled]="isLoading">
         {{ isLoading ? labels.logging : labels.loginBtn }}
       </button>
