@@ -137,7 +137,9 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
       this.startResendCooldown();
     }).catch((err) => {
       this.sendingCode = false;
-      this.step1Error = this.l('emailSendFailed');
+      console.error('[EmailJS Error]', err);
+      const detail = err?.text || err?.message || JSON.stringify(err);
+      this.step1Error = `Erreur EmailJS : ${detail}`;
       this.otpState = null;
     });
   }
