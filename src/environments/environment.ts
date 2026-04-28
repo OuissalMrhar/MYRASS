@@ -14,7 +14,7 @@ export const environment = {
   emailjs: {
     serviceId: 'service_g44qq6c',
     templateId: '',
-    otpTemplateId: 'template_2eyim77',
+    otpTemplateId: 'template_qj78hm6',
     publicKey: 'ew6ylnM-a0b66Ajxa',
     toEmail: 'myrasscode@gmail.com',
   },
