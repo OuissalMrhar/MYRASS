@@ -14,6 +14,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AboutComponent } from './about/about.component';
 import { GiftComponent } from './gift/gift.component';
 import { ContactComponent } from './contact/contact.component';
+import { CloudinaryOptimizePipe } from './pipes/cloudinary-optimize.pipe';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { ContactComponent } from './contact/contact.component';
     AboutComponent,
     GiftComponent,
     ContactComponent,
+    CloudinaryOptimizePipe,
   ],
   imports: [
     BrowserModule,
