@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npx ng build --configuration production",
+  "outputDirectory": "dist/myrass/browser",
+  "framework": "angular",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

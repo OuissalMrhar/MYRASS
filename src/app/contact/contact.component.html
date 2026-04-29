@@ -1,0 +1,198 @@
+<app-navbar></app-navbar>
+
+<main class="contact-page">
+  <div class="page-header">
+    <h1>Nous contacter</h1>
+    <p>Une question, une idée ou une proposition ? Écrivez-nous.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'contact'"
+      (click)="switchTab('contact')"
+    >
+      Contactez-nous
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'partenariat'"
+      (click)="switchTab('partenariat')"
+    >
+      Partenariat
+    </button>
+  </div>
+
+  <div class="form-container">
+
+    <!-- ── CONTACT FORM ── -->
+    <form
+      *ngIf="activeTab === 'contact'"
+      [formGroup]="contactForm"
+      (ngSubmit)="sendContact()"
+      class="contact-form"
+    >
+      <div class="form-group">
+        <label>Nom complet *</label>
+        <input
+          type="text"
+          formControlName="nom"
+          placeholder="Votre nom complet"
+          [class.invalid]="cf['nom'].invalid && cf['nom'].touched"
+        />
+        <span class="error" *ngIf="cf['nom'].invalid && cf['nom'].touched">
+          Nom requis (minimum 2 caractères)
+        </span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Adresse e-mail *</label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="votre@email.com"
+            [class.invalid]="cf['email'].invalid && cf['email'].touched"
+          />
+          <span class="error" *ngIf="cf['email'].invalid && cf['email'].touched">
+            Adresse e-mail invalide
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Téléphone *</label>
+          <input
+            type="tel"
+            formControlName="telephone"
+            placeholder="+212 6XX XXX XXX"
+            [class.invalid]="cf['telephone'].invalid && cf['telephone'].touched"
+          />
+          <span class="error" *ngIf="cf['telephone'].invalid && cf['telephone'].touched">
+            Téléphone requis
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Message *</label>
+        <textarea
+          formControlName="message"
+          rows="6"
+          placeholder="Décrivez votre demande..."
+          [class.invalid]="cf['message'].invalid && cf['message'].touched"
+        ></textarea>
+        <span class="error" *ngIf="cf['message'].invalid && cf['message'].touched">
+          Message requis (minimum 10 caractères)
+        </span>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" class="btn-send" [disabled]="contactState === 'sending'">
+          <span *ngIf="contactState !== 'sending'">Envoyer le message</span>
+          <span *ngIf="contactState === 'sending'" class="spinner"></span>
+        </button>
+      </div>
+
+      <div class="feedback success" *ngIf="contactState === 'success'">
+        Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.
+      </div>
+      <div class="feedback error" *ngIf="contactState === 'error'">
+        Une erreur est survenue. Veuillez réessayer ou nous écrire directement à contact&#64;myrass.com.
+      </div>
+    </form>
+
+    <!-- ── PARTENARIAT FORM ── -->
+    <form
+      *ngIf="activeTab === 'partenariat'"
+      [formGroup]="partnerForm"
+      (ngSubmit)="sendPartenariat()"
+      class="contact-form"
+    >
+      <div class="form-group">
+        <label>Nom complet *</label>
+        <input
+          type="text"
+          formControlName="nom"
+          placeholder="Votre nom complet"
+          [class.invalid]="pf['nom'].invalid && pf['nom'].touched"
+        />
+        <span class="error" *ngIf="pf['nom'].invalid && pf['nom'].touched">
+          Nom requis (minimum 2 caractères)
+        </span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Adresse e-mail *</label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="votre@email.com"
+            [class.invalid]="pf['email'].invalid && pf['email'].touched"
+          />
+          <span class="error" *ngIf="pf['email'].invalid && pf['email'].touched">
+            Adresse e-mail invalide
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Téléphone *</label>
+          <input
+            type="tel"
+            formControlName="telephone"
+            placeholder="+212 6XX XXX XXX"
+            [class.invalid]="pf['telephone'].invalid && pf['telephone'].touched"
+          />
+          <span class="error" *ngIf="pf['telephone'].invalid && pf['telephone'].touched">
+            Téléphone requis
+          </span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Type de partenariat *</label>
+        <select
+          formControlName="typePartenariat"
+          [class.invalid]="pf['typePartenariat'].invalid && pf['typePartenariat'].touched"
+        >
+          <option value="" disabled selected>Sélectionnez un type</option>
+          <option *ngFor="let type of partnershipTypes" [value]="type">{{ type }}</option>
+        </select>
+        <span class="error" *ngIf="pf['typePartenariat'].invalid && pf['typePartenariat'].touched">
+          Veuillez sélectionner un type de partenariat
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label>Message *</label>
+        <textarea
+          formControlName="message"
+          rows="6"
+          placeholder="Décrivez votre proposition de partenariat..."
+          [class.invalid]="pf['message'].invalid && pf['message'].touched"
+        ></textarea>
+        <span class="error" *ngIf="pf['message'].invalid && pf['message'].touched">
+          Message requis (minimum 10 caractères)
+        </span>
+      </div>
+
+      <div class="form-footer">
+        <button type="submit" class="btn-send" [disabled]="partnerState === 'sending'">
+          <span *ngIf="partnerState !== 'sending'">Envoyer la demande</span>
+          <span *ngIf="partnerState === 'sending'" class="spinner"></span>
+        </button>
+      </div>
+
+      <div class="feedback success" *ngIf="partnerState === 'success'">
+        Votre demande de partenariat a bien été reçue. Nous vous contacterons prochainement.
+      </div>
+      <div class="feedback error" *ngIf="partnerState === 'error'">
+        Une erreur est survenue. Veuillez réessayer ou nous écrire directement à contact&#64;myrass.com.
+      </div>
+    </form>
+
+  </div>
+</main>
+
+<app-footer></app-footer>
