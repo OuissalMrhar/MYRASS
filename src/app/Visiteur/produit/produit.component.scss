@@ -512,12 +512,15 @@
 
 // ── Section cadeaux ──────────────────────────────────────────────
 .gifts-section {
+  --gifts-section-h: clamp(260px, 26vw, 380px);
   display: grid;
   grid-template-columns: 1fr 1.35fr;
   margin: 0 0 80px;
   padding: 0;
   gap: 0;
   align-items: stretch;
+  min-height: var(--gifts-section-h);
+  grid-template-rows: 1fr;
 
   &__inner {
     background: #f7f3ef;
@@ -525,6 +528,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-height: var(--gifts-section-h);
+  }
+
+  &__media {
+    min-height: var(--gifts-section-h);
+    height: 100%;
   }
 
   &__kicker {
@@ -590,12 +599,15 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    min-height: 200px;
+    min-height: var(--gifts-section-h);
+    max-height: var(--gifts-section-h);
+    height: 100%;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       display: block;
       transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -879,12 +891,19 @@
 @media (max-width: 992px) {
   .gifts-section {
     grid-template-columns: 1fr;
+    min-height: auto;
+    grid-template-rows: auto;
   }
 
   .gifts-section__inner {
     text-align: center;
     align-items: center;
     padding: clamp(36px, 6vw, 64px) clamp(24px, 5vw, 56px);
+    min-height: auto;
+  }
+
+  .gifts-section__media {
+    min-height: auto;
   }
 
   .gifts-section__kicker {
@@ -903,8 +922,10 @@
   }
 
   .gifts-section__banner {
-    min-height: 260px;
-    aspect-ratio: 16 / 9;
+    min-height: 200px;
+    max-height: none;
+    aspect-ratio: 16 / 10;
+    height: auto;
   }
 
   .filter-bar .dropdown-wrap--push .dropdown-panel {

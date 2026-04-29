@@ -101,7 +101,7 @@
           <div class="product-card">
             <div class="product-image-wrap" [class.product-image-wrap--soon]="isRubriqueDimmed(product)">
               <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-image-link" [attr.aria-label]="'Voir — ' + product.nom">
-                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy" width="3" height="4" />
+                <img [src]="resolveProductImage(product) | cloudinaryImg: 720" [alt]="product.nom" loading="lazy" width="3" height="4" />
               </a>
               <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
               <button
@@ -148,7 +148,7 @@
           <div class="rv-card" *ngFor="let product of recentlyViewedItems">
             <div class="rv-card__img-wrap" [class.rv-card__img-wrap--soon]="isRubriqueDimmed(product)">
               <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="rv-card__img-link" [attr.aria-label]="'Voir — ' + product.nom">
-                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy" width="3" height="4" />
+                <img [src]="resolveProductImage(product) | cloudinaryImg: 720" [alt]="product.nom" loading="lazy" width="3" height="4" />
               </a>
               <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
               <button
@@ -179,7 +179,7 @@
           <div class="product-card">
             <div class="product-image-wrap" [class.product-image-wrap--soon]="isRubriqueDimmed(product)">
               <a [routerLink]="productRoutes.detailLink(product.nom, product.id!)" class="product-image-link" [attr.aria-label]="'Voir — ' + product.nom">
-                <img [src]="resolveProductImage(product)" [alt]="product.nom" loading="lazy" width="3" height="4" />
+                <img [src]="resolveProductImage(product) | cloudinaryImg: 720" [alt]="product.nom" loading="lazy" width="3" height="4" />
               </a>
               <div class="available-soon-badge" *ngIf="rubriqueBadgeLabel(product) as badge">{{ badge }}</div>
               <button
@@ -237,11 +237,11 @@
       </p>
       <a *ngIf="cadeauxGifts[0]" [routerLink]="['/details-gift', cadeauxGifts[0].id]" class="gifts-section__cta">{{ labels.viewBtn }}</a>
     </div>
-    <ng-container *ngFor="let gift of cadeauxGifts">
+    <div class="gifts-section__media" *ngIf="cadeauxGifts[0] as gift">
       <div class="gifts-section__banner">
-        <img [src]="giftImageUrl(gift)" [alt]="giftName(gift)" loading="lazy"/>
+        <img [src]="giftImageUrl(gift) | cloudinaryImg: 1400" [alt]="giftName(gift)" loading="lazy"/>
       </div>
-    </ng-container>
+    </div>
   </section>
 
 </div>

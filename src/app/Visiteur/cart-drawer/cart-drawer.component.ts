@@ -8,11 +8,12 @@ import { CartDrawerLabels } from '../../core/visitor-i18n';
 import { CartLine, CartService } from '../../services/cart.service';
 import { FavoritesService } from '../../services/favorites.service';
 import { CurrencyService } from '../../services/currency.service';
+import { CloudinaryImgPipe } from '../../pipes/cloudinary-img.pipe';
 
 @Component({
   selector: 'app-cart-drawer',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, CloudinaryImgPipe],
   templateUrl: './cart-drawer.component.html',
   styleUrls: ['./cart-drawer.component.scss'],
 })

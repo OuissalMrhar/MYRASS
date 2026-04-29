@@ -42,7 +42,7 @@
                 class="wl-card__img-link"
                 [attr.aria-label]="product.name"
               >
-                <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" class="wl-card__img" loading="lazy"/>
+                <img *ngIf="product.imageUrl" [src]="product.imageUrl | cloudinaryImg: 720" [alt]="product.name" class="wl-card__img" loading="lazy"/>
                 <span *ngIf="!product.imageUrl" class="wl-card__img wl-card__img--ph" aria-hidden="true"></span>
               </a>
               <button

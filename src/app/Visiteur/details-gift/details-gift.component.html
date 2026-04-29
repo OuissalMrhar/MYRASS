@@ -12,7 +12,7 @@
         <button type="button" class="back-link" (click)="goHome()">{{ labels.back }}</button>
       </div>
     } @else {
-      <section class="gift-hero" appReveal style="background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/v1776333444/pexels-daniel-clark-346904598-14134526_pyvgft.jpg')">
+      <section class="gift-hero" appReveal style="background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto,w_1800,c_fill/v1776333444/pexels-daniel-clark-346904598-14134526_pyvgft.jpg')">
         <div class="gift-hero__overlay">
           <p class="gift-hero__kicker">{{ gift.heroKicker }}</p>
           <h1 class="gift-hero__title">{{ gift.heroTitle }}</h1>
@@ -30,7 +30,7 @@
         <div class="gift-layout">
           <div class="gift-media">
             <div class="gift-media__main">
-              <img [src]="selectedMainImageUrl || gift.packImageUrl" [alt]="gift.title" />
+              <img [src]="(selectedMainImageUrl || gift.packImageUrl) | cloudinaryImg: 1400" [alt]="gift.title" fetchpriority="high" />
             </div>
             <div class="gift-media__thumbs" *ngIf="packProductCards.length > 0">
               <!-- Thumbnail image principale du pack -->
@@ -41,7 +41,7 @@
                 (click)="selectMainImage(gift.packImageUrl)"
                 aria-label="Image principale du pack"
               >
-                <img [src]="gift.packImageUrl" [alt]="gift.title" />
+                <img [src]="gift.packImageUrl | cloudinaryImg: 320" [alt]="gift.title" loading="lazy" />
               </button>
               <!-- Thumbnails images des produits -->
               <button
@@ -52,7 +52,7 @@
                 (click)="selectMainImage(p.imgSrc)"
                 [attr.aria-label]="'Voir photo — ' + p.name"
               >
-                <img *ngIf="p.imgSrc" [src]="p.imgSrc" [alt]="p.name" />
+                <img *ngIf="p.imgSrc" [src]="p.imgSrc | cloudinaryImg: 320" [alt]="p.name" loading="lazy" />
                 <div *ngIf="!p.imgSrc" class="gift-thumb__placeholder" aria-hidden="true"></div>
               </button>
             </div>
@@ -143,7 +143,7 @@
         <div class="gift-related__grid">
           <a class="gift-related-card" *ngFor="let p of packProductCards" [routerLink]="productRoutes.detailLink(p.name, p.id)">
             <div class="gift-related-card__img">
-              <img *ngIf="p.imgSrc" [src]="p.imgSrc" [alt]="p.name" />
+              <img *ngIf="p.imgSrc" [src]="p.imgSrc | cloudinaryImg: 520" [alt]="p.name" loading="lazy" />
               <div *ngIf="!p.imgSrc" class="gift-related-card__placeholder" aria-hidden="true"></div>
             </div>
             <p class="gift-related-card__name">{{ p.name }}</p>

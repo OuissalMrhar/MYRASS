@@ -41,7 +41,7 @@
         </ul>
       </div>
       <div class="guide-catalog__visual">
-        <img [src]="s.imageSrc" [alt]="s.imageAlt" loading="lazy" />
+        <img [src]="s.imageSrc | cloudinaryImg: 1100" [alt]="s.imageAlt" loading="lazy" />
       </div>
     </section>
 

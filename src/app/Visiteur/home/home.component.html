@@ -139,18 +139,19 @@
 </section>
 
 <section class="video-preview">
-  <video
-    class="video-preview__player"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="metadata"
-    aria-label="Vidéo Myrass"
-  >
-    <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/v1776867833/myrass_ko1p25.mp4" type="video/mp4" />
-  </video>
-  <div class="video-preview__overlay"></div>
+  <div class="video-preview__frame">
+    <video
+      class="video-preview__player"
+      controls
+      playsinline
+      preload="metadata"
+      poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto,w_1280/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
+      aria-label="Vidéo Myrass"
+    >
+      <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.mp4" type="video/mp4" />
+    </video>
+    <div class="video-preview__overlay"></div>
+  </div>
 </section>
 
 
@@ -171,7 +172,7 @@
       [class.col-item--inactive]="category.statut === false && !category.isComingSoon"
       (click)="selectCategory(i)"
     >
-      <div class="col-img" [ngClass]="categoryBgClass(i)" [class.coming-soon]="category.isComingSoon">
+      <div class="col-img" [ngClass]="categoryBgClass(category, i)" [class.coming-soon]="category.isComingSoon">
         <span class="coming-badge" *ngIf="category.isComingSoon">{{ t.availableSoon }}</span>
         <span class="inactive-badge" *ngIf="category.statut === false && !category.isComingSoon">{{ t.availableSoon }}</span>
       </div>
@@ -228,7 +229,7 @@
   <div class="ramadan-container ramadan-container--single" *ngIf="gifts.length > 0">
     <div class="ramadan-item large" *ngFor="let gift of gifts | slice:0:1">
       <div class="img-wrapper main-banner">
-        <img [src]="giftImageUrl(gift)" [alt]="gift | lang: 'nom' : currentLang" fetchpriority="high" width="3" height="2" />
+        <img [src]="giftImageUrl(gift) | cloudinaryImg: 1400" [alt]="gift | lang: 'nom' : currentLang" fetchpriority="high" width="3" height="2" />
         <div class="overlay-content">
           <a [routerLink]="['/details-gift', gift.id]" class="view-btn view-btn--link">{{ t.viewGift }}</a>
         </div>
@@ -252,9 +253,17 @@
 
   <div class="features-bar">
     <div class="features-track">
-      <div class="feature" *ngFor="let feature of partnerFeaturesLoop">
-        <span>{{ feature }}</span>
-        <img src="/assets/icon_durable.png" [alt]="feature + ' icon'" loading="lazy">
+      <div class="features-track__inner" aria-label="Myrass">
+        <div class="feature" *ngFor="let _ of partnerFeaturesLoop">
+          <img class="feature__logo" src="/assets/logo.png" alt="Logo Myrass" loading="lazy">
+          <span class="feature__text">Myrass</span>
+        </div>
+      </div>
+      <div class="features-track__inner" aria-hidden="true">
+        <div class="feature" *ngFor="let _ of partnerFeaturesLoop">
+          <img class="feature__logo" src="/assets/logo.png" alt="" loading="lazy">
+          <span class="feature__text">Myrass</span>
+        </div>
       </div>
     </div>
   </div>

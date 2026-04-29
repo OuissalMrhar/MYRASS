@@ -25,7 +25,7 @@
             >
               <img
                 *ngIf="line.imageUrl"
-                [src]="line.imageUrl"
+                [src]="line.imageUrl | cloudinaryImg: 520"
                 [alt]="line.name"
                 class="cart-checkout__item-img"
                 loading="lazy"

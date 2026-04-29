@@ -32,6 +32,7 @@ import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.compo
 import { CurrencyDisplayPipe } from './pipes/currency-display.pipe';
 import { RevealDirective } from './directives/reveal.directive';
 import { SecureImageDirective } from './directives/secure-image.directive';
+import { CloudinaryImgPipe } from './pipes/cloudinary-img.pipe';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { SecureImageDirective } from './directives/secure-image.directive';
     FormsModule,
     CartDrawerComponent,
     CurrencyDisplayPipe,
+    CloudinaryImgPipe,
     GlobalScrollToTopComponent,
   ],
   providers: [

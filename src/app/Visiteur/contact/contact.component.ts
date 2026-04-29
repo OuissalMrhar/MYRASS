@@ -262,7 +262,6 @@ export class ContactComponent implements OnInit, OnDestroy {
     this.partnerSendState = 'idle';
 
     this.contactService.sendPartenariat({
-      entreprise: String(this.partnerForm.value.company ?? '').trim(),
       typePartenariat: String(this.partnerForm.value.partnerType ?? '').trim(),
       nomComplet: String(this.partnerForm.value.nomComplet ?? '').trim(),
       email: String(this.partnerForm.value.email ?? '').trim(),

@@ -238,7 +238,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     return Array.from({ length: this.collectionsTotalPages }, (_, i) => i);
   }
 
-  categoryBgClass(localIndex: number): string {
+  private normalizeCategoryKey(value: string | null | undefined): string {
+    return (value ?? '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  private isCosmetiqueCategory(category: HomeCategoryCard): boolean {
+    const fr = this.normalizeCategoryKey(category.nom);
+    const en = this.normalizeCategoryKey((category as any).nomEn);
+    const ar = this.normalizeCategoryKey((category as any).nomAr);
+    const hay = `${fr} ${en} ${ar}`.trim();
+    return hay.includes('cosmet');
+  }
+
+  categoryBgClass(category: HomeCategoryCard, localIndex: number): string {
+    if (this.isCosmetiqueCategory(category)) return 'c-cosmetique';
     const globalIdx = this.isMobileCollectionsPaginated
       ? this.collectionsPageIndex * this.collectionsPerPage + localIndex
       : localIndex;

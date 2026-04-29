@@ -4,7 +4,7 @@
   <!-- Hero -->
   <section class="about-hero about-reveal">
     <div class="about-hero__img-wrap">
-      <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg" [attr.alt]="labels.heroKicker" class="about-hero__img">
+      <img src="{{ 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg' | cloudinaryImg: 1600 }}" [attr.alt]="labels.heroKicker" class="about-hero__img" loading="eager" decoding="async">
       <div class="about-hero__overlay"></div>
     </div>
     <div class="about-hero__caption">
@@ -22,7 +22,7 @@
           <p class="about-block__text">{{ labels.histoireText }}</p>
         </div>
         <div class="about-block about-block--image about-block--hide-mobile">
-          <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/v1776253958/pexels-pabloramon-18076611_bwwnvo.jpg" alt="Notre histoire" loading="lazy">
+          <img src="{{ 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1776253958/pexels-pabloramon-18076611_bwwnvo.jpg' | cloudinaryImg: 1200 }}" alt="Notre histoire" loading="lazy">
         </div>
       </div>
     </section>
@@ -30,7 +30,7 @@
     <!-- Photo + Vidéo côte à côte (mobile) / cachés sur desktop -->
     <div class="about-photos about-photos--mobile-only about-reveal about-reveal--d2">
       <div class="about-photos__item">
-        <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/v1776253958/pexels-pabloramon-18076611_bwwnvo.jpg" alt="Notre histoire" loading="lazy"/>
+        <img src="{{ 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1776253958/pexels-pabloramon-18076611_bwwnvo.jpg' | cloudinaryImg: 900 }}" alt="Notre histoire" loading="lazy"/>
       </div>
       <div class="about-photos__item about-photos__item--video">
         <video

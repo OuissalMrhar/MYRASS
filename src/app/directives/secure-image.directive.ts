@@ -6,6 +6,13 @@ export class SecureImageDirective implements OnInit {
 
   ngOnInit(): void {
     this.renderer.setAttribute(this.el.nativeElement, 'draggable', 'false');
+    // Perf defaults (opt-out by setting attribute in template)
+    if (!this.el.nativeElement.getAttribute('loading')) {
+      this.renderer.setAttribute(this.el.nativeElement, 'loading', 'lazy');
+    }
+    if (!this.el.nativeElement.getAttribute('decoding')) {
+      this.renderer.setAttribute(this.el.nativeElement, 'decoding', 'async');
+    }
   }
 
   @HostListener('dragstart', ['$event'])
