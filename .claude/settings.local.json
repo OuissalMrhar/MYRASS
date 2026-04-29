@@ -20,7 +20,9 @@
       "Bash(vercel link *)",
       "Bash(vercel --prod --yes)",
       "Bash(git commit *)",
-      "Bash(dotnet add *)"
+      "Bash(dotnet add *)",
+      "Bash(curl -s \"https://myrass-backend-production.up.railway.app/api/gifts\")",
+      "Bash(python -c \"import sys,json; gifts=json.load\\(sys.stdin\\); [print\\(f'ID:{g[\\\\\"id\\\\\"]} NOM:{g.get\\(\\\\\"nom\\\\\",\\\\\"?\\\\\"\\)} IMG:{g.get\\(\\\\\"imageUrl\\\\\",\\\\\"none\\\\\"\\)}'\\) for g in \\(gifts if isinstance\\(gifts,list\\) else []\\)]\")"
     ]
   }
 }

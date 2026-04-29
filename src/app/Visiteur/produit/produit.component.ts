@@ -734,8 +734,16 @@ export class ProduitComponent implements OnInit, OnDestroy {
   }
 
   onSearch(term: string): void {
-    this.searchTerm = term;
+    this.searchTerm = term ?? '';
     this.recomputeFiltered();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.recomputeFiltered();
+    // Réinitialiser la valeur de l'input visuellement
+    const input = document.querySelector('.search-bar__input') as HTMLInputElement;
+    if (input) input.value = '';
   }
 
   private recomputeFiltered(): void {

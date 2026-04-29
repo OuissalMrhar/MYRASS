@@ -318,7 +318,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   giftImageUrl(gift: Gift): string {
     if (gift.imageUrl?.trim()) return gift.imageUrl.trim();
-    return gift.produits?.find(p => !!p.produitImageUrl)?.produitImageUrl?.trim() || '/assets/pack1.jpeg';
+    const fromProduit = gift.produits?.find(p => !!p.produitImageUrl)?.produitImageUrl?.trim();
+    if (fromProduit) return fromProduit;
+    // Fallback Aïd Al-Adha
+    const nom = (gift.nom || '').toLowerCase();
+    if (nom.includes('aid') || nom.includes('adha') || nom.includes('aïd'))
+      return 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
+    return 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
   }
 
   goToGiftDetail(gift: Gift): void {

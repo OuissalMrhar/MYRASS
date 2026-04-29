@@ -22,12 +22,12 @@
         class="search-bar__input"
         type="text"
         [placeholder]="currentLang === 'ar' ? 'بحث…' : currentLang === 'en' ? 'Search products…' : 'Rechercher un produit…'"
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearch($event)"
+        [value]="searchTerm"
+        (input)="onSearch($any($event.target).value)"
         autocomplete="off"
         aria-label="Rechercher un produit"
       />
-      <button *ngIf="searchTerm" class="search-bar__clear" type="button" (click)="onSearch('')" aria-label="Effacer">
+      <button *ngIf="searchTerm" class="search-bar__clear" type="button" (click)="clearSearch()" aria-label="Effacer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14" aria-hidden="true">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
