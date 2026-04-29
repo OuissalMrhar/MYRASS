@@ -9,7 +9,7 @@ export const environment = {
   /** EmailJS : toEmail = destinataire des messages (variable du template). */
   emailjs: {
     serviceId: 'service_g44qq6c',
-    templateId: 'template_contact',
+    templateId: 'template_zu6k5wc',
     partnerTemplateId: 'template_partner',
     otpTemplateId: 'template_qj78hm6',
     publicKey: 'ew6ylnM-a0b66Ajxa',
