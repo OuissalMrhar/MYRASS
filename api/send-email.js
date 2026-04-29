@@ -15,6 +15,83 @@ function clean(s, max = 4000) {
   return String(s).trim().slice(0, max);
 }
 
+function escapeHtml(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function buildEmailHtml({ site, kindLabel, rows, message }) {
+  const safeSite = escapeHtml(site);
+  const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>');
+
+  const rowHtml = rows
+    .map(
+      (r) => `
+        <tr>
+          <td style="padding:10px 12px;border-bottom:1px solid #ece7e2;color:#6b6158;font-size:13px;width:220px;vertical-align:top;">
+            ${escapeHtml(r.label)}
+          </td>
+          <td style="padding:10px 12px;border-bottom:1px solid #ece7e2;color:#2a1f1a;font-size:13px;vertical-align:top;">
+            ${escapeHtml(r.value)}
+          </td>
+        </tr>
+      `,
+    )
+    .join('');
+
+  return `
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${safeSite}</title>
+  </head>
+  <body style="margin:0;background:#f6f3ef;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f3ef;padding:24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="640" cellspacing="0" cellpadding="0" style="max-width:640px;width:100%;background:#ffffff;border:1px solid #ece7e2;border-radius:12px;overflow:hidden;">
+            <tr>
+              <td style="padding:18px 22px;background:#2a1f1a;color:#fffcf1;font-family:Montserrat,Segoe UI,Arial,sans-serif;">
+                <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.85;">${safeSite}</div>
+                <div style="font-size:18px;font-weight:600;margin-top:6px;">${escapeHtml(kindLabel)}</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 22px;font-family:Montserrat,Segoe UI,Arial,sans-serif;color:#2a1f1a;">
+                <p style="margin:0 0 14px;font-size:13px;line-height:1.7;color:#6b6158;">
+                  Ce message a été envoyé depuis le site <strong style="color:#2a1f1a;">${safeSite}</strong>.
+                </p>
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #ece7e2;border-radius:10px;overflow:hidden;">
+                  ${rowHtml}
+                </table>
+                <div style="margin-top:16px;padding:14px 14px;border:1px solid #ece7e2;border-radius:10px;background:#faf7f3;">
+                  <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8a7a6e;font-weight:700;margin-bottom:8px;">Message</div>
+                  <div style="font-size:13px;line-height:1.75;color:#2a1f1a;">${safeMessage}</div>
+                </div>
+                <p style="margin:16px 0 0;font-size:12px;line-height:1.7;color:#8a7a6e;">
+                  Astuce : utilisez <strong>Répondre</strong> dans votre messagerie pour contacter directement l’expéditeur (Reply-To).
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:14px 22px;background:#fffcf1;border-top:1px solid #ece7e2;font-family:Montserrat,Segoe UI,Arial,sans-serif;color:#8a7a6e;font-size:11px;line-height:1.6;">
+                Email automatique — ne pas répondre à cette adresse si votre client mail ignore Reply-To.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -95,6 +172,31 @@ module.exports = async (req, res) => {
           '',
         ].join('\n');
 
+  const kindLabel = k === 'contact' ? 'Demande de contact' : 'Demande de partenariat';
+  const html =
+    k === 'contact'
+      ? buildEmailHtml({
+          site,
+          kindLabel,
+          rows: [
+            { label: 'Nom complet', value: fullName },
+            { label: 'Email', value: userEmail },
+            { label: 'Téléphone', value: phone },
+          ],
+          message: msg,
+        })
+      : buildEmailHtml({
+          site,
+          kindLabel,
+          rows: [
+            { label: 'Type de partenariat', value: partnerType },
+            { label: 'Nom complet', value: fullName },
+            { label: 'Email', value: userEmail },
+            { label: 'Téléphone', value: phone },
+          ],
+          message: msg,
+        });
+
   const transporter = nodemailer.createTransport({
     host,
     port,
@@ -109,14 +211,16 @@ module.exports = async (req, res) => {
   // If allowUserFrom=true, try to set From to user email (may be blocked by SPF/DMARC).
   // Otherwise always present as the site brand name.
   const from = allowUserFrom ? userEmail : `"${safeSiteLabel}" <${fromDomain}>`;
+  const replyTo = `"${fullName.replace(/"/g, "'")}" <${userEmail}>`;
 
   try {
     await transporter.sendMail({
       to,
       from,
-      replyTo: userEmail,
+      replyTo,
       subject,
       text,
+      html,
       headers: {
         'X-Form-Type': k,
         'X-User-Email': userEmail,
