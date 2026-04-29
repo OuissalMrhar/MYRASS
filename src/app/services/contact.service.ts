@@ -19,7 +19,7 @@ export interface PartenariatPayload {
 
 @Injectable({ providedIn: 'root' })
 export class ContactService {
-  private readonly siteName = 'Myrass';
+  private readonly siteName = 'SITE MYRASS';
 
   constructor(private readonly http: HttpClient) {}
 

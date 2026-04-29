@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
   } = req.body || {};
 
   const k = clean(kind, 32);
-  const site = clean(siteName || 'Myrass', 64) || 'Myrass';
+  const site = clean(siteName || 'SITE MYRASS', 64) || 'SITE MYRASS';
 
   const fullName = clean(nomComplet, 120);
   const userEmail = clean(email, 160).toLowerCase();
@@ -207,7 +207,7 @@ module.exports = async (req, res) => {
   // Important:
   // Many mail providers block arbitrary "From". Default is your domain mailbox,
   // with Reply-To set to the user's email (so you can reply directly).
-  const safeSiteLabel = site.replace(/"/g, "'") || 'Myrass';
+  const safeSiteLabel = site.replace(/"/g, "'") || 'SITE MYRASS';
   // If allowUserFrom=true, try to set From to user email (may be blocked by SPF/DMARC).
   // Otherwise always present as the site brand name.
   const from = allowUserFrom ? userEmail : `"${safeSiteLabel}" <${fromDomain}>`;
