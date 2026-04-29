@@ -105,7 +105,10 @@ module.exports = async (req, res) => {
   // Important:
   // Many mail providers block arbitrary "From". Default is your domain mailbox,
   // with Reply-To set to the user's email (so you can reply directly).
-  const from = allowUserFrom ? userEmail : `"${fullName.replace(/"/g, "'")}" <${fromDomain}>`;
+  const safeSiteLabel = site.replace(/"/g, "'") || 'Myrass';
+  // If allowUserFrom=true, try to set From to user email (may be blocked by SPF/DMARC).
+  // Otherwise always present as the site brand name.
+  const from = allowUserFrom ? userEmail : `"${safeSiteLabel}" <${fromDomain}>`;
 
   try {
     await transporter.sendMail({
