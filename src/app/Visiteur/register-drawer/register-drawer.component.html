@@ -116,7 +116,18 @@
           {{ l('resend') }}{{ resendCooldown > 0 ? ' (' + resendCooldown + 's)' : '' }}
         </button>
 
-        <button type="button" class="reg-back" (click)="step = 1">← Retour</button>
+          <button type="button" class="reg-back" (click)="step = 1">← Retour</button>
+
+        <p class="reg-spam-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          {{ method === 'email'
+            ? (lang === 'ar' ? 'لم تستلم الرمز؟ تحقق من مجلد البريد العشوائي (Spam).'
+              : lang === 'en' ? 'Didn\'t receive the code? Check your spam or junk folder.'
+              : 'Vous n\'avez pas reçu le code ? Vérifiez votre dossier spam ou courriers indésirables.')
+            : (lang === 'ar' ? 'تحقق من رسائل WhatsApp.'
+              : lang === 'en' ? 'Check your WhatsApp messages.'
+              : 'Vérifiez vos messages WhatsApp.') }}
+        </p>
       </ng-container>
     </ng-container>
 
