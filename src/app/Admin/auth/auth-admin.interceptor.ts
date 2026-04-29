@@ -37,8 +37,14 @@ export class AuthAdminInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    // Commandes / paniers : uniquement le JWT visiteur (pas le jeton admin).
-    if (req.url.includes('/api/commandes') || req.url.includes('/api/paniers')) {
+    // Routes visiteur : JWT visiteur uniquement (commandes, paniers, profil, interactions).
+    if (
+      req.url.includes('/api/commandes') ||
+      req.url.includes('/api/paniers') ||
+      req.url.includes('/api/users/me') ||
+      req.url.includes('/api/interactions') ||
+      req.url.includes('/api/gift-interactions')
+    ) {
       const visitorToken = this.userAuth.getAccessToken();
       if (visitorToken) {
         return next.handle(
