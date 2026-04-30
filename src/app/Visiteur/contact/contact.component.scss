@@ -149,7 +149,14 @@
     transition: opacity 0.18s;
 
     &:hover { opacity: 0.75; }
-    i { display: block; line-height: 1; }
+    .social-glyph {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
   }
 }
 

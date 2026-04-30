@@ -58,6 +58,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   private cardExpiry: StripeElement | null = null;
   private cardCvc: StripeElement | null = null;
   private stripeReady = false;
+  private static stripeJsPromise: Promise<void> | null = null;
 
   /** Style commun pour chaque Stripe Element */
   private readonly stripeStyle = {
@@ -100,8 +101,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   // ── Lifecycle ────────────────────────────────────────────────
 
   ngAfterViewInit(): void {
-    // Stripe.js est chargé via CDN (defer) — on attend qu'il soit disponible
-    this.waitForStripeAndMount();
+    void this.waitForStripeAndMount();
   }
 
   ngOnDestroy(): void {
@@ -112,15 +112,40 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
     this.cardCvc?.destroy();
   }
 
-  private waitForStripeAndMount(attempt = 0): void {
+  private async waitForStripeAndMount(attempt = 0): Promise<void> {
     if (typeof window === 'undefined') return;
+    await this.loadStripeJs();
     const StripeConstructor = window.Stripe;
     if (StripeConstructor) {
       this.stripe = StripeConstructor(environment.stripePublishableKey);
       this.mountStripeElements();
     } else if (attempt < 20) {
-      setTimeout(() => this.waitForStripeAndMount(attempt + 1), 200);
+      setTimeout(() => {
+        void this.waitForStripeAndMount(attempt + 1);
+      }, 200);
     }
+  }
+
+  private loadStripeJs(): Promise<void> {
+    if (window.Stripe) return Promise.resolve();
+    if (CartPageComponent.stripeJsPromise) return CartPageComponent.stripeJsPromise;
+    CartPageComponent.stripeJsPromise = new Promise<void>((resolve, reject) => {
+      const existing = document.querySelector('script[data-stripe-js="true"]') as HTMLScriptElement | null;
+      if (existing) {
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error('stripe-load-error')), { once: true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.async = true;
+      script.defer = true;
+      script.setAttribute('data-stripe-js', 'true');
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('stripe-load-error'));
+      document.head.appendChild(script);
+    });
+    return CartPageComponent.stripeJsPromise;
   }
 
   private mountStripeElements(): void {
@@ -166,7 +191,9 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   setPaymentTab(id: PaymentTabId): void {
     this.paymentTab = id;
     if (id === 'card' && !this.stripeReady) {
-      setTimeout(() => this.mountStripeElements(), 50);
+      setTimeout(() => {
+        void this.waitForStripeAndMount();
+      }, 50);
     }
   }
 

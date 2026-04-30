@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <app-navbar></app-navbar>
 <ng-container *ngIf="homeLabels$ | async as t">
 <section class="hero home-reveal">
@@ -255,13 +254,13 @@
     <div class="features-track">
       <div class="features-track__inner" aria-label="Myrass">
         <div class="feature" *ngFor="let _ of partnerFeaturesLoop">
-          <img class="feature__logo" src="/assets/logo.png" alt="Logo Myrass" loading="lazy">
+          <img class="feature__logo" src="/assets/logo.png" alt="Logo Myrass" loading="lazy" decoding="async" width="28" height="28">
           <span class="feature__text">Myrass</span>
         </div>
       </div>
       <div class="features-track__inner" aria-hidden="true">
         <div class="feature" *ngFor="let _ of partnerFeaturesLoop">
-          <img class="feature__logo" src="/assets/logo.png" alt="" loading="lazy">
+          <img class="feature__logo" src="/assets/logo.png" alt="" loading="lazy" decoding="async" width="28" height="28">
           <span class="feature__text">Myrass</span>
         </div>
       </div>

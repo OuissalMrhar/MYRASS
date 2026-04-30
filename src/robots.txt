@@ -1,4 +1,5 @@
 User-agent: *
+Allow: /
 Disallow: /dashboard
 Disallow: /accueil
 Disallow: /admin/

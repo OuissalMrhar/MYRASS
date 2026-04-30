@@ -30,7 +30,9 @@ font-family: 'Montserrat', sans-serif;
   min-height: calc(100vh - 56px);
   height: calc(100dvh - 56px);
   min-height: calc(100dvh - 56px);
-  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/assets/Accueil_Caroussel.jpeg') center/cover;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,w_1400/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg') center/cover;
   display: flex; align-items: center; justify-content: center;
   color: #fff; text-align: center;
   h1 { font-size: 52px; font-weight: 300; em { font-family: 'Montserrat', sans-serif; font-style: italic; } }
@@ -676,10 +678,10 @@ font-family: 'Montserrat', sans-serif;
       margin-bottom: 20px;
       background-color: #f0f0f0;
 
-      &.c-1 { background-image: url('https://res.cloudinary.com/dnvhqposz/image/upload/f_auto,q_auto,w_900,c_fill/v1777470876/ChatGPT_Image_29_avr._2026_14_45_48_qpq8eo.png'); }
-      &.c-2 { background-image: url('/assets/Collection2.png'); }
-      &.c-3 { background-image: url('/assets/Collection3.png'); }
-      &.c-cosmetique { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto,w_900,c_fill/v1777492282/ChatGPT_Image_29_avr._2026_20_50_50_g0wilc.png'); }
+      &.c-1 { background-image: url('https://res.cloudinary.com/dnvhqposz/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1777470876/ChatGPT_Image_29_avr._2026_14_45_48_qpq8eo.png'); }
+      &.c-2 { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg'); }
+      &.c-3 { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg'); }
+      &.c-cosmetique { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1777492282/ChatGPT_Image_29_avr._2026_20_50_50_g0wilc.png'); }
 
       &.coming-soon {
         filter: grayscale(0.9) brightness(0.9);
@@ -1066,7 +1068,7 @@ font-family: 'Montserrat', sans-serif;
     width: 100%;
     
     background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-                url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto,w_1600,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg') center/cover no-repeat;
+                url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1200,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg') center/cover no-repeat;
     
     display: flex;
     align-items: center;
@@ -1180,7 +1182,7 @@ font-family: 'Montserrat', sans-serif;
     position: relative;
     background:
       linear-gradient(rgba(20, 14, 10, 0.52), rgba(20, 14, 10, 0.52)),
-      url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto,w_1600,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg') center / cover no-repeat;
+      url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1200,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg') center / cover no-repeat;
 
     .contact-dual__title,
     .contact-dual__text,
@@ -2102,6 +2104,11 @@ font-family: 'Montserrat', sans-serif;
 /* ── Section reveal ──────────────────────────────────────────── */
 .home-reveal {
   animation: home-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero.home-reveal {
+  animation: none;
+  opacity: 1;
+  transform: none;
 }
 .home-reveal--delay-1 { animation-delay: 0.08s; }
 .home-reveal--delay-2 { animation-delay: 0.16s; }

@@ -174,8 +174,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   cardBackgroundImage(slide: BestsellerSlide): string | null {
     if (!slide.imageUrl) return null;
-    const safe = slide.imageUrl.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const optimized = this.cloudinaryOptimize(slide.imageUrl, this.isMobileProductsCarousel ? 720 : 980);
+    const safe = optimized.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     return `url("${safe}")`;
+  }
+
+  private cloudinaryOptimize(url: string, width: number): string {
+    if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) return url;
+    const [prefix, rest] = url.split('/upload/');
+    if (!rest) return url;
+    const hasTransform = /^([^/]*,)*[^/]*w_\d+/.test(rest);
+    if (hasTransform) return url;
+    return `${prefix}/upload/f_auto,q_auto:eco,c_limit,w_${width}/${rest}`;
   }
 
   onBestsellerCardClick(slide: BestsellerSlide): void {
@@ -343,8 +353,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Fallback Aïd Al-Adha
     const nom = (gift.nom || '').toLowerCase();
     if (nom.includes('aid') || nom.includes('adha') || nom.includes('aïd'))
-      return 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
-    return 'https://res.cloudinary.com/dzajgsdwg/image/upload/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
+      return 'https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_limit,w_900/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
+    return 'https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_limit,w_900/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
   }
 
   goToGiftDetail(gift: Gift): void {

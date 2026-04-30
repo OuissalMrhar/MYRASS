@@ -96,11 +96,13 @@
             transform: translateY(-2px);
           }
 
-          i {
-            text-decoration: none;
-            border: none;
+          .social-glyph {
             display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
             line-height: 1;
+            letter-spacing: 0.02em;
           }
         }
       }
