@@ -1,8 +1,6 @@
+@import '../home/home.component.scss';
+
 :host {
   display: block;
-}
-
-.accueil1-empty {
-  min-height: calc(100vh - 120px);
 }
 
