@@ -15,7 +15,6 @@
 
 .gift-page {
   width: 100%;
-  overflow-x: hidden;
 }
 
 .gift-state {
@@ -185,45 +184,6 @@
   }
 }
 
-.gift-media__thumbs {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.gift-thumb {
-  border: 2px solid transparent;
-  padding: 0;
-  background: #e8e4df;
-  border-radius: 6px;
-  overflow: hidden;
-  aspect-ratio: 1 / 1;
-  cursor: pointer;
-  display: block;
-  text-decoration: none;
-  appearance: none;
-  transition: border-color 0.2s ease;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  &--active {
-    border-color: #2a1f1a;
-  }
-
-  &:hover { border-color: rgba(42, 31, 26, 0.4); }
-}
-
-.gift-thumb__placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #dad4cd 0%, #ece8e2 60%, #f5f2ee 100%);
-}
 
 
 .gift-info {
@@ -1106,20 +1066,12 @@
     aspect-ratio: 3 / 4;
   }
 
-  .gift-media__thumbs {
-    gap: 8px;
-  }
-
   .gift-related__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 620px) {
-  .gift-media__thumbs {
-    gap: 7px;
-  }
-
   .gift-actions {
     grid-template-columns: 1fr auto;
     gap: 10px;
