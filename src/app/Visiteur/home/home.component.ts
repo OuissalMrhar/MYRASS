@@ -179,13 +179,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     return `url("${safe}")`;
   }
 
-  private cloudinaryOptimize(url: string, width: number): string {
+  private cloudinaryOptimize(url: string, width: number, force = false): string {
     if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) return url;
     const [prefix, rest] = url.split('/upload/');
     if (!rest) return url;
-    const hasTransform = /^([^/]*,)*[^/]*w_\d+/.test(rest);
-    if (hasTransform) return url;
-    return `${prefix}/upload/f_auto,q_auto:eco,c_limit,w_${width}/${rest}`;
+    const hasTransformSegment = !/^v\d+\//.test(rest);
+    if (!force && hasTransformSegment && /w_\d+/.test(rest) && /q_auto(?::eco)?/.test(rest)) {
+      return url;
+    }
+    const pathWithoutTransform = hasTransformSegment ? rest.slice(rest.indexOf('/') + 1) : rest;
+    return `${prefix}/upload/f_auto,q_auto:eco,c_limit,w_${width}/${pathWithoutTransform}`;
   }
 
   onBestsellerCardClick(slide: BestsellerSlide): void {
@@ -321,9 +324,17 @@ export class HomeComponent implements OnInit, OnDestroy {
       description: "Myrass – Coffrets cadeaux et produits gourmets marocains d'exception : huile d'argan, miel, amlou.",
     });
     this.updateViewportFlags();
-    this.loadCategories();
     this.loadBestsellers();
-    this.loadGifts();
+    // Déférer les blocs sous la ligne de flottaison pour alléger le démarrage desktop.
+    if (typeof window !== 'undefined' && window.innerWidth >= 993) {
+      window.setTimeout(() => {
+        this.loadCategories();
+        this.loadGifts();
+      }, 1200);
+    } else {
+      this.loadCategories();
+      this.loadGifts();
+    }
 
     // Re-mapper les slides quand la langue change
     this.siteLang.lang$.pipe(takeUntil(this.destroy$)).subscribe((lang) => {
@@ -347,14 +358,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   giftImageUrl(gift: Gift): string {
-    if (gift.imageUrl?.trim()) return gift.imageUrl.trim();
+    const giftWidth = this.isMobileProductsCarousel ? 760 : 1200;
+    if (gift.imageUrl?.trim()) return this.cloudinaryOptimize(gift.imageUrl.trim(), giftWidth, true);
     const fromProduit = gift.produits?.find(p => !!p.produitImageUrl)?.produitImageUrl?.trim();
-    if (fromProduit) return fromProduit;
+    if (fromProduit) return this.cloudinaryOptimize(fromProduit, giftWidth, true);
     // Fallback Aïd Al-Adha
     const nom = (gift.nom || '').toLowerCase();
     if (nom.includes('aid') || nom.includes('adha') || nom.includes('aïd'))
-      return 'https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_limit,w_900/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
-    return 'https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_limit,w_900/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png';
+      return this.cloudinaryOptimize('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_limit,w_900/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png', giftWidth, true);
+    return this.cloudinaryOptimize('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_limit,w_900/v1777159305/ChatGPT_Image_26_avr._2026_00_20_16_styg3q.png', giftWidth, true);
   }
 
   goToGiftDetail(gift: Gift): void {
@@ -379,7 +391,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private loadBestsellers(): void {
     this.isBestsellersLoading = true;
     this.produitService
-      .getBestsellers(3)
+      .getAll()
       .pipe(
         take(1),
         finalize(() => {
@@ -387,32 +399,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe({
-        next: (list) => {
-          if (list.length > 0) {
-            this.applyBestsellerList(list);
-            return;
-          }
-          this.tryBestsellerFallbackFromAll();
-        },
-        error: () => {
-          this.tryBestsellerFallbackFromAll();
-        },
-      });
-  }
-
-  private tryBestsellerFallbackFromAll(): void {
-    this.produitService
-      .getAll()
-      .pipe(take(1))
-      .subscribe({
         next: (all) => {
           const pick = all.slice(0, 3);
           if (pick.length > 0) {
             this.applyBestsellerList(pick);
-          } else {
-            this.bestsellerSlides = [...this.fallbackBestsellerSlides];
-            this.activeProductIndex = 0;
+            return;
           }
+          this.bestsellerSlides = [...this.fallbackBestsellerSlides];
+          this.activeProductIndex = 0;
         },
         error: () => {
           this.bestsellerSlides = [...this.fallbackBestsellerSlides];

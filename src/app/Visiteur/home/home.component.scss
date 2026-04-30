@@ -30,11 +30,31 @@ font-family: 'Montserrat', sans-serif;
   min-height: calc(100vh - 56px);
   height: calc(100dvh - 56px);
   min-height: calc(100dvh - 56px);
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,w_1400/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg') center/cover;
+  position: relative;
+  overflow: hidden;
+  background: #2a1f1a;
   display: flex; align-items: center; justify-content: center;
   color: #fff; text-align: center;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    z-index: 1;
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
   h1 { font-size: 52px; font-weight: 300; em { font-family: 'Montserrat', sans-serif; font-style: italic; } }
   p { font-size: 14px; letter-spacing: 1px; margin-top: 10px; opacity: 0.9; }
 }
@@ -308,19 +328,34 @@ font-family: 'Montserrat', sans-serif;
     }
 
     .pagination .dot {
-      width: 8px;
-      height: 8px;
-      background-color: #d8d2cc;
-      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      background-color: transparent;
+      border-radius: 999px;
       border: none;
       padding: 0;
+      position: relative;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background-color: #d8d2cc;
+        border-radius: 50%;
+        transition: all 0.22s ease;
+      }
 
       &.active {
-        width: 22px;
-        height: 7px;
-        border-radius: 10px;
-        background-color: #6e635d;
+        &::before {
+          width: 22px;
+          height: 7px;
+          border-radius: 10px;
+          background-color: #6e635d;
+        }
       }
     }
   }
@@ -364,7 +399,8 @@ font-family: 'Montserrat', sans-serif;
       border-radius: 50%;
       display: inline-block;
       border: none;
-      padding: 0;
+      padding: 10px;
+      background-clip: content-box;
       cursor: pointer;
 
       &.active {
@@ -772,7 +808,8 @@ font-family: 'Montserrat', sans-serif;
     height: 8px;
     border-radius: 50%;
     border: none;
-    padding: 0;
+    padding: 10px;
+    background-clip: content-box;
     background: #d8d2cc;
     cursor: pointer;
 
@@ -1068,7 +1105,7 @@ font-family: 'Montserrat', sans-serif;
     width: 100%;
     
     background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-                url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1200,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg') center/cover no-repeat;
+                url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_960,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg') center/cover no-repeat;
     
     display: flex;
     align-items: center;
@@ -1182,7 +1219,7 @@ font-family: 'Montserrat', sans-serif;
     position: relative;
     background:
       linear-gradient(rgba(20, 14, 10, 0.52), rgba(20, 14, 10, 0.52)),
-      url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1200,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg') center / cover no-repeat;
+      url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_960,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg') center / cover no-repeat;
 
     .contact-dual__title,
     .contact-dual__text,
@@ -1743,6 +1780,18 @@ font-family: 'Montserrat', sans-serif;
       height: 64px;
       font-size: 28px;
     }
+  }
+
+  .guide-container .guide-hero {
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+      url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_720,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg') center/cover no-repeat;
+  }
+
+  .contact-dual__panel--partner {
+    background:
+      linear-gradient(rgba(20, 14, 10, 0.52), rgba(20, 14, 10, 0.52)),
+      url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_720,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg') center / cover no-repeat;
   }
 
   /* Ombre moins haute sur mobile pour ne pas recouvrir le texte des collections */

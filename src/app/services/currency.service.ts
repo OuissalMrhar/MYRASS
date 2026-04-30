@@ -34,7 +34,7 @@ export class CurrencyService {
   }
 
   constructor(private http: HttpClient) {
-    this.fetchRates();
+    this.scheduleRatesFetch();
   }
 
   setCurrency(code: CurrencyCode): void {
@@ -82,5 +82,23 @@ export class CurrencyService {
           this._rates = { EUR: 1, ...res.rates };
         }
       });
+  }
+
+  /**
+   * Évite d'ajouter l'appel taux de change au chemin critique
+   * du premier rendu (surtout sur desktop Lighthouse).
+   */
+  private scheduleRatesFetch(): void {
+    const run = () => this.fetchRates();
+    if (typeof window === 'undefined') {
+      run();
+      return;
+    }
+    const idle = (window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback;
+    if (typeof idle === 'function') {
+      idle(run, { timeout: 3000 });
+      return;
+    }
+    window.setTimeout(run, 1200);
   }
 }

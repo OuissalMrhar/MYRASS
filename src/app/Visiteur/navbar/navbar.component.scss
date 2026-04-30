@@ -34,6 +34,7 @@
 
   .nav-logo img {
     height: 38px;
+    width: auto;
     display: block;
   }
 
@@ -98,7 +99,7 @@
 
     a {
       text-decoration: none;
-      color: #7a7068;
+      color: #4c433d;
       font-size: 10.5px;
       letter-spacing: 0.15em;
       font-weight: 600;
@@ -142,9 +143,9 @@
     cursor: pointer;
     font-family: inherit;
     font-size: 10.5px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.15em;
-    color: #7a7068;
+    color: #2f2722;
     line-height: 1;
     transition: color 0.25s ease;
 
@@ -971,7 +972,10 @@ a.profile-menu__cta {
       display: inline-flex;
     }
 
-    .nav-lang-trigger { font-size: 9px; }
+    .nav-lang-trigger {
+      font-size: 10px;
+      color: #2f2722;
+    }
 
     .nav-cart-mobile-btn {
       display: inline-flex;

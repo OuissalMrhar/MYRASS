@@ -1,6 +1,23 @@
 <app-navbar></app-navbar>
 <ng-container *ngIf="homeLabels$ | async as t">
 <section class="hero home-reveal">
+  <img
+    class="hero__bg"
+    src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,w_960/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg"
+    srcset="
+      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,w_640/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg 640w,
+      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,w_960/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg 960w,
+      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,w_1400/v1776251107/pexels-diego-f-parra-33199-25254868_1_no7oy2.jpg 1400w
+    "
+    sizes="100vw"
+    alt=""
+    aria-hidden="true"
+    fetchpriority="high"
+    loading="eager"
+    decoding="async"
+    width="1400"
+    height="933"
+  />
   <div class="hero-content">
     <h1>{{ t.heroTitle }}</h1>
     <p>{{ t.heroSubtitle }}</p>
@@ -144,10 +161,16 @@
       controls
       playsinline
       preload="metadata"
-      poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto,w_1280/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
+      poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto:eco,w_960/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
       aria-label="Vidéo Myrass"
     >
       <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.mp4" type="video/mp4" />
+      <track
+        kind="captions"
+        src="/assets/captions/myrass-video.fr.vtt"
+        srclang="fr"
+        label="Français"
+      />
     </video>
     <div class="video-preview__overlay"></div>
   </div>
@@ -228,7 +251,7 @@
   <div class="ramadan-container ramadan-container--single" *ngIf="gifts.length > 0">
     <div class="ramadan-item large" *ngFor="let gift of gifts | slice:0:1">
       <div class="img-wrapper main-banner">
-        <img [src]="giftImageUrl(gift) | cloudinaryImg: 1400" [alt]="gift | lang: 'nom' : currentLang" fetchpriority="high" width="3" height="2" />
+        <img [src]="giftImageUrl(gift)" [alt]="gift | lang: 'nom' : currentLang" loading="lazy" decoding="async" width="3" height="2" />
         <div class="overlay-content">
           <a [routerLink]="['/details-gift', gift.id]" class="view-btn view-btn--link">{{ t.viewGift }}</a>
         </div>
@@ -254,13 +277,13 @@
     <div class="features-track">
       <div class="features-track__inner" aria-label="Myrass">
         <div class="feature" *ngFor="let _ of partnerFeaturesLoop">
-          <img class="feature__logo" src="/assets/logo.png" alt="Logo Myrass" loading="lazy" decoding="async" width="28" height="28">
+          <img class="feature__logo" src="/assets/myrass-logo.svg" alt="Logo Myrass" loading="lazy" decoding="async" width="28" height="28">
           <span class="feature__text">Myrass</span>
         </div>
       </div>
       <div class="features-track__inner" aria-hidden="true">
         <div class="feature" *ngFor="let _ of partnerFeaturesLoop">
-          <img class="feature__logo" src="/assets/logo.png" alt="" loading="lazy" decoding="async" width="28" height="28">
+          <img class="feature__logo" src="/assets/myrass-logo.svg" alt="" loading="lazy" decoding="async" width="28" height="28">
           <span class="feature__text">Myrass</span>
         </div>
       </div>
