@@ -38,6 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private badgePulseTimer: ReturnType<typeof setTimeout> | null = null;
   private scrollRaf = 0;
+  private lastToggleAt = 0;
 
   constructor(
     private userAuthService: UserAuthService,
@@ -109,6 +110,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleHamburgerMenu(event: Event): void {
     event.stopPropagation();
+    this.markToggleInteraction();
     this.isLangOpen = false;
     this.isCurrencyOpen = false;
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
@@ -126,11 +128,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleProfileMenu(event: Event): void {
     event.stopPropagation();
+    this.markToggleInteraction();
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }
 
   onGuestUserClick(event: Event): void {
     event.stopPropagation();
+    this.markToggleInteraction();
     if (typeof window !== 'undefined' && window.innerWidth > 992) {
       this.isProfileMenuOpen = false;
       this.isLoginOpen = true;
@@ -145,17 +149,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleLang(): void {
+    this.markToggleInteraction();
     this.isLangOpen = !this.isLangOpen;
     this.isCurrencyOpen = false;
   }
 
   toggleCurrency(): void {
+    this.markToggleInteraction();
     this.isCurrencyOpen = !this.isCurrencyOpen;
     this.isLangOpen = false;
   }
 
   @HostListener('document:click')
   onDocumentClick(): void {
+    // Mobile ghost-click guard: after opening a dropdown/sheet with touch,
+    // ignore the immediate synthetic outside click that would close it instantly.
+    if (Date.now() - this.lastToggleAt < 260) return;
     this.isProfileMenuOpen = false;
     this.isLangOpen = false;
     this.isCurrencyOpen = false;
@@ -163,6 +172,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
+    // Keep mobile sheet/dropdowns stable while the user interacts/taps.
+    if (typeof window !== 'undefined' && window.innerWidth <= 992) return;
     if (this.scrollRaf) return;
     this.scrollRaf = requestAnimationFrame(() => {
       this.scrollRaf = 0;
@@ -170,6 +181,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
       if (this.isLangOpen) this.isLangOpen = false;
       if (this.isCurrencyOpen) this.isCurrencyOpen = false;
     });
+  }
+
+  private markToggleInteraction(): void {
+    this.lastToggleAt = Date.now();
   }
 
   get userInitials(): string {
