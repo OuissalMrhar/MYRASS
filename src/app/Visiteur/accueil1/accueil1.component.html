@@ -3,8 +3,34 @@
 <ng-container *ngIf="homeLabels$ | async as t">
   <section class="brand-story home-reveal">
     <h2>L'exigence du terroir Marocain</h2>
-    <div class="story-content story-content--expanded">
+    <div class="story-content" [class.story-content--expanded]="brandStoryExpanded">
       <p class="story-content__text">{{ t.storyBody }}</p>
+      <button type="button" class="story-content__toggle" (click)="toggleBrandStory()">
+        <ng-container *ngIf="brandStoryExpanded">{{ t.readLess }}</ng-container>
+        <ng-container *ngIf="!brandStoryExpanded">{{ t.readMore }}</ng-container>
+      </button>
+    </div>
+  </section>
+
+  <section class="video-preview">
+    <div class="video-preview__frame">
+      <video
+        class="video-preview__player"
+        controls
+        playsinline
+        preload="metadata"
+        poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto:eco,w_960/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
+        aria-label="Vidéo Myrass"
+      >
+        <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.mp4" type="video/mp4" />
+        <track
+          kind="captions"
+          src="/assets/captions/myrass-video.fr.vtt"
+          srclang="fr"
+          label="Français"
+        />
+      </video>
+      <div class="video-preview__overlay"></div>
     </div>
   </section>
 </ng-container>

@@ -8,6 +8,12 @@ import { SiteLanguageService } from '../../core/site-language.service';
 })
 export class Accueil1Component {
   readonly homeLabels$ = this.siteLang.homeLabels$;
+  brandStoryExpanded = false;
+
   constructor(private readonly siteLang: SiteLanguageService) {}
+
+  toggleBrandStory(): void {
+    this.brandStoryExpanded = !this.brandStoryExpanded;
+  }
 }
 
