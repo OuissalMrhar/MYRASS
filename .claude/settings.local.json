@@ -22,7 +22,18 @@
       "Bash(git commit *)",
       "Bash(dotnet add *)",
       "Bash(curl -s \"https://myrass-backend-production.up.railway.app/api/gifts\")",
-      "Bash(python -c \"import sys,json; gifts=json.load\\(sys.stdin\\); [print\\(f'ID:{g[\\\\\"id\\\\\"]} NOM:{g.get\\(\\\\\"nom\\\\\",\\\\\"?\\\\\"\\)} IMG:{g.get\\(\\\\\"imageUrl\\\\\",\\\\\"none\\\\\"\\)}'\\) for g in \\(gifts if isinstance\\(gifts,list\\) else []\\)]\")"
+      "Bash(python -c \"import sys,json; gifts=json.load\\(sys.stdin\\); [print\\(f'ID:{g[\\\\\"id\\\\\"]} NOM:{g.get\\(\\\\\"nom\\\\\",\\\\\"?\\\\\"\\)} IMG:{g.get\\(\\\\\"imageUrl\\\\\",\\\\\"none\\\\\"\\)}'\\) for g in \\(gifts if isinstance\\(gifts,list\\) else []\\)]\")",
+      "Bash(node *)",
+      "Bash(psql *)",
+      "Bash(npm install *)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d[k] for k in ['name','dependencies','devDependencies'] if k in d}, indent=2\\)\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); proj=list\\(d['projects'].keys\\(\\)\\)[0]; print\\(json.dumps\\(d['projects'][proj]['architect']['build'], indent=2\\)\\)\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\hp\\\\Desktop\\\\Myrass\\\\src\\\\environments\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\hp\\\\Desktop\\\\Myrass\\\\src\\\\app\\\\contact\")",
+      "Bash(vercel logs *)",
+      "Bash(vercel ls *)",
+      "Bash(vercel project *)",
+      "Bash(vercel promote *)"
     ]
   }
 }
