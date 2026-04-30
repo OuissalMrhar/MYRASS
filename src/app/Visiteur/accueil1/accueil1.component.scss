@@ -1,37 +1,8 @@
-@import '../home/home.component.scss';
-
 :host {
   display: block;
 }
 
-/* Local overrides for the Aid Adha description toggle. */
-.aid-desc {
-  &.aid-desc--expanded p {
-    display: block;
-  }
-
-  &:not(.aid-desc--expanded) p {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    overflow: hidden;
-  }
-}
-
-.aid-desc-toggle {
-  align-self: flex-start;
-  margin: 6px 0 0;
-  padding: 0;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  color: #553b31;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+.accueil1-empty {
+  min-height: 40vh;
 }
 
