@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { UserAuthService } from '../../services/user-auth.service';
 import { ContactService } from '../../services/contact.service';
@@ -49,7 +50,7 @@ const CONTACT_LABELS: Record<SiteLang, ContactLabels> = {
     phoneFormLabel: 'Téléphone', phonePlaceholder: '+212 XXXX XX XX',
     messageLabel: 'Message *', messagePlaceholder: 'Décrivez votre demande...',
     sendBtn: 'Envoyer', sendingBtn: 'Envoi en cours...',
-    successMsg: 'Message envoyé avec succès. Nous vous répondrons bientôt !',
+    successMsg: 'Merci ! Votre message a bien été envoyé. Notre équipe vous répondra par e-mail dans les plus brefs délais.',
     errorMsg: "Impossible d'envoyer le message. Veuillez réessayer.",
     partnerTitle: 'Proposition de Partenariat',
     companyLabel: 'Entreprise *', companyPlaceholder: 'Nom de votre entreprise',
@@ -66,7 +67,7 @@ const CONTACT_LABELS: Record<SiteLang, ContactLabels> = {
     partnerPhoneLabel: 'Téléphone', partnerPhonePlaceholder: '+212 XXXX XX XX',
     partnerMsgLabel: 'Message *', partnerMsgPlaceholder: 'Décrivez votre proposition...',
     partnerSendBtn: 'Envoyer la Proposition', partnerSendingBtn: 'Envoi en cours...',
-    partnerSuccessMsg: 'Proposition envoyée. Nous vous contacterons bientôt.',
+    partnerSuccessMsg: 'Merci ! Votre proposition a bien été envoyée. Notre équipe vous contactera rapidement.',
     partnerErrorMsg: "Impossible d'envoyer. Veuillez réessayer.",
   },
   en: {
@@ -82,7 +83,7 @@ const CONTACT_LABELS: Record<SiteLang, ContactLabels> = {
     phoneFormLabel: 'Phone', phonePlaceholder: '+212 XXXX XX XX',
     messageLabel: 'Message *', messagePlaceholder: 'Describe your request...',
     sendBtn: 'Send', sendingBtn: 'Sending...',
-    successMsg: 'Message sent successfully. We will reply soon!',
+    successMsg: 'Thank you! Your message has been sent. Our team will get back to you by email shortly.',
     errorMsg: 'Unable to send the message. Please try again.',
     partnerTitle: 'Partnership Proposal',
     companyLabel: 'Company *', companyPlaceholder: 'Your company name',
@@ -99,7 +100,7 @@ const CONTACT_LABELS: Record<SiteLang, ContactLabels> = {
     partnerPhoneLabel: 'Phone', partnerPhonePlaceholder: '+212 XXXX XX XX',
     partnerMsgLabel: 'Message *', partnerMsgPlaceholder: 'Describe your proposal...',
     partnerSendBtn: 'Send Proposal', partnerSendingBtn: 'Sending...',
-    partnerSuccessMsg: 'Proposal sent. We will contact you soon.',
+    partnerSuccessMsg: 'Thank you! Your proposal has been sent. Our team will contact you shortly.',
     partnerErrorMsg: 'Unable to send. Please try again.',
   },
   ar: {
@@ -115,7 +116,7 @@ const CONTACT_LABELS: Record<SiteLang, ContactLabels> = {
     phoneFormLabel: 'الهاتف', phonePlaceholder: '+212 XXXX XX XX',
     messageLabel: 'الرسالة *', messagePlaceholder: 'صف طلبك...',
     sendBtn: 'إرسال', sendingBtn: 'جارٍ الإرسال...',
-    successMsg: 'تم إرسال الرسالة بنجاح. سنرد عليك قريباً!',
+    successMsg: 'شكرًا لك! تم إرسال رسالتك بنجاح. سيتواصل معك فريقنا عبر البريد الإلكتروني قريبًا.',
     errorMsg: 'تعذّر إرسال الرسالة. يرجى المحاولة مجدداً.',
     partnerTitle: 'اقتراح شراكة',
     companyLabel: 'الشركة *', companyPlaceholder: 'اسم شركتك',
@@ -132,7 +133,7 @@ const CONTACT_LABELS: Record<SiteLang, ContactLabels> = {
     partnerPhoneLabel: 'الهاتف', partnerPhonePlaceholder: '+212 XXXX XX XX',
     partnerMsgLabel: 'الرسالة *', partnerMsgPlaceholder: 'صف اقتراحك...',
     partnerSendBtn: 'إرسال الاقتراح', partnerSendingBtn: 'جارٍ الإرسال...',
-    partnerSuccessMsg: 'تم إرسال الاقتراح. سنتواصل معك قريباً.',
+    partnerSuccessMsg: 'شكرًا لك! تم إرسال اقتراحك بنجاح. سيتواصل معك فريقنا قريبًا.',
     partnerErrorMsg: 'تعذّر الإرسال. يرجى المحاولة مجدداً.',
   },
 };
@@ -173,6 +174,7 @@ export class ContactComponent implements OnInit, OnDestroy {
     private readonly auth: UserAuthService,
     private readonly contactService: ContactService,
     private readonly langService: SiteLanguageService,
+    private readonly route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -205,9 +207,13 @@ export class ContactComponent implements OnInit, OnDestroy {
         );
       } else {
         this.isAutofilled = false;
-        this.form.patchValue({ nomComplet: '', email: '', telephone: '', message: '' }, { emitEvent: false });
-        this.partnerForm.patchValue({ company: '', partnerType: '', nomComplet: '', email: '', telephone: '', message: '' }, { emitEvent: false });
+        this.resetGuestFormsFromRouteOrEmpty();
       }
+      this.applyQueryParamsToTabsAndEmail(this.route.snapshot.queryParamMap);
+    });
+
+    this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.applyQueryParamsToTabsAndEmail(params);
     });
 
     this.langService.lang$.pipe(takeUntil(this.destroy$)).subscribe((lang) => {
@@ -219,6 +225,48 @@ export class ContactComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private resetGuestFormsFromRouteOrEmpty(): void {
+    const params = this.route.snapshot.queryParamMap;
+    const qEmail = params.get('email')?.trim() ?? '';
+    const tab = params.get('tab');
+    if (qEmail && tab === 'partnership') {
+      this.activeTab = 'partnership';
+      this.form.patchValue({ nomComplet: '', email: '', telephone: '', message: '' }, { emitEvent: false });
+      this.partnerForm.patchValue(
+        { company: '', partnerType: '', nomComplet: '', email: qEmail, telephone: '', message: '' },
+        { emitEvent: false },
+      );
+    } else if (qEmail && tab === 'contact') {
+      this.activeTab = 'contact';
+      this.form.patchValue({ nomComplet: '', email: qEmail, telephone: '', message: '' }, { emitEvent: false });
+      this.partnerForm.patchValue(
+        { company: '', partnerType: '', nomComplet: '', email: '', telephone: '', message: '' },
+        { emitEvent: false },
+      );
+    } else {
+      this.form.patchValue({ nomComplet: '', email: '', telephone: '', message: '' }, { emitEvent: false });
+      this.partnerForm.patchValue(
+        { company: '', partnerType: '', nomComplet: '', email: '', telephone: '', message: '' },
+        { emitEvent: false },
+      );
+    }
+  }
+
+  private applyQueryParamsToTabsAndEmail(params: ParamMap): void {
+    const email = params.get('email')?.trim() ?? '';
+    const tab = params.get('tab');
+    if (!email || (tab !== 'partnership' && tab !== 'contact')) {
+      return;
+    }
+    if (tab === 'partnership') {
+      this.activeTab = 'partnership';
+      this.partnerForm.patchValue({ email }, { emitEvent: false });
+    } else {
+      this.activeTab = 'contact';
+      this.form.patchValue({ email }, { emitEvent: false });
+    }
   }
 
   switchTab(tab: 'contact' | 'partnership'): void {
