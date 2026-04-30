@@ -12,7 +12,6 @@ import { parseApiError } from '../../core/http-error';
 import { apiUrl } from '../../core/api-url';
 
 type Step = 1 | 2 | 3;
-type Method = 'email' | 'phone';
 
 @Component({
   selector: 'app-register-drawer',
@@ -25,13 +24,11 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
   @Output() closeDrawer = new EventEmitter<void>();
 
   step: Step = 1;
-  method: Method = 'email';
   lang: SiteLang = 'fr';
   isRtl = false;
 
   // Step 1
   emailValue = '';
-  phoneValue = '';
   sendingCode = false;
   step1Error = '';
 
@@ -77,7 +74,7 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
   }
 
   get inputValue(): string {
-    return this.method === 'email' ? this.emailValue : this.phoneValue;
+    return this.emailValue;
   }
 
   get otpMinSec(): string {
@@ -98,20 +95,17 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
     return this.pwConditions.every((c) => c.ok) && this.password === this.confirm && this.confirm.length > 0;
   }
 
-  setMethod(m: Method): void { this.method = m; this.step1Error = ''; }
-
   // ── Étape 1 : envoyer le code via backend (Twilio) ──────────────
   sendCode(): void {
     const value = this.inputValue.trim();
     if (!value) { this.step1Error = this.l('fieldRequired'); return; }
-    if (this.method === 'email' && !this.validEmail(value)) { this.step1Error = this.l('emailInvalid'); return; }
-    if (this.method === 'phone' && value.length < 6) { this.step1Error = this.l('phoneInvalid'); return; }
+    if (!this.validEmail(value)) { this.step1Error = this.l('emailInvalid'); return; }
 
     this.step1Error = '';
     this.sendingCode = true;
 
     this.http.post<{ message: string }>(apiUrl('/api/users/request-otp'), {
-      method: this.method,
+      method: 'email',
       value,
     }).subscribe({
       next: () => {
@@ -135,7 +129,7 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
     this.otpVerifying = true;
 
     this.http.post<{ message: string }>(apiUrl('/api/users/verify-otp'), {
-      method: this.method,
+      method: 'email',
       value:  this.inputValue.trim(),
       code:   this.otpCode.trim(),
     }).subscribe({
@@ -158,7 +152,7 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
     this.otpError = '';
 
     this.http.post<{ message: string }>(apiUrl('/api/users/request-otp'), {
-      method: this.method,
+      method: 'email',
       value:  this.inputValue.trim(),
     }).subscribe({
       next: () => {
@@ -176,17 +170,16 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
     this.step3Error = '';
     this.submitting = true;
 
-    const payload: Record<string, unknown> = { motDePasse: this.password };
-    if (this.method === 'email') payload['email'] = this.inputValue.trim();
-    else payload['telephone'] = this.inputValue.trim();
+    const payload: Record<string, unknown> = {
+      email: this.inputValue.trim(),
+      motDePasse: this.password,
+    };
 
     this.http.post<{ accessToken?: string; id: number; email: string; telephone?: string }>(
       apiUrl('/api/users'), payload
     ).subscribe({
       next: () => {
-        const loginObs = this.method === 'email'
-          ? this.auth.login({ email: this.inputValue.trim(), motDePasse: this.password })
-          : this.auth.loginWithPhone({ telephone: this.inputValue.trim(), motDePasse: this.password });
+        const loginObs = this.auth.login({ email: this.inputValue.trim(), motDePasse: this.password });
 
         loginObs.subscribe({
           next: () => { this.submitting = false; this.close(); this.router.navigate(['/home']); },
@@ -208,8 +201,8 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
   }
 
   private reset(): void {
-    this.step = 1; this.method = 'email';
-    this.emailValue = ''; this.phoneValue = '';
+    this.step = 1;
+    this.emailValue = '';
     this.otpCode = ''; this.password = ''; this.confirm = '';
     this.step1Error = ''; this.otpError = ''; this.step3Error = '';
     this.sendingCode = false; this.otpVerifying = false; this.submitting = false;
@@ -249,7 +242,6 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
     const map: Record<string, Record<SiteLang, string>> = {
       fieldRequired:  { fr: 'Ce champ est requis.',               en: 'This field is required.',          ar: 'هذا الحقل مطلوب.' },
       emailInvalid:   { fr: 'Adresse email invalide.',             en: 'Invalid email address.',           ar: 'بريد إلكتروني غير صالح.' },
-      phoneInvalid:   { fr: 'Numéro invalide (min. 6 chiffres).', en: 'Invalid phone number.',            ar: 'رقم غير صالح.' },
       otpRequired:    { fr: 'Saisissez le code reçu.',            en: 'Enter the code you received.',     ar: 'أدخل الرمز الذي تلقيته.' },
       otpWrong:       { fr: 'Code incorrect.',                     en: 'Incorrect code.',                  ar: 'الرمز غير صحيح.' },
       otpExpired:     { fr: 'Code expiré.',                        en: 'Code expired.',                    ar: 'انتهت صلاحية الرمز.' },
@@ -268,17 +260,13 @@ export class RegisterDrawerComponent implements OnInit, OnDestroy {
       step2Title:     { fr: 'Vérification',                       en: 'Verification',                     ar: 'التحقق' },
       step3Title:     { fr: 'Choisissez un mot de passe',         en: 'Choose a password',                ar: 'اختر كلمة مرور' },
       byEmail:        { fr: 'Email',                              en: 'Email',                            ar: 'البريد الإلكتروني' },
-      byPhone:        { fr: 'Téléphone',                          en: 'Phone',                            ar: 'الهاتف' },
       emailPh:        { fr: 'votre@email.com',                    en: 'your@email.com',                   ar: 'بريدك@الإلكتروني.com' },
-      phonePh:        { fr: '+212 6 00 00 00 00',                 en: '+1 555 000 0000',                  ar: '+212 6 00 00 00 00' },
       step2Hint:      { fr: 'Code envoyé à',                      en: 'Code sent to',                     ar: 'تم إرسال الرمز إلى' },
-      step2HintWA:    { fr: 'Message WhatsApp envoyé à',          en: 'WhatsApp message sent to',         ar: 'تم إرسال رسالة WhatsApp إلى' },
       pwLabel:        { fr: 'Mot de passe',                       en: 'Password',                         ar: 'كلمة المرور' },
       confirmLabel:   { fr: 'Confirmation',                       en: 'Confirm password',                 ar: 'تأكيد كلمة المرور' },
       confirmMatch:   { fr: '✓ Les mots de passe correspondent',  en: '✓ Passwords match',               ar: '✓ كلمتا المرور متطابقتان' },
-      chooseMeth:     { fr: 'Choisissez comment vous inscrire',   en: 'Choose how to sign up',            ar: 'اختر طريقة التسجيل' },
+      chooseMeth:     { fr: 'Inscription par e-mail',             en: 'Sign up with email',               ar: 'التسجيل عبر البريد الإلكتروني' },
       otpLabel:       { fr: 'Code de vérification',               en: 'Verification code',                ar: 'رمز التحقق' },
-      whatsappHint:   { fr: 'via WhatsApp',                       en: 'via WhatsApp',                     ar: 'عبر WhatsApp' },
     };
     return map[key]?.[this.lang] ?? key;
   }

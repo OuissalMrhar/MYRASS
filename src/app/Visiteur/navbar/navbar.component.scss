@@ -510,6 +510,28 @@
 }
 }
 
+@media (min-width: 993px) {
+  .navbar {
+    height: 66px;
+    padding: 0 clamp(22px, 4vw, 62px);
+    column-gap: 18px;
+
+    .nav-logo img {
+      height: 44px;
+    }
+
+    .nav-links a {
+      font-size: 11.5px;
+      letter-spacing: 0.14em;
+    }
+
+    .nav-lang-trigger {
+      font-size: 11.5px;
+      letter-spacing: 0.14em;
+    }
+  }
+}
+
 /* Contenu menu compte : partagé entre dropdown desktop et tiroir mobile (hors .nav-icons pour cibler le sheet) */
 .profile-menu__identity {
   display: flex;
