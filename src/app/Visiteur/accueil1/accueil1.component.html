@@ -33,6 +33,156 @@
       <div class="video-preview__overlay"></div>
     </div>
   </section>
+
+  <section class="collections">
+    <div class="collections-desc">
+      <p class="collections-desc__text" *ngIf="activeCategoryDescription">{{ activeCategoryDescription }}</p>
+      <p class="collections-desc__text collections-desc__text--placeholder" *ngIf="!activeCategoryDescription">&nbsp;</p>
+    </div>
+
+    <div class="col-grid">
+      <div
+        class="col-item"
+        *ngFor="let category of visibleCollectionCategories; let i = index"
+        [class.col-item--active]="activeCategoryIndex === i"
+        [class.col-item--inactive]="category.statut === false && !category.isComingSoon"
+        (click)="selectCategory(i)"
+      >
+        <div class="col-img" [ngClass]="categoryBgClass(category, i)" [class.coming-soon]="category.isComingSoon">
+          <span class="coming-badge" *ngIf="category.isComingSoon">{{ t.availableSoon }}</span>
+          <span class="inactive-badge" *ngIf="category.statut === false && !category.isComingSoon">{{ t.availableSoon }}</span>
+        </div>
+        <p class="category-name">{{ category | lang: 'nom' : currentLang }}</p>
+      </div>
+    </div>
+
+    <nav
+      class="collections-pagination"
+      *ngIf="isMobileCollectionsPaginated && collectionsTotalPages > 1"
+      aria-label="Pagination des catégories"
+    >
+      <button
+        type="button"
+        class="collections-pagination__arrow"
+        (click)="prevCollectionsPage()"
+        [disabled]="collectionsPageIndex === 0"
+        aria-label="Page précédente"
+      >
+        ‹
+      </button>
+      <div class="collections-pagination__dots" role="tablist">
+        <button
+          type="button"
+          *ngFor="let p of collectionsPageIndices"
+          class="collections-pagination__dot"
+          [class.collections-pagination__dot--active]="p === collectionsPageIndex"
+          (click)="goCollectionsPage(p)"
+          [attr.aria-label]="'Page ' + (p + 1)"
+          [attr.aria-current]="p === collectionsPageIndex ? 'true' : null"
+        ></button>
+      </div>
+      <button
+        type="button"
+        class="collections-pagination__arrow"
+        (click)="nextCollectionsPage()"
+        [disabled]="collectionsPageIndex >= collectionsTotalPages - 1"
+        aria-label="Page suivante"
+      >
+        ›
+      </button>
+    </nav>
+  </section>
+
+  <section class="ramadan-section home-reveal home-reveal--delay-2">
+    <div class="ramadan-header">
+      <ng-container *ngIf="gifts.length > 0">
+        <h3>{{ gifts[0] | lang: 'nom' : currentLang }}</h3>
+        <div class="aid-desc" [class.aid-desc--expanded]="aidDescExpanded">
+          <p *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc">{{ giftDesc }}</p>
+        </div>
+        <button
+          type="button"
+          class="aid-desc-toggle"
+          (click)="toggleAidDesc()"
+          *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc2 && giftDesc2.trim().length > 90"
+        >
+          {{ aidDescExpanded ? t.readLess : t.readMore }}
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="ramadan-container ramadan-container--single" *ngIf="gifts.length > 0">
+      <div class="ramadan-item large" *ngFor="let gift of gifts">
+        <div class="img-wrapper main-banner">
+          <img
+            [src]="giftImageUrl(gift)"
+            [alt]="gift | lang: 'nom' : currentLang"
+            loading="lazy"
+            decoding="async"
+            width="3"
+            height="2"
+          />
+          <div class="overlay-content">
+            <a [routerLink]="['/details-gift', gift.id]" class="view-btn view-btn--link">{{ t.viewGift }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ramadan-loading" *ngIf="isGiftsLoading">
+      <p>{{ t.loading }}</p>
+    </div>
+  </section>
+
+  <section class="guide-container home-reveal home-reveal--delay-3">
+    <div class="guide-hero">
+      <div class="guide-content">
+        <h2>{{ t.guideTitle }}</h2>
+        <a routerLink="/guide" class="btn-guide">{{ t.readMore }}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-dual home-reveal home-reveal--delay-3" id="contact">
+    <div class="contact-dual__panel contact-dual__panel--partner">
+      <h2 class="contact-dual__title">{{ t.partnerTitle }}</h2>
+      <p class="contact-dual__desc">{{ t.partnerDesc }}</p>
+      <form class="contact-dual__form" (ngSubmit)="submitPartnerEmailFromHome($event)">
+        <div class="input-group">
+          <input
+            type="email"
+            name="partner-email"
+            autocomplete="email"
+            [(ngModel)]="partnerHomeEmail"
+            [placeholder]="t.newsletterPlaceholder"
+            aria-label="Email partenariat"
+          />
+          <button type="submit" aria-label="Envoyer">
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="contact-dual__panel contact-dual__panel--newsletter">
+      <h2 class="contact-dual__title">{{ t.newsletterTitle }}</h2>
+      <p class="contact-dual__desc">{{ t.newsletterDesc }}</p>
+      <form class="contact-dual__form" (ngSubmit)="submitNewsletterEmailFromHome($event)">
+        <div class="input-group">
+          <input
+            type="email"
+            name="newsletter-email"
+            autocomplete="email"
+            [(ngModel)]="newsletterHomeEmail"
+            [placeholder]="t.newsletterPlaceholder"
+            aria-label="Newsletter email"
+          />
+          <button type="submit" aria-label="Envoyer">
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
 </ng-container>
 
 <app-footer></app-footer>
