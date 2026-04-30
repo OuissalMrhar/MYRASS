@@ -54,11 +54,13 @@
 .pd-reveal--armed {
   opacity: 0;
   transform: translateY(22px);
+  pointer-events: none;
 }
 
 .pd-reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* Délais en cascade (s'applique seulement quand armé) */

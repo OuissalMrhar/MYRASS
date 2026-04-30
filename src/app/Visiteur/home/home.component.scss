@@ -2128,10 +2128,12 @@ font-family: 'Montserrat', sans-serif;
   from {
     opacity: 0;
     transform: translateY(14px);
+    pointer-events: none;
   }
   to {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
   }
 }
 
@@ -2152,12 +2154,14 @@ font-family: 'Montserrat', sans-serif;
 
 /* ── Section reveal ──────────────────────────────────────────── */
 .home-reveal {
+  pointer-events: none;
   animation: home-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .hero.home-reveal {
   animation: none;
   opacity: 1;
   transform: none;
+  pointer-events: auto;
 }
 .home-reveal--delay-1 { animation-delay: 0.08s; }
 .home-reveal--delay-2 { animation-delay: 0.16s; }
@@ -2165,8 +2169,8 @@ font-family: 'Montserrat', sans-serif;
 
 /* ── Bestseller product cards stagger ────────────────────────── */
 @keyframes bs-card-in {
-  from { opacity: 0; transform: translateY(22px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(22px) scale(0.96); pointer-events: none; }
+  to   { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 }
 
 .product-card {
