@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, Subject } from 'rxjs';
-import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
+import { firstValueFrom, Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { apiUrl } from '../../core/api-url';
 import { environment } from '../../../environments/environment';
@@ -10,7 +10,6 @@ import { CartPageLabels } from '../../core/visitor-i18n';
 import { CartLine, CartService } from '../../services/cart.service';
 import { LoyaltyPointsService } from '../../services/loyalty-points.service';
 import { OrdersApiService } from '../../services/orders-api.service';
-import { PromoPublicService } from '../../services/promo-public.service';
 import { UserAuthService } from '../../services/user-auth.service';
 
 export type PaymentTabId = 'card' | 'eps' | 'giropay' | 'other';
@@ -21,9 +20,6 @@ export interface CheckoutVm {
   shipping: number;
   discount: number;
   total: number;
-  promoInvalid: string | null;
-  promoHint: string | null;
-  codePromoForSubmit: string | null;
 }
 
 
@@ -50,9 +46,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   orderSubmitError = '';
   orderSubmitting = false;
 
-  promoCodeInput = '';
-  private readonly promoCodeActive = new BehaviorSubject<string | null>(null);
-  readonly promoActive$ = this.promoCodeActive.asObservable();
   private readonly destroy$ = new Subject<void>();
 
   // ── Stripe ────────────────────────────────────────────────────
@@ -83,54 +76,23 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
     private readonly loyalty: LoyaltyPointsService,
     private readonly userAuth: UserAuthService,
     private readonly ordersApi: OrdersApiService,
-    private readonly promoPublic: PromoPublicService,
     private readonly siteLang: SiteLanguageService,
     private readonly http: HttpClient,
     readonly productRoutes: ProductRoutingHelper,
   ) {
     this.removedLines$ = this.cart.removedLines$;
     this.labels$ = this.siteLang.cartPageLabels$;
-    this.checkoutVm$ = combineLatest([this.cart.lines$, this.promoCodeActive]).pipe(
-      switchMap(([lines, promoCodeRaw]) => {
+    this.checkoutVm$ = this.cart.lines$.pipe(
+      map((lines) => {
         const subtotal = this.cart.computeTotalDhs(lines);
         const shipping = this.shippingDhs;
-        const promoCode = promoCodeRaw?.trim() || null;
-        if (!promoCode || lines.length === 0) {
-          return of({
-            lines,
-            subtotal,
-            shipping,
-            discount: 0,
-            total: subtotal + shipping,
-            promoInvalid: null as string | null,
-            promoHint: null as string | null,
-            codePromoForSubmit: null as string | null,
-          });
-        }
-        return this.promoPublic.validate({ code: promoCode, sousTotalPanier: subtotal }).pipe(
-          map((res) => ({
-            lines,
-            subtotal,
-            shipping,
-            discount: res.valide ? res.montantRemise : 0,
-            total: subtotal - (res.valide ? res.montantRemise : 0) + shipping,
-            promoInvalid: res.valide ? null : (res.message ?? 'Code non valide.'),
-            promoHint: res.valide ? (res.description?.trim() || res.message || null) : null,
-            codePromoForSubmit: res.valide ? promoCode : null,
-          })),
-          catchError(() =>
-            of({
-              lines,
-              subtotal,
-              shipping,
-              discount: 0,
-              total: subtotal + shipping,
-              promoInvalid: 'Impossible de vérifier le code. Réessayez.',
-              promoHint: null as string | null,
-              codePromoForSubmit: null as string | null,
-            }),
-          ),
-        );
+        return {
+          lines,
+          subtotal,
+          shipping,
+          discount: 0,
+          total: subtotal + shipping,
+        };
       }),
     );
   }
@@ -208,18 +170,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  // ── Code promo ───────────────────────────────────────────────
-
-  applyPromo(): void {
-    const c = this.promoCodeInput.trim();
-    this.promoCodeActive.next(c.length > 0 ? c : null);
-  }
-
-  removePromo(): void {
-    this.promoCodeInput = '';
-    this.promoCodeActive.next(null);
-  }
-
   // ── Quantités ────────────────────────────────────────────────
 
   increment(line: CartLine): void {
@@ -259,7 +209,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
       .create({
         lignes: vm.lines.map((l) => ({ produitId: l.productId, quantite: l.quantity })),
         fraisLivraison: vm.shipping,
-        codePromo: vm.codePromoForSubmit ?? undefined,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -271,7 +220,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
           } else {
             this.loyalty.applyServerTotal(this.loyalty.totalPoints + res.pointsGagnes, res.pointsGagnes);
           }
-          this.removePromo();
           this.cart.clear();
         },
         error: (err: { error?: { message?: string } }) => {
@@ -311,7 +259,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
       const intentResp = await firstValueFrom(
         this.http.post<{ clientSecret: string }>(apiUrl('/api/payments/create-intent'), {
           amountEur: vm.total,
-          codePromo: vm.codePromoForSubmit ?? null,
         })
       );
 
@@ -339,7 +286,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
           .create({
             lignes: vm.lines.map((l) => ({ produitId: l.productId, quantite: l.quantity })),
             fraisLivraison: vm.shipping,
-            codePromo: vm.codePromoForSubmit ?? undefined,
           })
           .pipe(takeUntil(this.destroy$))
           .subscribe({
@@ -348,7 +294,6 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
                 this.loyalty.applyServerTotal(res.userPointsTotal, res.pointsGagnes);
                 this.userAuth.syncStoredPointsTotal(res.userPointsTotal);
               }
-              this.removePromo();
               this.cart.clear();
               this.paymentSuccess = true;
             },
