@@ -188,6 +188,7 @@
     type="button"
     class="nav-mobile-menu-trigger"
     aria-label="Ouvrir le menu"
+    (touchend)="toggleHamburgerMenu($event)"
     (click)="toggleHamburgerMenu($event)"
     [attr.aria-expanded]="isProfileMenuOpen"
   >

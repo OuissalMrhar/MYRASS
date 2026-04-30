@@ -110,6 +110,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   toggleHamburgerMenu(event: Event): void {
     event.stopPropagation();
+    if (event.type === 'touchend') {
+      event.preventDefault(); // suppress the ~300ms ghost click that bypasses stopPropagation
+    }
     this.markToggleInteraction();
     this.isLangOpen = false;
     this.isCurrencyOpen = false;
@@ -164,7 +167,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   onDocumentClick(): void {
     // Mobile ghost-click guard: after opening a dropdown/sheet with touch,
     // ignore the immediate synthetic outside click that would close it instantly.
-    if (Date.now() - this.lastToggleAt < 260) return;
+    if (Date.now() - this.lastToggleAt < 400) return;
     this.isProfileMenuOpen = false;
     this.isLangOpen = false;
     this.isCurrencyOpen = false;
