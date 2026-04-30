@@ -173,6 +173,9 @@ export interface HomeLabels {
   partnerDesc: string;
   availableSoon: string;
   from: string;
+  categoriesTitle: string;
+  alimentaire: string;
+  cosmetique: string;
 }
 
 export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
@@ -201,6 +204,9 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     partnerDesc: 'Vous souhaitez référencer vos produits ou collaborer avec Myrass ? Contactez-nous.',
     availableSoon: 'Bientôt disponible',
     from: 'À partir de',
+    categoriesTitle: 'Nos Catégories',
+    alimentaire: 'Alimentaire',
+    cosmetique: 'Cosmétique',
   },
   en: {
     heroTitle: 'Savour more with Myrass',
@@ -227,6 +233,9 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     partnerDesc: 'Want to list your products or collaborate with Myrass? Get in touch.',
     availableSoon: 'Coming soon',
     from: 'From',
+    categoriesTitle: 'Our Categories',
+    alimentaire: 'Food',
+    cosmetique: 'Cosmetics',
   },
   ar: {
     heroTitle: 'استمتع بالمزيد مع Myrass',
@@ -253,6 +262,9 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     partnerDesc: 'هل تريد إدراج منتجاتك أو التعاون مع Myrass؟ تواصل معنا.',
     availableSoon: 'قريباً',
     from: 'ابتداءً من',
+    categoriesTitle: 'فئاتنا',
+    alimentaire: 'غذائي',
+    cosmetique: 'مستحضرات تجميل',
   },
 };
 

@@ -617,6 +617,17 @@ font-family: 'Montserrat', sans-serif;
   padding: 26px clamp(16px, 4vw, 50px) 50px;
   background-color: #ffffff;
 
+  .collections-title {
+    text-align: center;
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-size: clamp(26px, 3.2vw, 42px);
+    font-weight: 600;
+    color: var(--text-main, #2a1f1a);
+    letter-spacing: 0.5px;
+    margin: 0 auto 40px;
+    max-width: 1200px;
+  }
+
   .col-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -718,6 +729,9 @@ font-family: 'Montserrat', sans-serif;
       &.c-2 { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1776263061/pexels-olia-danilevich-5313361_g5fkpt.jpg'); }
       &.c-3 { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1776268682/pexels-mographe-30869806_kxzxtw.jpg'); }
       &.c-cosmetique { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1777492282/ChatGPT_Image_29_avr._2026_20_50_50_g0wilc.png'); }
+      &.col-img--alimentaire { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1777584205/ChatGPT_Image_29_avr._2026_14_45_48_voduou.png'); }
+      &.col-img--cosmetique  { background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1777492282/ChatGPT_Image_29_avr._2026_20_50_50_g0wilc.png'); }
+      &.col-img--soon        { background-color: #e8e4df; }
 
       &.coming-soon {
         filter: grayscale(0.9) brightness(0.9);
@@ -1456,6 +1470,11 @@ font-family: 'Montserrat', sans-serif;
   .collections {
     padding: 48px 28px 40px;
 
+    .collections-title {
+      font-size: clamp(22px, 2.8vw, 36px);
+      margin-bottom: 32px;
+    }
+
     .col-item {
       max-width: 280px;
     }
@@ -1544,12 +1563,12 @@ font-family: 'Montserrat', sans-serif;
 
   .collections {
     .col-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
     }
 
     .col-item {
-      max-width: 250px;
+      max-width: none;
     }
 
     .col-item .col-img {
@@ -1800,15 +1819,16 @@ font-family: 'Montserrat', sans-serif;
   }
 
   .collections {
-    padding: 36px 16px 34px;
+    padding: 30px 14px 30px;
 
-    .collections-desc {
-      margin: 0 auto 14px;
+    .collections-title {
+      font-size: clamp(20px, 5.5vw, 28px);
+      margin-bottom: 24px;
     }
 
     .col-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 8px;
       align-items: start;
     }
 
@@ -1818,13 +1838,14 @@ font-family: 'Montserrat', sans-serif;
     }
 
     .col-item .col-img {
-      max-height: 260px;
-      min-height: 140px;
-      margin-bottom: 12px;
+      max-height: 240px;
+      min-height: 120px;
+      margin-bottom: 10px;
     }
 
     .col-item .category-name {
-      font-size: 15px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
     }
   }
 
@@ -2023,9 +2044,16 @@ font-family: 'Montserrat', sans-serif;
   }
 
   .collections {
+    padding: 22px 10px 24px;
+
+    .collections-title {
+      font-size: clamp(18px, 5vw, 22px);
+      margin-bottom: 18px;
+    }
+
     .col-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px 6px;
     }
 
     .col-item {
@@ -2033,8 +2061,18 @@ font-family: 'Montserrat', sans-serif;
     }
 
     .col-item .col-img {
-      max-height: 220px;
-      min-height: 120px;
+      max-height: 190px;
+      min-height: 100px;
+    }
+
+    .col-item .category-name {
+      font-size: 11px;
+      letter-spacing: 0.3px;
+    }
+
+    .coming-badge {
+      font-size: 10px;
+      padding: 6px 10px;
     }
   }
 
