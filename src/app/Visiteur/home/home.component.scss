@@ -2257,3 +2257,30 @@ font-family: 'Montserrat', sans-serif;
     transform: none;
   }
 }
+
+/* Touch devices: reduce startup animation work to keep taps responsive. */
+@media (pointer: coarse) and (max-width: 992px) {
+  .home-reveal,
+  .home-reveal--delay-1,
+  .home-reveal--delay-2,
+  .home-reveal--delay-3,
+  .product-card,
+  .ramadan-item,
+  .ramadan-header,
+  .features-bar,
+  .contact-dual__panel--partner,
+  .contact-dual__panel--newsletter,
+  .video-preview,
+  .hero h1,
+  .hero p {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .guide-container .features-bar .features-track {
+    animation: none !important;
+    transform: none !important;
+    width: 100%;
+    min-width: 0;
+  }
+}

@@ -79,6 +79,17 @@
   }
 }
 
+/* Touch devices: keep reveal sections immediately interactive. */
+@media (pointer: coarse) and (max-width: 1024px) {
+  .pd-reveal,
+  .pd-reveal--armed,
+  .pd-reveal.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 .product-detail-host {
   display: block;
   min-width: 0;

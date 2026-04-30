@@ -549,7 +549,6 @@ a:hover {
 .will-reveal {
   opacity: 0;
   transform: translateY(28px);
-  pointer-events: none;
   transition:
     opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
@@ -558,7 +557,19 @@ a:hover {
 .will-reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
+}
+
+/* Mobile tap responsiveness: avoid delayed/ignored taps on touch devices. */
+@media (pointer: coarse) {
+  a,
+  button,
+  [role='button'],
+  input,
+  select,
+  textarea,
+  summary {
+    touch-action: manipulation;
+  }
 }
 
 /* Helpers pour les pages qui n'utilisent pas la directive */

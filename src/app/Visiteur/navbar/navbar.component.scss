@@ -1004,6 +1004,10 @@ a.profile-menu__cta {
     height: 50px;
     gap: 8px;
     column-gap: 8px;
+    /* Avoid costly backdrop blur on mobile to keep tap latency low. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #f5f0e8;
 
     .nav-brand-row {
       flex: 0 1 auto;
