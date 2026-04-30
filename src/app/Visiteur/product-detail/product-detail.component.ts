@@ -741,18 +741,19 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }, 420);
   }
 
+  private isIOS(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+
   private queueScrollThumbIntoView(index: number, smooth: boolean): void {
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const row = this.thumbnailsRowRef?.nativeElement;
-        if (!row) return;
-        const el = row.querySelector<HTMLElement>(`[data-thumb-index="${index}"]`);
-        el?.scrollIntoView({
-          behavior: smooth ? 'smooth' : 'auto',
-          block: 'nearest',
-          inline: 'center',
-        });
-      });
+      const row = this.thumbnailsRowRef?.nativeElement;
+      if (!row) return;
+      const el = row.querySelector<HTMLElement>(`[data-thumb-index="${index}"]`);
+      // smooth scroll + scroll-snap gèle Safari iOS — on force 'auto' sur iOS
+      const behavior: ScrollBehavior = (smooth && !this.isIOS()) ? 'smooth' : 'auto';
+      el?.scrollIntoView({ behavior, block: 'nearest', inline: 'center' });
     });
   }
 
@@ -1291,7 +1292,6 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           this.mobilePurchaseBarQuantityMode = false;
           this.mobilePurchaseBarPageDocked = false;
           this.mobilePurchaseBarBottomPx = 0;
-          setTimeout(() => this.queueScrollThumbIntoView(0, false), 0);
           this.descriptionExpanded = false;
           this.shippingExpanded = false;
           this.loading = false;
@@ -1300,9 +1300,12 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
           this.applyVariantFromQueryParam();
           this.applyQuantityFromCartForSelection();
           this.reloadReviews(product.id);
-          setTimeout(() => this.scheduleMobilePurchaseBarDock(), 0);
-          // Armer les sections révélées après que le DOM async soit rendu
-          setTimeout(() => this.refreshScrollReveal(), 80);
+          // Un seul setTimeout groupé — évite d'empiler des tâches sur le thread iOS
+          setTimeout(() => {
+            this.queueScrollThumbIntoView(0, false);
+            this.scheduleMobilePurchaseBarDock();
+            setTimeout(() => this.refreshScrollReveal(), 80);
+          }, 16);
           const canonical = buildProductSlug(product.nom, product.id);
           const raw = this.route.snapshot.paramMap.get('slug')?.trim() ?? '';
           if (raw !== canonical) {
