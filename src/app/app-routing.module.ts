@@ -13,12 +13,14 @@ import { MyOrdersPageComponent } from './Visiteur/my-orders-page/my-orders-page.
 import { DetailsGiftComponent } from './Visiteur/details-gift/details-gift.component';
 import { GuideComponent } from './Visiteur/guide/guide.component';
 import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.component';
+import { Accueil1Component } from './Visiteur/accueil1/accueil1.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   { path: 'home', component: HomeComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'produit', component: ProduitComponent },
+  { path: 'accueil1', component: Accueil1Component },
   { path: 'product-detail', redirectTo: 'produit', pathMatch: 'full' },
   { path: 'product-detail/:slug', component: ProductDetailComponent },
   { path: 'details-gift/:id', component: DetailsGiftComponent },
