@@ -53,19 +53,7 @@
         <div
           class="thumbnails-carousel"
           *ngIf="imageUrls.length > 0"
-          [class.thumbnails-carousel--no-nav]="!showThumbCarouselNav"
         >
-          <button
-            type="button"
-            class="thumb-nav thumb-nav--prev"
-            *ngIf="showThumbCarouselNav"
-            (click)="thumbPrev()"
-            aria-label="Miniatures précédentes"
-          >
-            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
-              <path d="M8 2L2 8l6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
           <div class="thumbnails-scroll-wrap">
             <div class="thumbnails-row" #thumbnailsRow>
               <button
@@ -80,17 +68,6 @@
               </button>
             </div>
           </div>
-          <button
-            type="button"
-            class="thumb-nav thumb-nav--next"
-            *ngIf="showThumbCarouselNav"
-            (click)="thumbNext()"
-            aria-label="Miniatures suivantes"
-          >
-            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
-              <path d="M2 2l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
         </div>
       </div>
 
