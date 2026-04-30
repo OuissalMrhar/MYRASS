@@ -26,6 +26,135 @@
     </div>
   </section>
 
+  <section class="bestsellers home-reveal home-reveal--delay-1">
+    <p class="section-subtitle">{{ t.sectionSubtitle }}</p>
+
+    <!-- Mobile / tablette : image + description + barre de navigation fixe en bas -->
+    <div class="bs-mobile" *ngIf="isMobileProductsCarousel && bestsellerSlides.length">
+      <ng-container *ngIf="activeBestsellerSlide as slide">
+        <div class="bs-mobile__visual" (click)="onBestsellerCardClick(slide)">
+          <div
+            class="bs-mobile__img"
+            [class.bs-mobile__img--photo]="!!slide.imageUrl"
+            [ngClass]="slide.imageUrl ? null : slide.fallbackImageClass"
+            [style.background-image]="cardBackgroundImage(slide)"
+          >
+            <span class="badge">Best-seller</span>
+          </div>
+        </div>
+        <div class="bs-mobile__copy">
+          <h2 class="bs-mobile__title">{{ slide.title }}</h2>
+          <div
+            class="bs-mobile__desc-wrap"
+            [class.bs-mobile__desc-wrap--expanded]="mobileBestsellerDescExpanded"
+          >
+            <p class="bs-mobile__desc">{{ slide.desc }}</p>
+          </div>
+          <button
+            type="button"
+            class="bs-mobile__desc-more"
+            *ngIf="slide.desc && slide.desc.trim().length > 90"
+            (click)="toggleMobileBestsellerDesc(); $event.stopPropagation()"
+          >
+            {{ mobileBestsellerDescExpanded ? t.readLess : t.readMore }}
+          </button>
+          <p class="bs-mobile__price">{{ slide.price }}</p>
+        </div>
+        <div class="bs-mobile__nav">
+          <button
+            class="nav-arrow prev"
+            type="button"
+            (click)="prevProduct(); $event.stopPropagation()"
+            aria-label="Produit précédent"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div class="pagination" role="tablist" aria-label="Best-sellers">
+            <button
+              type="button"
+              class="dot"
+              *ngFor="let product of bestsellerSlides; let i = index"
+              [class.active]="i === activeProductIndex"
+              (click)="goToProduct(i); $event.stopPropagation()"
+              [attr.aria-label]="'Produit ' + (i + 1)"
+              [attr.aria-selected]="i === activeProductIndex"
+              role="tab"
+            ></button>
+          </div>
+          <button
+            class="nav-arrow next"
+            type="button"
+            (click)="nextProduct(); $event.stopPropagation()"
+            aria-label="Produit suivant"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Desktop -->
+    <div class="bs-layout bs-desktop" *ngIf="!isMobileProductsCarousel">
+      <div class="bs-sidebar">
+        <div class="bs-sidebar__intro">
+          <h2>{{ bestsellerSidebarTitle }}</h2>
+        </div>
+        <div class="bs-sidebar__desc-wrap">
+          <p class="bs-sidebar__desc" *ngIf="bestsellerSidebarDescription as d">{{ d }}</p>
+        </div>
+        <div class="carousel-controls">
+          <button class="nav-arrow prev" type="button" (click)="prevProduct()" aria-label="Produit precedent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div class="pagination">
+            <button
+              type="button"
+              class="dot"
+              *ngFor="let product of bestsellerSlides; let i = index"
+              [class.active]="i === activeProductIndex"
+              (click)="goToProduct(i)"
+              [attr.aria-label]="'Aller au produit ' + (i + 1)"
+            ></button>
+          </div>
+          <button class="nav-arrow next" type="button" (click)="nextProduct()" aria-label="Produit suivant">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="products-grid">
+        <div class="products-track" [style.transform]="isMobileProductsCarousel ? '' : 'translateX(0)'">
+          <div
+            class="product-card"
+            *ngFor="let product of bestsellerSlides; let i = index"
+            [class.active]="i === activeProductIndex"
+            [class.product-card--clickable]="product.id > 0"
+            (click)="onBestsellerCardClick(product)"
+          >
+            <div
+              class="img-box"
+              [class.img-box--photo]="!!product.imageUrl"
+              [ngClass]="product.imageUrl ? null : product.fallbackImageClass"
+              [style.background-image]="cardBackgroundImage(product)"
+            >
+              <span class="badge">{{ t.bestSellerBadge }}</span>
+            </div>
+            <p class="p-title">{{ product.title }}</p>
+            <p class="p-price">{{ product.price }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="brand-story home-reveal">
     <h2>L'exigence du terroir Marocain</h2>
     <div class="story-content" [class.story-content--expanded]="brandStoryExpanded">
@@ -71,7 +200,7 @@
             (click)="toggleAidDesc()"
             *ngIf="giftDesc2.trim().length > 90"
           >
-            {{ aidDescExpanded ? t.readLess : t.readMore }}
+            {{ (aidDescExpanded ? t.readLess : t.readMore).replace('+', '').trim() }}
           </button>
         </ng-container>
       </ng-container>
