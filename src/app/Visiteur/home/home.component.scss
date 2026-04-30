@@ -2258,27 +2258,16 @@ font-family: 'Montserrat', sans-serif;
   }
 }
 
-/* Touch devices: reduce startup animation work to keep taps responsive. */
-@media (pointer: coarse) and (max-width: 992px) {
-  .home-reveal,
-  .home-reveal--delay-1,
-  .home-reveal--delay-2,
-  .home-reveal--delay-3,
-  .product-card,
-  .ramadan-item,
-  .ramadan-header,
-  .features-bar,
-  .contact-dual__panel--partner,
-  .contact-dual__panel--newsletter,
-  .video-preview,
-  .hero h1,
-  .hero p {
+/* Mobile home: disable all visual animations/transitions for responsiveness. */
+@media (max-width: 992px) {
+  app-home,
+  app-home * {
     animation: none !important;
     transition: none !important;
+    scroll-behavior: auto !important;
   }
 
-  .guide-container .features-bar .features-track {
-    animation: none !important;
+  app-home .guide-container .features-bar .features-track {
     transform: none !important;
     width: 100%;
     min-width: 0;
