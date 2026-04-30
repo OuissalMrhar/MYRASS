@@ -12,6 +12,8 @@ export class RevealDirective implements OnInit, OnDestroy {
   @Input() revealDelay = 0;
 
   private observer!: IntersectionObserver;
+  private fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+  private revealed = false;
 
   constructor(private el: ElementRef<HTMLElement>) {}
 
@@ -23,12 +25,16 @@ export class RevealDirective implements OnInit, OnDestroy {
       el.style.animationDelay = `${this.revealDelay}ms`;
     }
 
+    if (typeof IntersectionObserver === 'undefined') {
+      this.markVisible();
+      return;
+    }
+
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            this.observer.unobserve(entry.target);
+            this.markVisible();
           }
         });
       },
@@ -36,9 +42,28 @@ export class RevealDirective implements OnInit, OnDestroy {
     );
 
     this.observer.observe(el);
+
+    // Mobile safety net: avoid long periods where interaction waits for observer timing.
+    this.fallbackTimer = setTimeout(() => this.markVisible(), this.revealDelay + 800);
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    if (this.fallbackTimer != null) {
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = null;
+    }
+  }
+
+  private markVisible(): void {
+    if (this.revealed) return;
+    this.revealed = true;
+    const el = this.el.nativeElement;
+    el.classList.add('is-visible');
+    this.observer?.unobserve(el);
+    if (this.fallbackTimer != null) {
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = null;
+    }
   }
 }
