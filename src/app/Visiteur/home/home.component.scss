@@ -771,11 +771,12 @@ font-family: 'Montserrat', sans-serif;
       margin: 10px auto 0;
       width: 100%;
       display: block;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-main);
-      letter-spacing: 1px;
-      text-transform: capitalize;
+      font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #553b31;
+      letter-spacing: 0.5px;
+      text-transform: none;
       text-align: center;
       line-height: 1.2;
     }
