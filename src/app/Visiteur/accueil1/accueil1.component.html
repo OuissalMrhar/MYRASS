@@ -1,28 +1,10 @@
 <app-navbar></app-navbar>
 
 <ng-container *ngIf="homeLabels$ | async as t">
-  <section class="hero home-reveal">
-    <img
-      class="hero__bg"
-      src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_960/v1777552979/lghosn_up83h4.png"
-      srcset="
-        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_480/v1777552979/lghosn_up83h4.png 480w,
-        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_768/v1777552979/lghosn_up83h4.png 768w,
-        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1200/v1777552979/lghosn_up83h4.png 1200w,
-        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1920/v1777552979/lghosn_up83h4.png 1920w
-      "
-      sizes="100vw"
-      alt=""
-      aria-hidden="true"
-      fetchpriority="high"
-      loading="eager"
-      decoding="async"
-      width="1920"
-      height="1080"
-    />
-    <div class="hero-content">
-      <h1>{{ t.heroTitle }}</h1>
-      <p>{{ t.heroSubtitle }}</p>
+  <section class="brand-story home-reveal">
+    <h2>L'exigence du terroir Marocain</h2>
+    <div class="story-content story-content--expanded">
+      <p class="story-content__text">{{ t.storyBody }}</p>
     </div>
   </section>
 </ng-container>
