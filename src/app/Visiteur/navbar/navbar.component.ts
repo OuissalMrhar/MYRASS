@@ -163,11 +163,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isLangOpen = false;
   }
 
+  @HostListener('document:touchstart')
+  onDocumentTouchStart(): void {
+    // Refresh the ghost-click guard on every touchstart while a menu is open.
+    // The synthetic click that follows touchend fires ~300ms later, so it stays
+    // inside the 500ms window and onDocumentClick won't close the menu.
+    if (this.isProfileMenuOpen || this.isLangOpen || this.isCurrencyOpen) {
+      this.markToggleInteraction();
+    }
+  }
+
   @HostListener('document:click')
   onDocumentClick(): void {
-    // Mobile ghost-click guard: after opening a dropdown/sheet with touch,
-    // ignore the immediate synthetic outside click that would close it instantly.
-    if (Date.now() - this.lastToggleAt < 400) return;
+    if (Date.now() - this.lastToggleAt < 500) return;
     this.isProfileMenuOpen = false;
     this.isLangOpen = false;
     this.isCurrencyOpen = false;
