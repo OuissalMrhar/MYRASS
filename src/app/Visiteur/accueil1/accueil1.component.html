@@ -100,14 +100,16 @@
         <div class="aid-desc" [class.aid-desc--expanded]="aidDescExpanded">
           <p *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc">{{ giftDesc }}</p>
         </div>
-        <button
-          type="button"
-          class="aid-desc-toggle"
-          (click)="toggleAidDesc()"
-          *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc2 && giftDesc2.trim().length > 90"
-        >
-          {{ aidDescExpanded ? t.readLess : t.readMore }}
-        </button>
+        <ng-container *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc2">
+          <button
+            type="button"
+            class="aid-desc-toggle"
+            (click)="toggleAidDesc()"
+            *ngIf="giftDesc2.trim().length > 90"
+          >
+            {{ aidDescExpanded ? t.readLess : t.readMore }}
+          </button>
+        </ng-container>
       </ng-container>
     </div>
 
