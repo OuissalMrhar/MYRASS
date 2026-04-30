@@ -113,6 +113,7 @@
         height: 50px;
         width: auto;
         display: block;
+        filter: brightness(0) invert(1);
       }
     }
 
@@ -147,6 +148,7 @@
       img {
         height: 52px;
         width: auto;
+        filter: brightness(0) invert(1);
       }
     }
 
