@@ -14,9 +14,11 @@
   position: fixed;
   top: 0;
   right: 0;
+  left: auto;
   width: min(52vw, 920px);
   height: 100vh;
   height: 100dvh;
+  max-height: 100vh;
   background: #fff;
   z-index: 3000;
   box-shadow: -12px 0 48px rgba(0, 0, 0, 0.1);
@@ -29,6 +31,7 @@
   flex-direction: column;
   font-family: 'Montserrat', system-ui, sans-serif;
   overflow: hidden;
+  box-sizing: border-box;
 
   &.open {
     transform: translateX(0);
@@ -380,7 +383,44 @@
   &:hover { color: #6b6158; }
 }
 
+@media (max-width: 992px) {
+  .reg-drawer {
+    width: min(100%, 420px);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+  }
+
+  .reg-drawer__body {
+    padding: max(52px, calc(16px + env(safe-area-inset-top, 0px))) 18px max(24px, env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    align-self: center;
+  }
+
+  .reg-drawer__close {
+    top: max(14px, env(safe-area-inset-top, 0px));
+    right: 14px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
 @media (max-width: 480px) {
-  .reg-drawer__body { padding: 52px 24px 32px; }
-  .reg-stepper__line { width: 40px; }
+  .reg-drawer {
+    width: min(100%, 100vw);
+    max-height: none;
+  }
+
+  .reg-drawer__body {
+    padding: max(48px, calc(12px + env(safe-area-inset-top, 0px))) 14px max(16px, env(safe-area-inset-bottom, 0px));
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .reg-stepper__line {
+    width: 40px;
+  }
 }

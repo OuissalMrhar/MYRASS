@@ -68,17 +68,12 @@
           </article>
         </div>
 
-        <!-- Code promo — même design que loyalty, bientôt disponible -->
-        <div class="cart-checkout__promo-card cart-checkout__promo-card--soon">
+        <div class="cart-checkout__promo-card">
           <div class="cart-checkout__promo-header">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
             </svg>
             <span class="cart-checkout__promo-title">{{ t.promoTitle }}</span>
-            <span class="cart-checkout__promo-badge">
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              {{ t.promoComingSoon }}
-            </span>
           </div>
           <p class="cart-checkout__promo-hint">{{ t.promoHint }}</p>
           <div class="cart-checkout__promo-row">
@@ -89,21 +84,32 @@
               name="promoCode"
               placeholder="Ex. ETE2026"
               autocomplete="off"
-              disabled
+              (keyup.enter)="applyPromo()"
             />
-            <button type="button" class="cart-checkout__promo-apply btn-apply" disabled>
+            <button type="button" class="cart-checkout__promo-apply btn-apply" (click)="applyPromo()">
               {{ t.apply }}
             </button>
-            <button type="button" class="cart-checkout__promo-remove" disabled>
+            <button
+              type="button"
+              class="cart-checkout__promo-remove"
+              [disabled]="(promoActive$ | async) === null"
+              (click)="removePromo()"
+            >
               {{ t.removePromo }}
             </button>
           </div>
+          <p *ngIf="vm.promoHint" class="cart-checkout__promo-ok">{{ vm.promoHint }}</p>
+          <p *ngIf="vm.promoInvalid" class="cart-checkout__promo-err">{{ vm.promoInvalid }}</p>
         </div>
 
         <div class="cart-checkout__summary">
           <div class="cart-checkout__summary-row">
             <span>{{ t.subtotalItems }}</span>
             <span>{{ vm.subtotal | currencyDisplay }}</span>
+          </div>
+          <div class="cart-checkout__summary-row cart-checkout__summary-row--promo-code" *ngIf="vm.codePromoForSubmit">
+            <span>{{ t.promoTitle }}</span>
+            <span class="cart-checkout__summary-promo-code">{{ vm.codePromoForSubmit }}</span>
           </div>
           <div class="cart-checkout__summary-row" *ngIf="vm.discount > 0">
             <span>{{ t.discount }}</span>

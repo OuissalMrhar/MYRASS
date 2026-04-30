@@ -66,6 +66,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   gifts: Gift[] = [];
   isGiftsLoading = false;
 
+  partnerHomeEmail = '';
+  newsletterHomeEmail = '';
+
   private readonly fallbackBestsellerSlides: BestsellerSlide[] = [
     {
       id: -1,
@@ -522,5 +525,28 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.collectionsPageIndex = 0;
       }
     });
+  }
+
+  private static isValidHomeEmail(s: string): boolean {
+    const t = s.trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t);
+  }
+
+  submitPartnerEmailFromHome(ev: Event): void {
+    ev.preventDefault();
+    const e = this.partnerHomeEmail.trim();
+    if (!HomeComponent.isValidHomeEmail(e)) {
+      return;
+    }
+    void this.router.navigate(['/contact'], { queryParams: { tab: 'partnership', email: e } });
+  }
+
+  submitNewsletterEmailFromHome(ev: Event): void {
+    ev.preventDefault();
+    const e = this.newsletterHomeEmail.trim();
+    if (!HomeComponent.isValidHomeEmail(e)) {
+      return;
+    }
+    void this.router.navigate(['/contact'], { queryParams: { tab: 'contact', email: e } });
   }
 }

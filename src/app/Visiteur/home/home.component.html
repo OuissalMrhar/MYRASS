@@ -274,9 +274,16 @@
   <div class="contact-dual__panel contact-dual__panel--partner">
     <h2 class="contact-dual__title">{{ t.partnerTitle }}</h2>
     <p class="contact-dual__desc">{{ t.partnerDesc }}</p>
-    <form class="contact-dual__form" (submit)="$event.preventDefault()">
+    <form class="contact-dual__form" (ngSubmit)="submitPartnerEmailFromHome($event)">
       <div class="input-group">
-        <input type="email" name="partner-email" autocomplete="email" [placeholder]="t.newsletterPlaceholder" aria-label="Email partenariat">
+        <input
+          type="email"
+          name="partner-email"
+          autocomplete="email"
+          [(ngModel)]="partnerHomeEmail"
+          [placeholder]="t.newsletterPlaceholder"
+          aria-label="Email partenariat"
+        />
         <button type="submit" aria-label="Envoyer">
           <span class="arrow">→</span>
         </button>
@@ -286,9 +293,16 @@
   <div class="contact-dual__panel contact-dual__panel--newsletter">
     <h2 class="contact-dual__title">{{ t.newsletterTitle }}</h2>
     <p class="contact-dual__desc">{{ t.newsletterDesc }}</p>
-    <form class="contact-dual__form" (submit)="$event.preventDefault()">
+    <form class="contact-dual__form" (ngSubmit)="submitNewsletterEmailFromHome($event)">
       <div class="input-group">
-        <input type="email" name="newsletter-email" autocomplete="email" [placeholder]="t.newsletterPlaceholder" aria-label="Newsletter email">
+        <input
+          type="email"
+          name="newsletter-email"
+          autocomplete="email"
+          [(ngModel)]="newsletterHomeEmail"
+          [placeholder]="t.newsletterPlaceholder"
+          aria-label="Newsletter email"
+        />
         <button type="submit" aria-label="Envoyer">
           <span class="arrow">→</span>
         </button>

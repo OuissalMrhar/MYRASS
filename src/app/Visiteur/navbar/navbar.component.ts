@@ -19,7 +19,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isLoginOpen = false;
   isRegisterOpen = false;
   isCartOpen = false;
-  isMobileMenuOpen = false;
   isLangOpen = false;
   isCurrencyOpen = false;
   /** Menu profil (bulle WM). */
@@ -69,7 +68,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.isProfileMenuOpen = false;
-        this.closeMobileMenu();
       });
     this.userAuthService.openLoginPanelRequest$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.isLoginOpen = true;
@@ -109,49 +107,36 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
-  toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    if (this.isMobileMenuOpen) {
-      this.isProfileMenuOpen = false;
-    }
-  }
-
-  closeMobileMenu(): void {
-    this.isMobileMenuOpen = false;
+  toggleHamburgerMenu(event: Event): void {
+    event.stopPropagation();
+    this.isLangOpen = false;
+    this.isCurrencyOpen = false;
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }
 
   openLoginFromMobile(): void {
-    this.closeMobileMenu();
     this.closeProfileMenu();
     this.isLoginOpen = true;
   }
 
   openRegisterFromMobile(): void {
-    this.closeMobileMenu();
     this.closeProfileMenu();
     this.isRegisterOpen = true;
   }
 
   toggleProfileMenu(event: Event): void {
     event.stopPropagation();
-    // Sur mobile/tablette, on laisse aussi le clic sur l'utilisateur ouvrir le menu.
-    // On ferme le panneau hamburger pour éviter les superpositions.
-    this.isMobileMenuOpen = false;
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }
 
   onGuestUserClick(event: Event): void {
     event.stopPropagation();
-    this.isMobileMenuOpen = false;
-
-    // En desktop, on ouvre directement le drawer login (pas de dropdown utilisateur).
     if (typeof window !== 'undefined' && window.innerWidth > 992) {
       this.isProfileMenuOpen = false;
       this.isLoginOpen = true;
       return;
     }
 
-    // Sur mobile/moyen, on ouvre le dropdown pour afficher Connexion/Créer un compte.
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }
 
@@ -181,9 +166,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.scrollRaf) return;
     this.scrollRaf = requestAnimationFrame(() => {
       this.scrollRaf = 0;
-      if (this.isMobileMenuOpen && window.innerWidth <= 992) {
-        this.closeMobileMenu();
-      }
       if (this.isProfileMenuOpen) this.isProfileMenuOpen = false;
       if (this.isLangOpen) this.isLangOpen = false;
       if (this.isCurrencyOpen) this.isCurrencyOpen = false;
@@ -202,7 +184,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   logoutMobile(): void {
     this.userAuthService.logout();
-    this.closeMobileMenu();
+    this.closeProfileMenu();
   }
 
   setLang(lang: SiteLang): void {

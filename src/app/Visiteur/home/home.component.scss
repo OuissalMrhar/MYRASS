@@ -476,12 +476,12 @@ font-family: 'Montserrat', sans-serif;
 .brand-story {
   background-color: #ffffff;
   text-align: center; 
-  padding: 40px clamp(16px, 12vw, 20%);
+  padding: 40px clamp(16px, 12vw, 20%) 28px;
 
   h2 { 
     font-size: 42px; 
     font-weight: 400; 
-    margin-bottom: 50px; 
+    margin-bottom: 36px; 
     color: #553b31;
     
     em { 
@@ -545,7 +545,7 @@ font-family: 'Montserrat', sans-serif;
   }
 }
 .video-preview {
-  padding: clamp(20px, 3.5vw, 44px) clamp(16px, 4vw, 64px);
+  padding: clamp(12px, 2.2vw, 28px) clamp(16px, 4vw, 64px) clamp(28px, 5vw, 56px);
   background: #ffffff;
 
   &__frame {
@@ -576,7 +576,7 @@ font-family: 'Montserrat', sans-serif;
 }
 
 .collections {
-  padding: 50px clamp(16px, 4vw, 50px);
+  padding: 26px clamp(16px, 4vw, 50px) 50px;
   background-color: #ffffff;
 
   .col-grid {
@@ -589,7 +589,7 @@ font-family: 'Montserrat', sans-serif;
 
   .collections-desc {
     max-width: 1200px;
-    margin: 0 auto 36px;
+    margin: 0 auto 48px;
     text-align: center;
     min-height: 52px;
     display: flex;
@@ -1121,7 +1121,7 @@ font-family: 'Montserrat', sans-serif;
       align-items: center;
       width: max-content;
       min-width: max-content;
-      animation: features-scroll 18s linear infinite;
+      animation: features-scroll 34s linear infinite;
       will-change: transform;
     }
 
@@ -1632,7 +1632,7 @@ font-family: 'Montserrat', sans-serif;
 
   .guide-container .features-bar .features-track {
     gap: 26px;
-    animation-duration: 18s;
+    animation-duration: 34s;
   }
 
   .contact-section {
@@ -1725,15 +1725,16 @@ font-family: 'Montserrat', sans-serif;
   }
 
   .brand-story {
-    padding: 30px 16px;
+    padding: 24px 16px 18px;
 
     h2 {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
   }
 
   .video-preview {
     height: 300px;
+    padding: 10px 16px 64px;
 
     .play-button {
       width: 64px;
@@ -1742,8 +1743,17 @@ font-family: 'Montserrat', sans-serif;
     }
   }
 
+  /* Ombre moins haute sur mobile pour ne pas recouvrir le texte des collections */
+  .video-preview__frame {
+    box-shadow: 0 10px 28px rgba(42, 31, 26, 0.1);
+  }
+
   .collections {
-    padding: 34px 16px;
+    padding: 36px 16px 34px;
+
+    .collections-desc {
+      margin: 0 auto 14px;
+    }
 
     .col-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2142,7 +2152,7 @@ font-family: 'Montserrat', sans-serif;
   to   { opacity: 1; transform: translateX(0); }
 }
 
-.features-bar { animation: features-slide-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+.features-bar { animation: features-slide-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
 
 /* ── Contact / newsletter panels ───────────────────────────── */
 @keyframes panel-in-left {

@@ -40,6 +40,13 @@
   box-sizing: border-box;
 }
 
+html {
+  hyphens: none;
+  -webkit-hyphens: none;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
 html,
 body {
   margin: 0;

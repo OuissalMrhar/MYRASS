@@ -52,6 +52,7 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
 
   promoCodeInput = '';
   private readonly promoCodeActive = new BehaviorSubject<string | null>(null);
+  readonly promoActive$ = this.promoCodeActive.asObservable();
   private readonly destroy$ = new Subject<void>();
 
   // ── Stripe ────────────────────────────────────────────────────

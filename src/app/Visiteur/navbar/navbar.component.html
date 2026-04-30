@@ -2,17 +2,6 @@
 <ng-container *ngIf="shell$ | async as vm">
 <nav class="navbar">
   <div class="nav-brand-row">
-    <button
-      type="button"
-      class="mobile-menu-trigger"
-      aria-label="Ouvrir le menu"
-      (click)="toggleMobileMenu()"
-      [attr.aria-expanded]="isMobileMenuOpen"
-    >
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </button>
     <a routerLink="/home" class="nav-logo" aria-label="Accueil Myrass">
       <img src="/assets/logo.png" alt="Myrass Logo" loading="eager" decoding="async">
     </a>
@@ -83,7 +72,6 @@
     </ng-container>
   </a>
 
-  <!-- Mobile: remplacer l'icône favoris par l'ouverture du panier -->
   <button
     type="button"
     class="icon-btn nav-cart-mobile-btn"
@@ -197,11 +185,21 @@
   </div>
  </ng-template>
 
+  <button
+    type="button"
+    class="nav-mobile-menu-trigger"
+    aria-label="Ouvrir le menu"
+    (click)="toggleHamburgerMenu($event)"
+    [attr.aria-expanded]="isProfileMenuOpen"
+  >
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
 
 </div>
 </nav>
 
-<!-- Mobile / tablette : même principe que les filtres (overlay + tiroir), ouverture depuis la droite -->
 <ng-container *ngIf="isProfileMenuOpen">
   <div
     class="nav-profile-overlay"
@@ -249,6 +247,7 @@
 </ng-container>
 
 <ng-template #loggedInProfileBody let-user="user" let-pl="pl" let-nav="nav">
+  <a routerLink="/mon-profil" class="profile-menu__consult profile-menu__consult--desktop" (click)="closeProfileMenu()">{{ pl.consultMyAccount }}</a>
   <div class="profile-menu__identity">
     <span class="profile-menu__email-icon profile-menu__identity-avatar" aria-hidden="true">{{ userInitials }}</span>
     <div class="profile-menu__identity-meta">
@@ -284,6 +283,12 @@
     <span>{{ pl.myOrders }}</span>
   </a>
   <div class="profile-menu__sheet-actions">
+    <a
+      routerLink="/mon-profil"
+      class="profile-menu__cta profile-menu__cta--outline profile-menu__cta--profile-sheet"
+      role="menuitem"
+      (click)="closeProfileMenu()"
+    >{{ pl.consultMyProfile }}</a>
     <button type="button" class="profile-menu__cta profile-menu__cta--logout" role="menuitem" (click)="logout($event)">{{ pl.logout }}</button>
   </div>
 </ng-template>
@@ -324,73 +329,15 @@
   </div>
 </ng-template>
 
-<div
-  class="mobile-menu-panel"
-  [class.open]="isMobileMenuOpen"
-  [attr.aria-hidden]="!isMobileMenuOpen"
-  (click)="$event.stopPropagation()"
->
-  <div class="mobile-menu-inner">
-    <div class="mobile-menu__header">
-      <button
-        type="button"
-        class="mobile-menu__close"
-        aria-label="Fermer le menu"
-        (click)="closeMobileMenu()"
-      >
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M18 6L6 18M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
-
-    <div class="mobile-menu__scroll">
-      <nav class="mobile-menu__nav" aria-label="Navigation principale">
-        <a routerLink="/home" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.home }}</span>
-        </a>
-        <a routerLink="/produit" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.product }}</span>
-        </a>
-        <a routerLink="/about" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.whoWeAre }}</span>
-        </a>
-        <a routerLink="/guide" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.ourGuide }}</span>
-        </a>
-        <a routerLink="/faq" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.faq }}</span>
-        </a>
-        <a routerLink="/contact" class="mobile-menu__link-row mobile-menu__dash-below" (click)="closeMobileMenu()">
-          <span class="mobile-menu__link-text mobile-menu__link-text--case">{{ vm.nav.contact }}</span>
-        </a>
-      </nav>
-    </div>
-
-    <div class="mobile-menu__footer">
-      <ng-container *ngIf="!(currentUser$ | async); else mobileLoggedInFooter">
-        <button type="button" class="mobile-menu__pill mobile-menu__pill--primary" (click)="openLoginFromMobile()">
-          {{ vm.profile.login }}
-        </button>
-        <button type="button" class="mobile-menu__pill mobile-menu__pill--outline" (click)="openRegisterFromMobile()">
-          {{ vm.profile.createAccount }}
-        </button>
-      </ng-container>
-      <ng-template #mobileLoggedInFooter>
-        <!-- Déconnexion disponible dans le menu utilisateur (clic sur `user`). -->
-      </ng-template>
-    </div>
-  </div>
-</div>
-  <app-login-drawer 
-    [isOpen]="isLoginOpen"
-    (closeDrawer)="isLoginOpen=false"
-    (switchToRegister)="switchToRegister()">
+<app-login-drawer
+  [isOpen]="isLoginOpen"
+  (closeDrawer)="isLoginOpen=false"
+  (switchToRegister)="switchToRegister()">
 </app-login-drawer>
 
-<app-register-drawer 
-    [isOpen]="isRegisterOpen"
-    (closeDrawer)="isRegisterOpen=false">
+<app-register-drawer
+  [isOpen]="isRegisterOpen"
+  (closeDrawer)="isRegisterOpen=false">
 </app-register-drawer>
 
 <app-cart-drawer

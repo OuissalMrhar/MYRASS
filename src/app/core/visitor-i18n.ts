@@ -59,6 +59,8 @@ export interface ProfileMenuLabels {
   menuTitle: string;
   close: string;
   myAccountSubtitle: string;
+  consultMyAccount: string;
+  consultMyProfile: string;
   loyaltyLabel: string;
   myOrders: string;
   logout: string;
@@ -70,20 +72,20 @@ export interface ProfileMenuLabels {
 
 export const NAV_LABELS: Record<SiteLang, NavLabels> = {
   fr: {
-    home: 'ACCUEIL',
-    product: 'PRODUITS',
-    whoWeAre: 'NOTRE HISTOIRE',
-    ourGuide: 'NOTRE GUIDE',
+    home: 'Accueil',
+    product: 'Produits',
+    whoWeAre: 'Notre Histoire',
+    ourGuide: 'Notre Guide',
     faq: 'FAQ',
-    contact: 'CONTACT',
+    contact: 'Contact',
   },
   en: {
-    home: 'HOME',
-    product: 'PRODUCTS',
-    whoWeAre: 'OUR STORY',
-    ourGuide: 'OUR GUIDE',
+    home: 'Home',
+    product: 'Products',
+    whoWeAre: 'Our Story',
+    ourGuide: 'Our Guide',
     faq: 'FAQ',
-    contact: 'CONTACT',
+    contact: 'Contact',
   },
   ar: {
     home: 'الرئيسية',
@@ -191,7 +193,7 @@ export const HOME_LABELS: Record<SiteLang, HomeLabels> = {
     giftSpecialTitle: 'CADEAUX POUR QUELQU\'UN DE SPÉCIAL',
     viewGift: 'Voir',
     loading: 'Chargement…',
-    newsletterTitle: 'Get more and connect.',
+    newsletterTitle: 'Recevez-en plus et restez connecté.',
     newsletterDesc: 'Abonnez-vous pour recevoir nos nouveautés, offres exclusives et actualités Myrass.',
     newsletterPlaceholder: 'Votre adresse e-mail',
     newsletterBtn: 'S\'abonner',
@@ -495,7 +497,7 @@ export interface AuthLabels {
 
 export const AUTH_LABELS: Record<SiteLang, AuthLabels> = {
   fr: {
-    loginTitle: 'Login', requiredFields: 'Champs obligatoires*',
+    loginTitle: 'Connexion', requiredFields: 'Champs obligatoires*',
     emailLabel: 'E-mail*', passwordLabel: 'Mot de passe*', forgotPw: 'Mot de passe oublié ?',
     loginLinkHint: 'Ou utilisez un lien de connexion unique pour vous connecter :',
     loginLinkAction: 'Envoyer le lien par email',
@@ -796,6 +798,8 @@ export const PROFILE_MENU_LABELS: Record<SiteLang, ProfileMenuLabels> = {
     menuTitle: 'Menu',
     close: 'Fermer',
     myAccountSubtitle: 'Mon compte Myrass',
+    consultMyAccount: 'Consultez mon compte',
+    consultMyProfile: 'Consultez mon profil',
     loyaltyLabel: 'Points fidélité',
     myOrders: 'Mes commandes',
     logout: 'Déconnexion',
@@ -808,6 +812,8 @@ export const PROFILE_MENU_LABELS: Record<SiteLang, ProfileMenuLabels> = {
     menuTitle: 'Menu',
     close: 'Close',
     myAccountSubtitle: 'My Myrass account',
+    consultMyAccount: 'View my account',
+    consultMyProfile: 'View my profile',
     loyaltyLabel: 'Loyalty points',
     myOrders: 'My orders',
     logout: 'Log out',
@@ -820,6 +826,8 @@ export const PROFILE_MENU_LABELS: Record<SiteLang, ProfileMenuLabels> = {
     menuTitle: 'القائمة',
     close: 'إغلاق',
     myAccountSubtitle: 'حسابي على Myrass',
+    consultMyAccount: 'عرض حسابي',
+    consultMyProfile: 'عرض ملفي الشخصي',
     loyaltyLabel: 'نقاط الولاء',
     myOrders: 'طلباتي',
     logout: 'تسجيل الخروج',

@@ -155,11 +155,138 @@
   opacity: 0.78;
 }
 
-/* Mobile: meta un peu plus petit + plus léger */
 @media (max-width: 520px) {
+  .cart-checkout__panel-title {
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+
+  .cart-checkout__item-name {
+    font-size: 12px;
+  }
+
   .cart-checkout__item-meta {
-    font-size: 10px;
+    font-size: 9px;
     opacity: 0.62;
+  }
+
+  .cart-checkout__item-price {
+    font-size: 12px;
+  }
+
+  .cart-checkout__qty-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .cart-checkout__qty-val {
+    font-size: 11px;
+    min-width: 24px;
+  }
+
+  .cart-checkout__summary {
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .cart-checkout__summary-row {
+    font-size: 11px;
+    padding: 4px 0;
+
+    &--total {
+      font-size: 13px;
+    }
+  }
+
+  .cart-checkout__summary-promo-code {
+    font-size: 10px;
+  }
+
+  .cart-checkout__promo-title {
+    font-size: 0.8rem;
+  }
+
+  .cart-checkout__promo-hint {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+
+  .cart-checkout__promo-input {
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+
+  .cart-checkout__promo-header svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .btn-apply {
+    font-size: 11px;
+    padding: 9px 12px;
+  }
+
+  .cart-checkout__promo-remove {
+    font-size: 11px;
+    padding: 9px 10px;
+  }
+
+  .cart-checkout__promo-ok,
+  .cart-checkout__promo-err {
+    font-size: 11px;
+    margin-top: 8px;
+  }
+
+  .cart-checkout__tabs {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .cart-checkout__tab {
+    font-size: 10px;
+    padding: 7px 10px;
+  }
+
+  .cart-checkout__field label {
+    font-size: 10px;
+  }
+
+  .cart-checkout__field input,
+  .cart-checkout__field select {
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+
+  .cart-checkout__phone-prefix {
+    font-size: 13px;
+  }
+
+  .cart-checkout__phone-hint {
+    font-size: 10px;
+  }
+
+  .cart-checkout__pay-btn {
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+
+  .cart-checkout__policies a {
+    font-size: 10px;
+  }
+
+  .stripe-error {
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+
+  .stripe-success p {
+    font-size: 12px;
+  }
+
+  .cart-checkout__item-img {
+    width: 96px;
+    height: 120px;
   }
 }
 
@@ -238,6 +365,20 @@
       font-weight: 700;
     }
   }
+
+  &--promo-code {
+    align-items: baseline;
+    gap: 8px;
+  }
+}
+
+.cart-checkout__summary-promo-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #2f6f4e;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .cart-checkout__summary-rule {
@@ -669,23 +810,12 @@
   }
 }
 
-/* Code promo — style "coming soon" identique à loyalty ─────── */
 .cart-checkout__promo-card {
   margin: clamp(20px, 3vw, 28px) 0;
   padding: clamp(14px, 2vw, 20px);
   border-radius: 10px;
   border: 1px dashed #c9c2b6;
   background: #faf8f5;
-
-  &--soon {
-    opacity: 0.9;
-    .cart-checkout__promo-input,
-    .cart-checkout__promo-apply,
-    .cart-checkout__promo-remove {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-  }
 }
 
 .cart-checkout__promo-header {

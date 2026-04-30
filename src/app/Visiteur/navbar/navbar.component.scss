@@ -41,6 +41,42 @@
     display: none;
   }
 
+  .nav-mobile-menu-trigger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #8e867e;
+    border-radius: 8px;
+    flex-shrink: 0;
+    transition: color 0.2s ease, background 0.2s ease;
+
+    .hamburger-line {
+      display: block;
+      width: 16px;
+      height: 2px;
+      border-radius: 99px;
+      background: currentColor;
+    }
+
+    &:hover {
+      color: #3d342f;
+      background: rgba(42, 31, 26, 0.06);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #5f7047;
+      outline-offset: 2px;
+    }
+  }
+
   .nav-links {
     font-weight: 600;
     display: flex;
@@ -248,6 +284,12 @@
       0 0 0 1px rgba(44, 36, 28, 0.06);
     z-index: 1300;
     text-align: left;
+
+    &.profile-menu--desktop {
+      min-width: min(380px, calc(100vw - 32px));
+      max-width: min(420px, calc(100vw - 24px));
+      padding: 16px 18px;
+    }
   }
 
   .profile-menu__email {
@@ -492,12 +534,43 @@
   gap: 4px;
 }
 
+.profile-menu__consult {
+  display: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #5f7047;
+  text-decoration: none;
+  line-height: 1.4;
+  margin: 0 0 12px;
+
+  &:hover {
+    color: #4a5a38;
+    text-decoration: underline;
+  }
+}
+
+.profile-menu--desktop .profile-menu__consult--desktop {
+  display: block;
+}
+
+.profile-menu--sheet .profile-menu__consult--desktop {
+  display: none !important;
+}
+
 .profile-menu__identity-title {
   font-size: 13px;
   font-weight: 700;
   color: #2a1f1a;
   line-height: 1.35;
   word-break: break-word;
+}
+
+.profile-menu--desktop .profile-menu__identity-title {
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .profile-menu__identity-sub {
@@ -591,6 +664,17 @@
     color 0.2s ease,
     border-color 0.2s ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+a.profile-menu__cta {
+  text-decoration: none;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* « Consultez mon profil » : bouton pleine largeur uniquement dans le tiroir mobile, pas dans le menu desktop */
+.profile-menu--desktop .profile-menu__cta--profile-sheet {
+  display: none !important;
 }
 
 .profile-menu__cta--primary {
@@ -853,10 +937,10 @@
   .profile-menu--sheet {
     display: none !important;
   }
-}
 
-.mobile-menu-panel {
-  display: none;
+  .nav-mobile-menu-trigger {
+    display: none !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -904,12 +988,12 @@
       height: 30px;
     }
 
-    .mobile-menu-trigger {
+    .nav-links {
       display: none;
     }
 
-    .nav-links {
-      display: none;
+    .nav-mobile-menu-trigger {
+      display: inline-flex;
     }
 
     .nav-icons {
@@ -919,307 +1003,31 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 10px;
+      gap: 8px;
       padding-left: 0;
       min-width: 0;
       margin-left: auto;
 
-      .user-bubble {
-        width: 29px;
-        height: 29px;
-        font-size: 11px;
-        cursor: pointer;
-      }
-
-      /* Guest icon: garder le SVG personne sur mobile aussi */
-      .guest-icon-svg  { display: block; }
-      .guest-hamburger { display: none; }
-
-      /* User connecté : afficher les initiales, cacher le hamburger */
-      .user-bubble__text {
-        display: flex;
-      }
-
-      .user-bubble__hamburger {
+      .nav-profile-wrap {
         display: none !important;
       }
 
-      /* Icône menu mobile: sans fond, traits noirs. */
-      .user-bubble {
-        background: transparent;
-        /* Même couleur que les icônes (panier). */
-        color: #8e867e;
-        box-shadow: none;
-        /* Micro-ajustement pour aligner avec les icônes */
-        transform: translateY(-1px);
+      .nav-fav-btn {
+        display: inline-flex !important;
       }
 
-      .user-bubble__hamburger-line {
-        background: currentColor !important;
-      }
-
-      /* Aligner visuellement le hamburger avec les icônes. */
-      .user-bubble__hamburger {
-        height: 18px;
+      .nav-cart-mobile-btn {
+        display: inline-flex !important;
+        align-items: center;
         justify-content: center;
       }
+
+      .nav-cart-btn {
+        display: none !important;
+      }
     }
   }
 
-  /* Vert « forêt » aligné sur l’existant Myrass (#5f7047). */
-  $mobile-nav-green: #5f7047;
-  $mobile-nav-green-dark: #4a5a38;
-
-  /* Le panneau hamburger n'est plus utilisé sur <= 992px. */
-  .mobile-menu-panel {
-    display: none;
-  }
-
-  .mobile-menu-inner {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-
-  .mobile-menu__header {
-    flex-shrink: 0;
-    padding: 12px 14px 8px max(14px, env(safe-area-inset-left, 0px));
-  }
-
-  .mobile-menu__close {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #e5e0d8;
-    background: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #3d342f;
-    padding: 0;
-    transition:
-      background 0.2s ease,
-      border-color 0.2s ease;
-
-    &:hover {
-      background: #f7f5f2;
-      border-color: #d4cdc4;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $mobile-nav-green;
-      outline-offset: 2px;
-    }
-  }
-
-  .mobile-menu__scroll {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0 18px 8px max(18px, env(safe-area-inset-left, 0px));
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .mobile-menu__dash-below {
-    border-bottom: 1px dashed #ddd8cf;
-  }
-
-  .mobile-menu__static-row {
-    padding: 14px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-
-    &--inline {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-  }
-
-  .mobile-menu__static-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #9a918a;
-  }
-
-  .mobile-menu__static-value {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1a1a1a;
-
-    &--email {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2a2420;
-      word-break: break-all;
-      line-height: 1.35;
-    }
-  }
-
-  .mobile-menu__static-row--inline .mobile-menu__static-value {
-    color: #5f4a0f;
-    font-size: 17px;
-  }
-
-  .mobile-menu__link-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 15px 0;
-    text-decoration: none;
-    color: #1a1a1a;
-    font-size: 15px;
-    font-weight: 700;
-    font-family: 'Montserrat', system-ui, sans-serif;
-    letter-spacing: 0.02em;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: $mobile-nav-green-dark;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $mobile-nav-green;
-      outline-offset: 2px;
-    }
-  }
-
-  .mobile-menu__link-text {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .mobile-menu__link-text--case {
-    display: block;
-    text-transform: lowercase;
-    &::first-letter { text-transform: uppercase; }
-  }
-
-  .mobile-menu__chevron { display: none; }
-
-  .mobile-menu__lang-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 0;
-    border-bottom: 1px dashed #e3ded7;
-    margin-top: 4px;
-  }
-
-  .mobile-menu__lang-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #6b635c;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .mobile-menu__lang-btns {
-    display: flex;
-    gap: 8px;
-  }
-
-  .mobile-menu__lang-pill {
-    min-width: 44px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 2px solid #c9c2ba;
-    background: #fff;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #6b635c;
-    cursor: pointer;
-
-    &.active {
-      border-color: $mobile-nav-green;
-      color: $mobile-nav-green;
-      background: #f4f7f2;
-    }
-  }
-
-  .mobile-menu__nav {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-
-    .mobile-menu__link-row:last-child {
-      border-bottom: none;
-    }
-  }
-
-  .mobile-menu__footer {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 16px 18px max(16px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
-    border-top: 1px dashed #ddd8cf;
-    background: #fff;
-  }
-
-  .mobile-menu__pill {
-    flex: 1 1 calc(50% - 5px);
-    min-width: 0;
-    padding: 13px 12px;
-    border-radius: 999px;
-    font-family: 'Montserrat', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    border: 2px solid $mobile-nav-green;
-    transition:
-      background 0.2s ease,
-      color 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .mobile-menu__pill--primary {
-    background: $mobile-nav-green;
-    color: #fff;
-    border-color: $mobile-nav-green;
-
-    &:hover {
-      background: $mobile-nav-green-dark;
-      border-color: $mobile-nav-green-dark;
-    }
-  }
-
-  .mobile-menu__pill--outline {
-    background: #fff;
-    color: $mobile-nav-green;
-
-    &:hover {
-      background: #f4f7f2;
-    }
-  }
-
-  .mobile-menu__pill--logout-full {
-    flex: 1 1 100%;
-    width: 100%;
-    background: #fff;
-    color: #8b3220;
-    border-color: $mobile-nav-green;
-
-    &:hover {
-      background: #faf5f3;
-      border-color: $mobile-nav-green-dark;
-      color: #6e2818;
-    }
-  }
 }
 
 @media (max-width: 768px) {
@@ -1257,17 +1065,6 @@
     font-size: 16px;
     letter-spacing: 0;
     font-family: 'Segoe UI', 'Tahoma', 'Arial Unicode MS', system-ui, sans-serif;
-  }
-
-  .mobile-menu__link-row {
-    font-size: 20px;
-    letter-spacing: 0;
-    font-family: 'Segoe UI', 'Tahoma', 'Arial Unicode MS', system-ui, sans-serif;
-  }
-
-  .mobile-menu__lang-label {
-    font-size: 13px;
-    letter-spacing: 0;
   }
 
   .profile-menu__sheet-title {
