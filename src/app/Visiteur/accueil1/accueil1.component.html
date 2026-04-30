@@ -186,69 +186,6 @@
     </div>
   </section>
 
-  <section class="collections">
-    <div class="collections-desc">
-      <p class="collections-desc__text" *ngIf="activeCategoryDescription">{{ activeCategoryDescription }}</p>
-      <p class="collections-desc__text collections-desc__text--placeholder" *ngIf="!activeCategoryDescription">&nbsp;</p>
-    </div>
-
-    <div class="col-grid">
-      <div
-        class="col-item"
-        *ngFor="let category of visibleCollectionCategories; let i = index"
-        [class.col-item--active]="activeCategoryIndex === i"
-        [class.col-item--inactive]="category.statut === false && !category.isComingSoon"
-        (click)="selectCategory(i)"
-      >
-        <div class="col-img" [ngClass]="categoryBgClass(category, i)" [class.coming-soon]="category.isComingSoon">
-          <span class="coming-badge" *ngIf="category.isComingSoon">{{ t.availableSoon }}</span>
-          <span class="inactive-badge" *ngIf="category.statut === false && !category.isComingSoon">{{ t.availableSoon }}</span>
-        </div>
-        <p class="category-name">{{ category | lang: 'nom' : currentLang }}</p>
-      </div>
-    </div>
-
-    <nav
-      class="collections-pagination"
-      *ngIf="isMobileCollectionsPaginated && collectionsTotalPages > 1"
-      aria-label="Pagination des catégories"
-    >
-      <button
-        type="button"
-        class="collections-pagination__arrow"
-        (click)="prevCollectionsPage()"
-        [disabled]="collectionsPageIndex === 0"
-        aria-label="Page précédente"
-      >
-        ‹
-      </button>
-      <div class="collections-pagination__dots" role="tablist">
-        <button
-          type="button"
-          *ngFor="let p of collectionsPageIndices"
-          class="collections-pagination__dot"
-          [class.collections-pagination__dot--active]="p === collectionsPageIndex"
-          (click)="goCollectionsPage(p)"
-          [attr.aria-label]="'Page ' + (p + 1)"
-          [attr.aria-current]="p === collectionsPageIndex ? 'true' : null"
-        ></button>
-      </div>
-      <button
-        type="button"
-        class="collections-pagination__arrow"
-        (click)="nextCollectionsPage()"
-        [disabled]="collectionsPageIndex >= collectionsTotalPages - 1"
-        aria-label="Page suivante"
-      >
-        ›
-      </button>
-    </nav>
-
-    <div class="collections-loading" *ngIf="isCategoriesLoading">
-      <p>{{ t.loading }}</p>
-    </div>
-  </section>
-
   <section class="ramadan-section home-reveal home-reveal--delay-2">
     <div class="ramadan-header">
       <ng-container *ngIf="gifts.length > 0">

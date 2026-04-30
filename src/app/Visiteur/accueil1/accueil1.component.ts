@@ -3,10 +3,8 @@ import { Router } from '@angular/router';
 import { Subject, finalize, take, takeUntil } from 'rxjs';
 import { SiteLanguageService } from '../../core/site-language.service';
 import { SiteLang, pick } from '../../core/visitor-i18n';
-import { Categorie } from '../../models/categorie.model';
 import { Gift } from '../../models/gift.model';
 import { GiftService } from '../../services/gift.service';
-import { CategorieService } from '../../services/categorie.service';
 import { Produit } from '../../models/produit.model';
 import { ProduitService } from '../../services/produit.service';
 import { ProductRoutingHelper } from '../../core/product-routing.helper';
@@ -20,10 +18,6 @@ interface BestsellerSlide {
   price: string;
   imageUrl: string | null;
   fallbackImageClass: string;
-}
-
-interface HomeCategoryCard extends Categorie {
-  isComingSoon?: boolean;
 }
 
 @Component({
@@ -43,14 +37,6 @@ export class Accueil1Component implements OnInit, OnDestroy {
   mobileBestsellerDescExpanded = false;
   bestsellerSlides: BestsellerSlide[] = [];
   isBestsellersLoading = false;
-
-  categories: Categorie[] = [];
-  isCategoriesLoading = false;
-  activeCategoryIndex = 0;
-  isMobileCollectionsPaginated = false;
-  collectionsPageIndex = 0;
-  readonly collectionsPerPage = 4;
-  readonly minCategoriesToDisplay = 3;
 
   brandStoryExpanded = false;
   aidDescExpanded = false;
@@ -72,7 +58,6 @@ export class Accueil1Component implements OnInit, OnDestroy {
   constructor(
     private readonly siteLang: SiteLanguageService,
     private readonly produitService: ProduitService,
-    private readonly categorieService: CategorieService,
     private readonly giftService: GiftService,
     private readonly router: Router,
     private readonly productRoutes: ProductRoutingHelper,
@@ -83,7 +68,6 @@ export class Accueil1Component implements OnInit, OnDestroy {
     this.updateViewportFlags();
     this.loadBestsellers();
     this.loadGifts();
-    this.loadCategories();
     this.siteLang.lang$.pipe(takeUntil(this.destroy$)).subscribe((lang) => {
       this.currentLang = lang;
       if (this.rawBestsellers.length > 0) {
@@ -178,14 +162,7 @@ export class Accueil1Component implements OnInit, OnDestroy {
   }
 
   private updateViewportFlags(): void {
-    const prevCollectionsMobile = this.isMobileCollectionsPaginated;
     this.isMobileProductsCarousel = window.innerWidth <= 992;
-    this.isMobileCollectionsPaginated = window.innerWidth <= 768;
-    if (prevCollectionsMobile !== this.isMobileCollectionsPaginated) {
-      this.collectionsPageIndex = 0;
-      this.activeCategoryIndex = 0;
-    }
-    this.clampCollectionsPageIndex();
   }
 
   toggleAidDesc(): void {
@@ -362,148 +339,6 @@ export class Accueil1Component implements OnInit, OnDestroy {
       fallbackImageClass: 'prod-3',
     },
   ];
-
-  // ---- Categories / collections (same behavior as home) ----
-
-  get displayedCategories(): HomeCategoryCard[] {
-    const realCards: HomeCategoryCard[] = this.categories.map((category) => ({
-      ...category,
-      isComingSoon: false,
-    }));
-    if (realCards.length >= this.minCategoriesToDisplay) return realCards;
-
-    const placeholdersToAdd = this.minCategoriesToDisplay - realCards.length;
-    const placeholderCards: HomeCategoryCard[] = Array.from({ length: placeholdersToAdd }, (_, index) => ({
-      id: -1000 - index,
-      nom: 'Available soon',
-      description: '',
-      isComingSoon: true,
-    }));
-    return [...realCards, ...placeholderCards];
-  }
-
-  get collectionsTotalPages(): number {
-    const n = this.displayedCategories.length;
-    if (n === 0) return 0;
-    return Math.ceil(n / this.collectionsPerPage);
-  }
-
-  get visibleCollectionCategories(): HomeCategoryCard[] {
-    const all = this.displayedCategories;
-    if (!this.isMobileCollectionsPaginated || all.length === 0) return all;
-    const start = this.collectionsPageIndex * this.collectionsPerPage;
-    return all.slice(start, start + this.collectionsPerPage);
-  }
-
-  get collectionsPageIndices(): number[] {
-    return Array.from({ length: this.collectionsTotalPages }, (_, i) => i);
-  }
-
-  private normalizeCategoryKey(value: string | null | undefined): string {
-    return (value ?? '')
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-  }
-
-  private isCosmetiqueCategory(category: HomeCategoryCard): boolean {
-    const fr = this.normalizeCategoryKey(category.nom);
-    const en = this.normalizeCategoryKey((category as any).nomEn);
-    const ar = this.normalizeCategoryKey((category as any).nomAr);
-    const hay = `${fr} ${en} ${ar}`.trim();
-    return hay.includes('cosmet');
-  }
-
-  categoryBgClass(category: HomeCategoryCard, localIndex: number): string {
-    if (this.isCosmetiqueCategory(category)) return 'c-cosmetique';
-    const globalIdx = this.isMobileCollectionsPaginated
-      ? this.collectionsPageIndex * this.collectionsPerPage + localIndex
-      : localIndex;
-    return 'c-' + ((globalIdx % 3) + 1);
-  }
-
-  selectCategory(index: number): void {
-    this.activeCategoryIndex = index;
-  }
-
-  get activeCategoryDescription(): string {
-    const cats = this.visibleCollectionCategories;
-    if (!cats.length) return '';
-    const cat = cats[this.activeCategoryIndex];
-    if (!cat) return '';
-    return pick(cat.description, (cat as any).descriptionEn, (cat as any).descriptionAr, this.currentLang)?.trim() || '';
-  }
-
-  prevCollectionsPage(): void {
-    if (this.collectionsPageIndex > 0) {
-      this.collectionsPageIndex--;
-      this.activeCategoryIndex = 0;
-    }
-  }
-
-  nextCollectionsPage(): void {
-    if (this.collectionsPageIndex < this.collectionsTotalPages - 1) {
-      this.collectionsPageIndex++;
-      this.activeCategoryIndex = 0;
-    }
-  }
-
-  goCollectionsPage(p: number): void {
-    if (p >= 0 && p < this.collectionsTotalPages) {
-      this.collectionsPageIndex = p;
-      this.activeCategoryIndex = 0;
-    }
-  }
-
-  private clampCollectionsPageIndex(): void {
-    const n = this.displayedCategories.length;
-    if (n === 0) {
-      this.collectionsPageIndex = 0;
-      return;
-    }
-    const pages = Math.ceil(n / this.collectionsPerPage);
-    if (this.collectionsPageIndex > pages - 1) {
-      this.collectionsPageIndex = Math.max(0, pages - 1);
-    }
-  }
-
-  private loadCategories(): void {
-    this.isCategoriesLoading = true;
-    this.categorieService
-      .getAll()
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.isCategoriesLoading = false;
-        }),
-      )
-      .subscribe({
-        next: (items: any) => {
-          const normalized = Array.isArray(items)
-            ? items.map((item: any) => ({
-                id: item?.id ?? item?.Id,
-                nom: item?.nom ?? item?.Nom ?? '',
-                nomEn: item?.nomEn ?? item?.NomEn ?? null,
-                nomAr: item?.nomAr ?? item?.NomAr ?? null,
-                description: item?.description ?? item?.Description ?? '',
-                descriptionEn: item?.descriptionEn ?? item?.DescriptionEn ?? null,
-                descriptionAr: item?.descriptionAr ?? item?.DescriptionAr ?? null,
-                statut: item?.statut ?? item?.Statut ?? true,
-              }))
-            : [];
-
-          this.categories = normalized.filter((c: Categorie) => !!c.nom?.trim());
-          this.activeCategoryIndex = 0;
-          this.clampCollectionsPageIndex();
-        },
-        error: () => {
-          this.categories = [];
-          this.collectionsPageIndex = 0;
-          this.activeCategoryIndex = 0;
-        },
-      });
-  }
 
   private static isValidHomeEmail(s: string): boolean {
     const t = s.trim();
