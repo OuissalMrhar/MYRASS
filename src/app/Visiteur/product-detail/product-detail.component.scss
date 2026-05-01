@@ -4,6 +4,24 @@
   box-sizing: border-box;
 }
 
+/* ── iOS tap fix global ─────────────────────────────────────────
+   touch-action:manipulation supprime le délai 300ms sur TOUS les
+   éléments interactifs de cette page (boutons, liens, accordéons).
+   -webkit-tap-highlight-color supprime le flash gris au tap.
+──────────────────────────────────────────────────────────────── */
+button,
+a,
+[role="button"],
+[role="tab"],
+input,
+select,
+textarea,
+label,
+summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 :host {
   /* Fiche produit — palette maison : crème chaude, encre, olive */
   --pd-ink: #1a1510;
@@ -54,7 +72,7 @@
 .pd-reveal--armed {
   opacity: 0;
   transform: translateY(22px);
-  pointer-events: none;
+  /* pointer-events: none retiré — causait des taps ignorés sur iOS */
 }
 
 .pd-reveal.is-visible {
@@ -1991,12 +2009,13 @@
     z-index: 850;
     will-change: transform;
     transform: translateZ(0);
+    /* pointer-events: none retiré — crée une zone fantôme qui ralentit
+       le hit-testing iOS sur TOUTE la page */
+    padding: 10px max(14px, env(safe-area-inset-right, 0px))
+      calc(10px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
     background: linear-gradient(180deg, rgba(249, 247, 244, 0.97) 0%, #f0ebe0 100%);
     border-top: 1px solid var(--pd-line-soft);
     box-shadow: 0 -12px 36px rgba(28, 22, 18, 0.1);
-    padding: 10px max(14px, env(safe-area-inset-right, 0px))
-      calc(10px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
-    pointer-events: none;
   }
 
   .mobile-purchase-bar__inner {
@@ -2005,7 +2024,6 @@
     gap: 10px;
     max-width: min(1200px, 100%);
     margin: 0 auto;
-    pointer-events: auto;
     padding: 8px 10px;
     background: var(--pd-surface);
     border-radius: 14px;
