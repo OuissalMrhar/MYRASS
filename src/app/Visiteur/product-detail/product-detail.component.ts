@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -112,6 +112,11 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   /** Après « J'achète », la barre affiche − quantité + à la place du CTA. */
   mobilePurchaseBarQuantityMode = false;
   private mobileDockRaf = 0;
+  stockToastVisible = false;
+  stockToastMsg = '';
+  private stockToastTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly scrollPassiveHandler = () => this.ngZone.run(() => this.scheduleMobilePurchaseBarDock());
+  private readonly resizePassiveHandler = () => this.ngZone.run(() => this.scheduleMobilePurchaseBarDock());
   /**
    * Produit 8 — galerie héros / vignettes : Moyenne1…7 (assets). Uniquement la section « Histoire du produit »
    * utilise en plus contact.png, Main.png, fin.png pour les 3 cartes (voir mergeVrHistoryImageUrls).
@@ -312,6 +317,7 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     private readonly siteLang: SiteLanguageService,
     private readonly recentlyViewed: RecentlyViewedService,
     private readonly currencyService: CurrencyService,
+    private readonly ngZone: NgZone,
   ) {}
 
   private pickText(
@@ -325,11 +331,6 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     return (fr ?? '').trim();
   }
 
-  @HostListener('window:scroll', ['$event'])
-  @HostListener('window:resize', ['$event'])
-  onWindowScrollOrResize(): void {
-    this.scheduleMobilePurchaseBarDock();
-  }
 
   ngOnInit(): void {
     this.guestDisplayName = this.ensureGuestDisplayName();
@@ -382,8 +383,12 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit(): void {
     this.scheduleMobilePurchaseBarDock();
-    // Observer créé ici ; les éléments seront armés après chaque chargement produit
     this.initScrollReveal();
+    // Listeners passifs : iOS ne bloque plus le scroll en attendant le JS
+    this.ngZone.runOutsideAngular(() => {
+      window.addEventListener('scroll', this.scrollPassiveHandler, { passive: true });
+      window.addEventListener('resize', this.resizePassiveHandler, { passive: true });
+    });
   }
 
   private initScrollReveal(): void {
@@ -417,7 +422,10 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener('scroll', this.scrollPassiveHandler);
+    window.removeEventListener('resize', this.resizePassiveHandler);
     if (this.feedbackThankYouClear != null) clearTimeout(this.feedbackThankYouClear);
+    if (this.stockToastTimer != null) clearTimeout(this.stockToastTimer);
     this.scrollRevealObserver?.disconnect();
     this.cancelLoad$.next();
     this.cancelLoad$.complete();
@@ -772,11 +780,23 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   /** Clic sur une taille : si stock épuisé, message et pas de sélection. */
   onTailleOptionClick(index: number, opt: TailleOption): void {
     if (opt.stock <= 0) {
-      const bientot = this.product?.statut === false;
-      window.alert(bientot ? 'Bientôt disponible' : 'Rupture de stock');
+      this.showStockToast(this.product?.statut === false);
       return;
     }
     this.selectTaille(index);
+  }
+
+  private showStockToast(comingSoon: boolean): void {
+    const l = this.siteLang.lang;
+    this.stockToastMsg = comingSoon
+      ? (l === 'ar' ? 'قريباً' : l === 'en' ? 'Coming soon' : 'Bientôt disponible')
+      : (l === 'ar' ? 'نفد المخزون' : l === 'en' ? 'Out of stock' : 'Rupture de stock');
+    this.stockToastVisible = true;
+    if (this.stockToastTimer) clearTimeout(this.stockToastTimer);
+    this.stockToastTimer = setTimeout(() => {
+      this.stockToastVisible = false;
+      this.stockToastTimer = null;
+    }, 2200);
   }
 
   private applyVariantFromQueryParam(): void {

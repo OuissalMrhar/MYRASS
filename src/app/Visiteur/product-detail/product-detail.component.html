@@ -543,4 +543,8 @@
 }
 
 <app-footer #footerRef></app-footer>
+
+<div class="stock-toast" *ngIf="stockToastVisible" role="alert" aria-live="assertive">
+  {{ stockToastMsg }}
+</div>
 </div>
