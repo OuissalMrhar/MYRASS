@@ -13,7 +13,6 @@ import { MyOrdersPageComponent } from './Visiteur/my-orders-page/my-orders-page.
 import { DetailsGiftComponent } from './Visiteur/details-gift/details-gift.component';
 import { GuideComponent } from './Visiteur/guide/guide.component';
 import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.component';
-import { Details1Component } from './Visiteur/details1/details1.component';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   { path: 'home', component: HomeComponent },
@@ -29,7 +28,6 @@ const routes: Routes = [
   { path: 'favoris', component: FavoritesPageComponent },
   { path: 'mes-commandes', component: MyOrdersPageComponent },
   { path: 'mon-profil', component: ProfilePageComponent },
-  { path: 'details1', component: Details1Component },
 
   {
     path: '',

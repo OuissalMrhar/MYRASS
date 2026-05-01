@@ -32,7 +32,6 @@ export class AppComponent implements OnInit, OnDestroy {
         url.startsWith('/produit/');
       this.isVisitorPage =
         url.startsWith('/home') ||
-        url.startsWith('/details1') ||
         visitorProduitPath ||
         url.startsWith('/product-detail') ||
         url.startsWith('/details-gift') ||

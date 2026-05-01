@@ -29,7 +29,6 @@ import { LangPipe } from './core/lang.pipe';
 import { DetailsGiftComponent } from './Visiteur/details-gift/details-gift.component';
 import { GuideComponent } from './Visiteur/guide/guide.component';
 import { ProfilePageComponent } from './Visiteur/profile-page/profile-page.component';
-import { Details1Component } from './Visiteur/details1/details1.component';
 import { CurrencyDisplayPipe } from './pipes/currency-display.pipe';
 import { RevealDirective } from './directives/reveal.directive';
 import { SecureImageDirective } from './directives/secure-image.directive';
@@ -57,7 +56,6 @@ import { CloudinaryImgPipe } from './pipes/cloudinary-img.pipe';
     DetailsGiftComponent,
     GuideComponent,
     ProfilePageComponent,
-    Details1Component,
     RevealDirective,
     SecureImageDirective,
   ],
