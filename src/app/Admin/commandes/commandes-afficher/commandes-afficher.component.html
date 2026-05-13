@@ -48,6 +48,7 @@
           <th>Date</th>
           <th>Client (ID)</th>
           <th>Total</th>
+          <th>Paiement</th>
           <th>Statut</th>
           <th>Actions</th>
         </tr>
@@ -60,6 +61,9 @@
             <td>{{ formatDate(c.dateCommande) }}</td>
             <td>{{ c.userId }}</td>
             <td class="cmd-total">{{ c.totalCommande | number:'1.2-2' }} MAD</td>
+            <td>
+              <span class="badge" [ngClass]="modePaiementClass(c.modePaiement)">{{ modePaiementLabel(c.modePaiement) }}</span>
+            </td>
             <td>
               <span class="badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span>
             </td>
@@ -81,6 +85,10 @@
             <td colspan="6">
               <div class="cmd-detail">
                 <div class="cmd-detail__meta">
+                  <span>Mode paiement : <strong>{{ modePaiementLabel(c.modePaiement) }}</strong></span>
+                  <span *ngIf="c.nomDestinataire">Destinataire : {{ c.nomDestinataire }}</span>
+                  <span *ngIf="c.telephoneLivraison">Tél : {{ c.telephoneLivraison }}</span>
+                  <span *ngIf="c.rueLivraison">Adresse : {{ c.rueLivraison }}{{ c.villeLivraison ? ', ' + c.villeLivraison : '' }}{{ c.codePostalLivraison ? ' ' + c.codePostalLivraison : '' }}</span>
                   <span *ngIf="c.codePromoUtilise">Code promo : <strong>{{ c.codePromoUtilise }}</strong></span>
                   <span>Livraison : {{ c.fraisLivraison | number:'1.2-2' }} MAD</span>
                   <span *ngIf="c.remiseAppliquee">Remise : -{{ c.remiseAppliquee | number:'1.2-2' }} MAD</span>

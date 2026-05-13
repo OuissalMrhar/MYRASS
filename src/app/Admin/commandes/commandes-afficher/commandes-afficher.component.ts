@@ -113,6 +113,14 @@ export class CommandesAfficherComponent implements OnInit {
     return map[s] ?? '';
   }
 
+  modePaiementLabel(mode: string): string {
+    return mode === 'a_la_livraison' ? 'À la livraison' : 'En ligne';
+  }
+
+  modePaiementClass(mode: string): string {
+    return mode === 'a_la_livraison' ? 'badge--cod' : 'badge--online';
+  }
+
   private flash(msg: string): void {
     this.successMsg = msg;
     if (this.successTimer) clearTimeout(this.successTimer);

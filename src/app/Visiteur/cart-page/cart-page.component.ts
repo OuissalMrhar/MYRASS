@@ -12,7 +12,7 @@ import { LoyaltyPointsService } from '../../services/loyalty-points.service';
 import { OrdersApiService } from '../../services/orders-api.service';
 import { UserAuthService } from '../../services/user-auth.service';
 
-export type PaymentTabId = 'card' | 'eps' | 'giropay' | 'other';
+export type PaymentTabId = 'card' | 'cod';
 
 export interface CheckoutVm {
   lines: CartLine[];
@@ -37,11 +37,17 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   paymentTab: PaymentTabId = 'card';
 
   nameOnCard = '';
-  country = 'Maroc';
-  postalCode = '';
-  sameBilling = true;
-  saveInfo = false;
   phone = '';
+
+  // COD fields
+  codNom = '';
+  codTelephone = '';
+  codRue = '';
+  codVille = '';
+  codCodePostal = '';
+  codSuccess = false;
+  codError: string | null = null;
+  codSubmitting = false;
 
   orderSubmitError = '';
   orderSubmitting = false;
@@ -191,10 +197,63 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
   setPaymentTab(id: PaymentTabId): void {
     this.paymentTab = id;
     if (id === 'card' && !this.stripeReady) {
-      setTimeout(() => {
-        void this.waitForStripeAndMount();
-      }, 50);
+      setTimeout(() => void this.waitForStripeAndMount(), 50);
     }
+  }
+
+  async confirmCod(vm: CheckoutVm): Promise<void> {
+    if (this.codSubmitting || this.codSuccess) return;
+    if (vm.lines.length === 0) return;
+
+    const user = this.userAuth.currentUser;
+    if (!user?.id || !this.userAuth.getAccessToken()) {
+      this.codError = 'Connectez-vous pour valider votre commande.';
+      this.userAuth.requestOpenLoginPanel();
+      return;
+    }
+
+    const nom = this.codNom.trim();
+    const telephone = this.codTelephone.trim();
+    const rue = this.codRue.trim();
+
+    if (!nom) { this.codError = 'Veuillez saisir votre nom complet.'; return; }
+    if (!telephone) { this.codError = 'Veuillez saisir votre numéro de téléphone.'; return; }
+    if (!rue) { this.codError = 'Veuillez saisir votre adresse de livraison.'; return; }
+
+    this.codError = null;
+    this.codSubmitting = true;
+
+    this.ordersApi
+      .create({
+        lignes: vm.lines.map((l) => ({ produitId: l.productId, quantite: l.quantity, tailleId: l.tailleId })),
+        fraisLivraison: vm.shipping,
+        modePaiement: 'a_la_livraison',
+        nomDestinataire: nom,
+        telephoneLivraison: telephone,
+        rueLivraison: rue,
+        villeLivraison: this.codVille.trim() || undefined,
+        codePostalLivraison: this.codCodePostal.trim() || undefined,
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.codSubmitting = false;
+          if (res.userPointsTotal != null) {
+            this.loyalty.applyServerTotal(res.userPointsTotal, res.pointsGagnes);
+            this.userAuth.syncStoredPointsTotal(res.userPointsTotal);
+          }
+          this.cart.clear();
+          this.codSuccess = true;
+        },
+        error: (err: { error?: { message?: string } }) => {
+          this.codSubmitting = false;
+          const msg = err?.error?.message;
+          this.codError =
+            typeof msg === 'string' && msg.trim().length > 0
+              ? msg
+              : "Impossible d'enregistrer la commande. Vérifiez votre connexion.";
+        },
+      });
   }
 
   // ── Quantités ────────────────────────────────────────────────
@@ -311,8 +370,9 @@ export class CartPageComponent implements AfterViewInit, OnDestroy {
         // 3. Enregistrer la commande en base après confirmation paiement
         this.ordersApi
           .create({
-            lignes: vm.lines.map((l) => ({ produitId: l.productId, quantite: l.quantity })),
+            lignes: vm.lines.map((l) => ({ produitId: l.productId, quantite: l.quantity, tailleId: l.tailleId })),
             fraisLivraison: vm.shipping,
+            modePaiement: 'en_ligne',
           })
           .pipe(takeUntil(this.destroy$))
           .subscribe({

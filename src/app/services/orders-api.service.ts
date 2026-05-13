@@ -6,6 +6,7 @@ import { apiUrl } from '../core/api-url';
 export interface LigneCommandeWriteDto {
   produitId: number;
   quantite: number;
+  tailleId?: number;
 }
 
 /** Corps API POST /api/commandes (utilisateur imposé par le JWT). */
@@ -13,6 +14,12 @@ export interface CommandeCreateDto {
   lignes: LigneCommandeWriteDto[];
   fraisLivraison?: number;
   codePromo?: string;
+  modePaiement?: 'en_ligne' | 'a_la_livraison';
+  nomDestinataire?: string;
+  telephoneLivraison?: string;
+  rueLivraison?: string;
+  villeLivraison?: string;
+  codePostalLivraison?: string;
 }
 
 export interface LigneCommandeResponseDto {
@@ -21,6 +28,8 @@ export interface LigneCommandeResponseDto {
   quantite: number;
   prixUnitaire: number;
   sousTotal: number;
+  tailleId?: number;
+  tailleLabel?: string;
 }
 
 export interface CommandeResponseDto {
@@ -34,6 +43,12 @@ export interface CommandeResponseDto {
   totalCommande: number;
   codePromoUtilise?: string | null;
   pointsGagnes: number;
+  modePaiement: 'en_ligne' | 'a_la_livraison';
+  nomDestinataire?: string | null;
+  telephoneLivraison?: string | null;
+  rueLivraison?: string | null;
+  villeLivraison?: string | null;
+  codePostalLivraison?: string | null;
   userPointsTotal?: number;
   lignes: LigneCommandeResponseDto[];
 }
