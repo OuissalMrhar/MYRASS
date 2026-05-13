@@ -37,21 +37,26 @@ export class AuthAdminInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    // Routes visiteur : JWT visiteur uniquement (commandes, paniers, profil, interactions).
-    if (
-      req.url.includes('/api/commandes') ||
-      req.url.includes('/api/paniers') ||
-      req.url.includes('/api/users/me') ||
-      req.url.includes('/api/interactions') ||
-      req.url.includes('/api/gift-interactions')
-    ) {
-      const visitorToken = this.userAuth.getAccessToken();
-      if (visitorToken) {
-        return next.handle(
-          req.clone({ setHeaders: { Authorization: `Bearer ${visitorToken}` } }),
-        );
+    // Routes visiteur : JWT visiteur si l'admin n'est pas connecté.
+    // Si un token admin est présent, on laisse tomber sur le bloc admin ci-dessous
+    // (permet à l'admin de consulter /api/commandes avec son propre token).
+    const adminToken = this.adminAuth.getToken();
+    if (!adminToken) {
+      if (
+        req.url.includes('/api/commandes') ||
+        req.url.includes('/api/paniers') ||
+        req.url.includes('/api/users/me') ||
+        req.url.includes('/api/interactions') ||
+        req.url.includes('/api/gift-interactions')
+      ) {
+        const visitorToken = this.userAuth.getAccessToken();
+        if (visitorToken) {
+          return next.handle(
+            req.clone({ setHeaders: { Authorization: `Bearer ${visitorToken}` } }),
+          );
+        }
+        return next.handle(req);
       }
-      return next.handle(req);
     }
 
     const token = this.adminAuth.getToken();
