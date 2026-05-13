@@ -34,7 +34,7 @@
     <div class="stat-card stat-card--accent">
       <span class="stat-card__icon">💰</span>
       <div class="stat-card__body">
-        <p class="stat-card__value">{{ chiffreAffaires | number:'1.0-0' }} MAD</p>
+        <p class="stat-card__value">{{ chiffreAffaires | number:'1.0-0' }} €</p>
         <p class="stat-card__label">Chiffre d'affaires</p>
       </div>
     </div>
@@ -61,7 +61,7 @@
             <td>#{{ c.id }}</td>
             <td>{{ formatDate(c.dateCommande) }}</td>
             <td>{{ c.userId }}</td>
-            <td>{{ c.totalCommande | number:'1.2-2' }} MAD</td>
+            <td>{{ c.totalCommande | number:'1.2-2' }} €</td>
             <td><span class="st-badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span></td>
           </tr>
         </tbody>

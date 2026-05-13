@@ -159,8 +159,8 @@
                   <td class="cmd-lines-table__name">{{ l.produitNom }}</td>
                   <td>{{ l.tailleLabel || '—' }}</td>
                   <td class="cmd-lines-table__center">{{ l.quantite }}</td>
-                  <td class="cmd-lines-table__num">{{ l.prixUnitaire | number:'1.2-2' }} MAD</td>
-                  <td class="cmd-lines-table__num cmd-lines-table__bold">{{ l.sousTotal | number:'1.2-2' }} MAD</td>
+                  <td class="cmd-lines-table__num">{{ l.prixUnitaire | number:'1.2-2' }} €</td>
+                  <td class="cmd-lines-table__num cmd-lines-table__bold">{{ l.sousTotal | number:'1.2-2' }} €</td>
                 </tr>
               </tbody>
             </table>
@@ -175,19 +175,19 @@
             <div class="cmd-totals">
               <div class="cmd-totals__row">
                 <span>Sous-total articles</span>
-                <span>{{ c.sousTotalArticles | number:'1.2-2' }} MAD</span>
+                <span>{{ c.sousTotalArticles | number:'1.2-2' }} €</span>
               </div>
               <div class="cmd-totals__row cmd-totals__row--discount" *ngIf="(c.remiseAppliquee ?? 0) > 0">
                 <span>Remise</span>
-                <span>− {{ c.remiseAppliquee | number:'1.2-2' }} MAD</span>
+                <span>− {{ c.remiseAppliquee | number:'1.2-2' }} €</span>
               </div>
               <div class="cmd-totals__row">
                 <span>Frais de livraison</span>
-                <span>{{ c.fraisLivraison | number:'1.2-2' }} MAD</span>
+                <span>{{ c.fraisLivraison | number:'1.2-2' }} €</span>
               </div>
               <div class="cmd-totals__row cmd-totals__row--total">
                 <span>Total</span>
-                <strong>{{ c.totalCommande | number:'1.2-2' }} MAD</strong>
+                <strong>{{ c.totalCommande | number:'1.2-2' }} €</strong>
               </div>
             </div>
           </div>
