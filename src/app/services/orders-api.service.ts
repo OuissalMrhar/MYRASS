@@ -35,6 +35,9 @@ export interface LigneCommandeResponseDto {
 export interface CommandeResponseDto {
   id: number;
   userId: number;
+  userNomComplet: string;
+  userEmail: string;
+  userTelephone?: string;
   dateCommande: string;
   statut: string;
   sousTotalArticles: number;

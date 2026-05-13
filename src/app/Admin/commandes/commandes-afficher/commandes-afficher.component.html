@@ -2,17 +2,26 @@
 <section class="page cmd-page">
 
   <header class="cmd-header">
-    <h1 class="cmd-header__title">Commandes</h1>
-    <button class="cmd-header__refresh" type="button" (click)="load()" title="Rafraîchir">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="16" height="16">
-        <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-      </svg>
-    </button>
+    <h1 class="cmd-header__title">Gestion des commandes</h1>
+    <div class="cmd-header__actions">
+      <span class="cmd-header__count" *ngIf="!loading">{{ filtered.length }} commande{{ filtered.length > 1 ? 's' : '' }}</span>
+      <button class="cmd-header__refresh" type="button" (click)="load()" title="Rafraîchir">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="16" height="16">
+          <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+    </div>
   </header>
 
   <!-- Feedback -->
-  <div class="cmd-success" *ngIf="successMsg">{{ successMsg }}</div>
-  <div class="cmd-error" *ngIf="error">{{ error }}</div>
+  <div class="cmd-success" *ngIf="successMsg" role="status">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+    {{ successMsg }}
+  </div>
+  <div class="cmd-error" *ngIf="error" role="alert">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+    {{ error }}
+  </div>
 
   <!-- Filtres -->
   <div class="cmd-filters">
@@ -22,7 +31,7 @@
       </svg>
       <input
         type="search"
-        placeholder="ID commande, client…"
+        placeholder="N° commande, nom, email, téléphone…"
         [(ngModel)]="searchTerm"
         (ngModelChange)="applyFilters()"
       />
@@ -31,43 +40,165 @@
       <option value="">Tous les statuts</option>
       <option *ngFor="let s of statuts" [value]="s">{{ statutLabel(s) }}</option>
     </select>
+    <select class="cmd-select" [(ngModel)]="paiementFilter" (ngModelChange)="applyFilters()">
+      <option value="">Tous les paiements</option>
+      <option value="en_ligne">Paiement en ligne</option>
+      <option value="a_la_livraison">Paiement à la livraison</option>
+    </select>
   </div>
 
   <!-- Loading -->
-  <div class="cmd-loading" *ngIf="loading">Chargement des commandes…</div>
+  <div class="cmd-loading" *ngIf="loading">
+    <svg class="cmd-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0110 10"/></svg>
+    Chargement des commandes…
+  </div>
 
   <!-- Vide -->
   <p class="cmd-empty" *ngIf="!loading && filtered.length === 0">Aucune commande trouvée.</p>
 
-  <!-- Table -->
-  <div class="cmd-table-wrap" *ngIf="!loading && filtered.length > 0">
-    <table class="cmd-table">
-      <thead>
-        <tr>
-          <th>N°</th>
-          <th>Date</th>
-          <th>Client (ID)</th>
-          <th>Total</th>
-          <th>Paiement</th>
-          <th>Statut</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let c of filtered">
-          <!-- Ligne principale -->
-          <tr class="cmd-row" [class.cmd-row--expanded]="expandedId === c.id" (click)="toggleExpand(c.id)">
-            <td class="cmd-id">#{{ c.id }}</td>
-            <td>{{ formatDate(c.dateCommande) }}</td>
-            <td>{{ c.userId }}</td>
-            <td class="cmd-total">{{ c.totalCommande | number:'1.2-2' }} MAD</td>
-            <td>
-              <span class="badge" [ngClass]="modePaiementClass(c.modePaiement)">{{ modePaiementLabel(c.modePaiement) }}</span>
-            </td>
-            <td>
-              <span class="badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span>
-            </td>
-            <td class="cmd-actions" (click)="$event.stopPropagation()">
+  <!-- Cards -->
+  <div class="cmd-list" *ngIf="!loading && filtered.length > 0">
+    <article *ngFor="let c of filtered" class="cmd-card">
+
+      <!-- En-tête de la carte -->
+      <div class="cmd-card__head">
+        <div class="cmd-card__head-left">
+          <span class="cmd-card__id">#{{ c.id }}</span>
+          <span class="badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span>
+          <span class="badge" [ngClass]="modePaiementClass(c.modePaiement)">{{ modePaiementLabel(c.modePaiement) }}</span>
+        </div>
+        <time class="cmd-card__date">{{ formatDate(c.dateCommande) }}</time>
+      </div>
+
+      <div class="cmd-card__body">
+
+        <!-- Colonne gauche : Client + Adresse -->
+        <div class="cmd-card__col">
+
+          <!-- Section client -->
+          <div class="cmd-section">
+            <h3 class="cmd-section__title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Client
+            </h3>
+            <div class="cmd-info-grid">
+              <span class="cmd-info-grid__label">Nom</span>
+              <span class="cmd-info-grid__value">{{ c.userNomComplet || '—' }}</span>
+              <span class="cmd-info-grid__label">Email</span>
+              <span class="cmd-info-grid__value">
+                <a *ngIf="c.userEmail" [href]="'mailto:' + c.userEmail" class="cmd-link">{{ c.userEmail }}</a>
+                <span *ngIf="!c.userEmail">—</span>
+              </span>
+              <span class="cmd-info-grid__label">Téléphone</span>
+              <span class="cmd-info-grid__value">{{ c.userTelephone || '—' }}</span>
+              <span class="cmd-info-grid__label">ID client</span>
+              <span class="cmd-info-grid__value">#{{ c.userId }}</span>
+            </div>
+          </div>
+
+          <!-- Section adresse (COD) -->
+          <div class="cmd-section" *ngIf="c.modePaiement === 'a_la_livraison'">
+            <h3 class="cmd-section__title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Adresse de livraison
+            </h3>
+            <div class="cmd-info-grid">
+              <span class="cmd-info-grid__label">Destinataire</span>
+              <span class="cmd-info-grid__value">{{ c.nomDestinataire || '—' }}</span>
+              <span class="cmd-info-grid__label">Téléphone</span>
+              <span class="cmd-info-grid__value">{{ c.telephoneLivraison || '—' }}</span>
+              <span class="cmd-info-grid__label">Adresse</span>
+              <span class="cmd-info-grid__value">{{ c.rueLivraison || '—' }}</span>
+              <span class="cmd-info-grid__label">Ville</span>
+              <span class="cmd-info-grid__value">{{ c.villeLivraison || '—' }}</span>
+              <span class="cmd-info-grid__label">Code postal</span>
+              <span class="cmd-info-grid__value">{{ c.codePostalLivraison || '—' }}</span>
+            </div>
+          </div>
+
+          <!-- Section promo & points -->
+          <div class="cmd-section" *ngIf="c.codePromoUtilise || c.pointsGagnes > 0">
+            <h3 class="cmd-section__title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              Fidélité &amp; promo
+            </h3>
+            <div class="cmd-info-grid">
+              <ng-container *ngIf="c.codePromoUtilise">
+                <span class="cmd-info-grid__label">Code promo</span>
+                <span class="cmd-info-grid__value cmd-promo-code">{{ c.codePromoUtilise }}</span>
+              </ng-container>
+              <ng-container *ngIf="c.pointsGagnes > 0">
+                <span class="cmd-info-grid__label">Points gagnés</span>
+                <span class="cmd-info-grid__value">+{{ c.pointsGagnes }} pts</span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne droite : Produits + Totaux + Statut -->
+        <div class="cmd-card__col cmd-card__col--right">
+
+          <!-- Produits commandés -->
+          <div class="cmd-section">
+            <h3 class="cmd-section__title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Produits ({{ c.lignes.length }})
+            </h3>
+            <table class="cmd-lines-table">
+              <thead>
+                <tr>
+                  <th>Produit</th>
+                  <th>Variante</th>
+                  <th>Qté</th>
+                  <th>Prix unit.</th>
+                  <th>Sous-total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let l of c.lignes">
+                  <td class="cmd-lines-table__name">{{ l.produitNom }}</td>
+                  <td>{{ l.tailleLabel || '—' }}</td>
+                  <td class="cmd-lines-table__center">{{ l.quantite }}</td>
+                  <td class="cmd-lines-table__num">{{ l.prixUnitaire | number:'1.2-2' }} MAD</td>
+                  <td class="cmd-lines-table__num cmd-lines-table__bold">{{ l.sousTotal | number:'1.2-2' }} MAD</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Totaux -->
+          <div class="cmd-section">
+            <h3 class="cmd-section__title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Récapitulatif
+            </h3>
+            <div class="cmd-totals">
+              <div class="cmd-totals__row">
+                <span>Sous-total articles</span>
+                <span>{{ c.sousTotalArticles | number:'1.2-2' }} MAD</span>
+              </div>
+              <div class="cmd-totals__row cmd-totals__row--discount" *ngIf="(c.remiseAppliquee ?? 0) > 0">
+                <span>Remise</span>
+                <span>− {{ c.remiseAppliquee | number:'1.2-2' }} MAD</span>
+              </div>
+              <div class="cmd-totals__row">
+                <span>Frais de livraison</span>
+                <span>{{ c.fraisLivraison | number:'1.2-2' }} MAD</span>
+              </div>
+              <div class="cmd-totals__row cmd-totals__row--total">
+                <span>Total</span>
+                <strong>{{ c.totalCommande | number:'1.2-2' }} MAD</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Changer le statut -->
+          <div class="cmd-section cmd-section--statut">
+            <h3 class="cmd-section__title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Modifier le statut
+            </h3>
+            <div class="cmd-statut-control">
               <select
                 class="cmd-statut-select"
                 [value]="c.statut"
@@ -76,43 +207,19 @@
               >
                 <option *ngFor="let s of statuts" [value]="s">{{ statutLabel(s) }}</option>
               </select>
-              <span class="cmd-spinner" *ngIf="updatingId === c.id">…</span>
-            </td>
-          </tr>
+              <span class="cmd-spinner" *ngIf="updatingId === c.id" aria-label="Mise à jour…">
+                <svg class="cmd-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-opacity="0.2"/><path d="M12 2a10 10 0 0110 10"/></svg>
+              </span>
+            </div>
+            <p class="cmd-statut-hint">
+              Statut actuel :
+              <span class="badge" [ngClass]="statutClass(c.statut)">{{ statutLabel(c.statut) }}</span>
+            </p>
+          </div>
 
-          <!-- Détail expandé -->
-          <tr *ngIf="expandedId === c.id" class="cmd-detail-row">
-            <td colspan="6">
-              <div class="cmd-detail">
-                <div class="cmd-detail__meta">
-                  <span>Mode paiement : <strong>{{ modePaiementLabel(c.modePaiement) }}</strong></span>
-                  <span *ngIf="c.nomDestinataire">Destinataire : {{ c.nomDestinataire }}</span>
-                  <span *ngIf="c.telephoneLivraison">Tél : {{ c.telephoneLivraison }}</span>
-                  <span *ngIf="c.rueLivraison">Adresse : {{ c.rueLivraison }}{{ c.villeLivraison ? ', ' + c.villeLivraison : '' }}{{ c.codePostalLivraison ? ' ' + c.codePostalLivraison : '' }}</span>
-                  <span *ngIf="c.codePromoUtilise">Code promo : <strong>{{ c.codePromoUtilise }}</strong></span>
-                  <span>Livraison : {{ c.fraisLivraison | number:'1.2-2' }} MAD</span>
-                  <span *ngIf="c.remiseAppliquee">Remise : -{{ c.remiseAppliquee | number:'1.2-2' }} MAD</span>
-                  <span>Points gagnés : {{ c.pointsGagnes }}</span>
-                </div>
-                <table class="cmd-lines">
-                  <thead>
-                    <tr><th>Produit</th><th>Qté</th><th>P.U.</th><th>Sous-total</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let l of c.lignes">
-                      <td>{{ l.produitNom }}</td>
-                      <td>{{ l.quantite }}</td>
-                      <td>{{ l.prixUnitaire | number:'1.2-2' }} MAD</td>
-                      <td>{{ l.sousTotal | number:'1.2-2' }} MAD</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
+        </div>
+      </div>
+    </article>
   </div>
 
 </section>

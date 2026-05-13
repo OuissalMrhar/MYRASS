@@ -16,10 +16,11 @@ export class CommandesAfficherComponent implements OnInit {
 
   searchTerm = '';
   statutFilter = '';
+  paiementFilter = '';
   expandedId: number | null = null;
   updatingId: number | null = null;
 
-  readonly statuts = ['en_attente', 'confirmee', 'expediee', 'livree', 'annulee'];
+  readonly statuts = ['en_attente', 'confirmee', 'expediee', 'en_cours_livraison', 'livree', 'annulee', 'en_retour'];
 
   private successTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -53,10 +54,14 @@ export class CommandesAfficherComponent implements OnInit {
       const matchSearch =
         !q ||
         String(c.id).includes(q) ||
+        (c.userNomComplet ?? '').toLowerCase().includes(q) ||
+        (c.userEmail ?? '').toLowerCase().includes(q) ||
+        (c.userTelephone ?? '').toLowerCase().includes(q) ||
         String(c.userId).includes(q) ||
         c.statut.toLowerCase().includes(q);
       const matchStatut = !this.statutFilter || c.statut === this.statutFilter;
-      return matchSearch && matchStatut;
+      const matchPaiement = !this.paiementFilter || c.modePaiement === this.paiementFilter;
+      return matchSearch && matchStatut && matchPaiement;
     });
   }
 
@@ -93,22 +98,26 @@ export class CommandesAfficherComponent implements OnInit {
 
   statutLabel(s: string): string {
     const map: Record<string, string> = {
-      en_attente: 'En attente',
-      confirmee: 'Confirmée',
-      expediee: 'Expédiée',
-      livree: 'Livrée',
-      annulee: 'Annulée',
+      en_attente:         'En attente',
+      confirmee:          'Confirmée',
+      expediee:           'Expédiée',
+      en_cours_livraison: 'En cours de livraison',
+      livree:             'Livrée',
+      annulee:            'Annulée',
+      en_retour:          'En retour',
     };
     return map[s] ?? s;
   }
 
   statutClass(s: string): string {
     const map: Record<string, string> = {
-      en_attente: 'badge--pending',
-      confirmee: 'badge--confirmed',
-      expediee: 'badge--shipped',
-      livree: 'badge--delivered',
-      annulee: 'badge--cancelled',
+      en_attente:         'badge--pending',
+      confirmee:          'badge--confirmed',
+      expediee:           'badge--shipped',
+      en_cours_livraison: 'badge--transit',
+      livree:             'badge--delivered',
+      annulee:            'badge--cancelled',
+      en_retour:          'badge--return',
     };
     return map[s] ?? '';
   }
