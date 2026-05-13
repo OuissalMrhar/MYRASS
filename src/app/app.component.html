@@ -26,10 +26,14 @@
           <a routerLink="/tailles" routerLinkActive="active">Tailles</a>
           <a routerLink="/gifts" routerLinkActive="active">Gifts</a>
           <a routerLink="/codes-promo" routerLinkActive="active">Codes promo</a>
+          <span class="nav-label">Ventes</span>
+          <a routerLink="/commandes" routerLinkActive="active">Commandes</a>
         </ng-container>
         <ng-container *ngIf="isNormalAdmin">
           <span class="nav-label">Espace</span>
           <a routerLink="/accueil" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
+          <span class="nav-label">Ventes</span>
+          <a routerLink="/commandes" routerLinkActive="active">Commandes</a>
         </ng-container>
         <button type="button" class="btn btn-logout" (click)="logout()">Déconnexion</button>
       </ng-container>
