@@ -64,9 +64,12 @@ font-family: 'Montserrat', sans-serif;
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 0 clamp(20px, 6vw, 80px) clamp(56px, 10vh, 110px);
-    max-width: 860px;
+    padding: 0 clamp(20px, 6vw, 80px) clamp(64px, 12vh, 130px);
+    max-width: 600px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   &__eyebrow {
@@ -366,31 +369,31 @@ font-family: 'Montserrat', sans-serif;
 .univers-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 20px;
   max-width: 1160px;
   margin: 0 auto;
 }
 
 .univers-card {
-  background: #fff;
-  border: 1px solid #ece7e2;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: box-shadow 0.28s ease, transform 0.28s ease;
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
 
-  &:not(&--soon):hover {
-    box-shadow: 0 12px 36px rgba(42, 31, 26, 0.12);
-    transform: translateY(-5px);
+  &:not(&--soon) &__img {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
+  &:not(&--soon):hover &__img { transform: scale(1.03); }
 
-  &--soon { opacity: 0.72; cursor: default; }
+  &--soon { cursor: default; pointer-events: none; }
 
   &__img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 2 / 3;
     background-size: cover;
     background-position: center;
     background-color: #e8e3dc;
+    border-radius: 10px;
+    overflow: hidden;
     position: relative;
 
     &.col-img--alimentaire {
@@ -398,92 +401,50 @@ font-family: 'Montserrat', sans-serif;
     }
     &.col-img--cosmetique {
       background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1777492282/ChatGPT_Image_29_avr._2026_20_50_50_g0wilc.png');
-      filter: grayscale(0.4);
+      filter: grayscale(0.55) brightness(0.88);
     }
     &.col-img--soon {
       background-image: url('https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_680,c_fill/v1775742857/pexels-betul-ustun-236006735-31694878_1_bf8hhe.jpg');
-      filter: grayscale(0.55);
+      filter: grayscale(0.65) brightness(0.85);
     }
   }
 
-  &__soon-tag {
+  &__soon-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(42, 31, 26, 0.78);
-    color: #fffcf1;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 252, 241, 0.88);
+    color: #2a1f1a;
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 5px 12px;
+    padding: 5px 14px;
     border-radius: 20px;
+    white-space: nowrap;
     backdrop-filter: blur(4px);
   }
 
-  &__body {
-    padding: 20px 22px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__name {
-    font-size: 16px;
-    font-weight: 700;
-    color: #2a1f1a;
-    margin: 0;
-    text-transform: capitalize;
-  }
-
-  &__desc {
-    font-size: 13px;
-    color: #8a7a6e;
-    line-height: 1.65;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  &__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    align-self: flex-start;
-    margin-top: 6px;
-    padding: 9px 18px;
-    font-family: inherit;
-    font-size: 12px;
+  &__label {
+    text-align: center;
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    text-decoration: none;
     color: #2a1f1a;
-    border: 1.5px solid #2a1f1a;
-    border-radius: 4px;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    cursor: pointer;
+    margin: 12px 0 0;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
 
-    svg { transition: transform 0.2s ease; }
-    &:hover { background: #2a1f1a; color: #fffcf1; transform: translateY(-1px); svg { transform: translateX(3px); } }
-
-    &--disabled {
-      color: #b5ada5;
-      border-color: #e0dbd6;
-      pointer-events: none;
-      cursor: default;
-    }
+    .univers-card--soon & { color: #8a7a6e; }
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .univers-grid {
-    grid-template-columns: 1fr;
-    max-width: 480px;
-    margin: 0 auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
   }
-  .univers-card__img { aspect-ratio: 16 / 9; }
+  .univers-card__label { font-size: 11px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -3743,6 +3704,21 @@ font-family: 'Montserrat', sans-serif;
 .bs-split__visual {
   border-radius: 12px;
   overflow: hidden;
+}
+
+/* Variante image <img> pour les coffrets (pas background-image) */
+.bs-split__img--cover {
+  position: relative;
+  overflow: hidden;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 }
 
 .bs-split__img {
