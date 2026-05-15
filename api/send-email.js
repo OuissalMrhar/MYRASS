@@ -126,6 +126,88 @@ function buildRibHtml({ fullName, orderId, lignes, total, rib, iban, swift, bank
 </body></html>`;
 }
 
+/* ── Template confirmation commande à la livraison ── */
+function buildCodHtml({ fullName, orderId, lignes, total, ville, telephone }) {
+  const safeOrderId   = escapeHtml(String(orderId || '—'));
+  const safeVille     = escapeHtml(String(ville   || '—'));
+  const safeTel       = escapeHtml(String(telephone || '—'));
+  const safeTotal     = escapeHtml(String(total   || '—'));
+
+  const lignesRows = (lignes || []).map((l, i) => `
+    <tr style="background:${i % 2 === 0 ? '#fff' : '#faf7f3'};">
+      <td style="padding:10px 14px;font-size:13px;color:#2a1f1a;">${escapeHtml(l.nom)}</td>
+      <td style="padding:10px 14px;font-size:13px;color:#6b6158;text-align:center;">${escapeHtml(String(l.quantite))}</td>
+      <td style="padding:10px 14px;font-size:13px;color:#2a1f1a;text-align:right;font-weight:600;">${escapeHtml(String(l.sousTotal))} €</td>
+    </tr>`).join('');
+
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Confirmation de commande — MYRASS</title></head>
+<body style="margin:0;background:#f6f3ef;font-family:Montserrat,Arial,sans-serif;">
+  <table width="100%" cellspacing="0" cellpadding="0" style="background:#f6f3ef;padding:24px 0;">
+    <tr><td align="center">
+      <table width="620" cellspacing="0" cellpadding="0" style="max-width:620px;width:100%;background:#fff;border:1px solid #ece7e2;border-radius:12px;overflow:hidden;">
+
+        <!-- Header -->
+        <tr><td style="padding:22px 26px;background:#2a1f1a;color:#fffcf1;">
+          <div style="font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.7;">MYRASS</div>
+          <div style="font-size:20px;font-weight:700;margin-top:5px;">Commande confirmée ✓</div>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:22px 26px;">
+          <p style="margin:0 0 10px;font-size:14px;color:#2a1f1a;">Bonjour <strong>${escapeHtml(fullName)}</strong>,</p>
+          <p style="margin:0 0 22px;font-size:13px;color:#6b6158;line-height:1.7;">
+            Merci pour votre commande ! Vous avez choisi le <strong>paiement à la livraison</strong>.
+            Votre colis sera préparé et expédié dans les plus brefs délais.
+          </p>
+
+          <!-- Récap commande -->
+          <div style="background:#faf7f3;border:1px solid #ece7e2;border-radius:8px;padding:16px 18px;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a7a6e;font-weight:700;margin-bottom:12px;">Récapitulatif</div>
+            <table width="100%" cellspacing="0" cellpadding="0" style="border:1px solid #ece7e2;border-radius:6px;overflow:hidden;">
+              <thead>
+                <tr style="background:#2a1f1a;">
+                  <th style="padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fffcf1;text-align:left;">Produit</th>
+                  <th style="padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fffcf1;text-align:center;">Qté</th>
+                  <th style="padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fffcf1;text-align:right;">Sous-total</th>
+                </tr>
+              </thead>
+              <tbody>${lignesRows}</tbody>
+            </table>
+            <table width="100%" cellspacing="0" cellpadding="0" style="margin-top:12px;">
+              <tr>
+                <td style="font-size:15px;font-weight:700;color:#2a1f1a;">Total à payer à la livraison</td>
+                <td style="font-size:18px;font-weight:700;color:#2a1f1a;text-align:right;">${safeTotal} €</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Livraison -->
+          <div style="background:#f0f7ff;border:1px solid #c5d5e8;border-radius:8px;padding:16px 18px;margin-bottom:20px;">
+            <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#2a6ea5;font-weight:700;margin-bottom:10px;">Informations de livraison</div>
+            <table width="100%" cellspacing="0" cellpadding="0">
+              <tr><td style="padding:5px 0;font-size:13px;color:#6b6158;width:140px;">N° commande</td><td style="padding:5px 0;font-size:13px;color:#2a1f1a;font-weight:600;">#${safeOrderId}</td></tr>
+              <tr><td style="padding:5px 0;font-size:13px;color:#6b6158;">Ville</td><td style="padding:5px 0;font-size:13px;color:#2a1f1a;">${safeVille}</td></tr>
+              <tr><td style="padding:5px 0;font-size:13px;color:#6b6158;">Téléphone</td><td style="padding:5px 0;font-size:13px;color:#2a1f1a;">${safeTel}</td></tr>
+              <tr><td style="padding:5px 0;font-size:13px;color:#6b6158;">Délai estimé</td><td style="padding:5px 0;font-size:13px;color:#2a1f1a;font-weight:600;">⏱ 20 jours ouvrés</td></tr>
+            </table>
+          </div>
+
+          <p style="margin:0;font-size:13px;color:#6b6158;line-height:1.7;">
+            Une question ? Répondez à cet email ou contactez-nous via le site.<br/>
+            <strong style="color:#2a1f1a;">L'équipe MYRASS</strong>
+          </p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="padding:14px 26px;background:#fffcf1;border-top:1px solid #ece7e2;font-size:11px;color:#9e8e84;line-height:1.6;">
+          Email automatique suite à votre commande sur myrass.com — Paiement à la livraison.
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
 /* ═══════════════════════════════════════════════════════════════ */
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -146,7 +228,7 @@ module.exports = async (req, res) => {
   const {
     kind, siteName,
     nomComplet, email, telephone, message, typePartenariat,
-    orderId, lignes, total,
+    orderId, lignes, total, ville, lignesDetail,
   } = req.body || {};
 
   const k         = clean(kind, 32);
@@ -157,7 +239,7 @@ module.exports = async (req, res) => {
   const msg       = clean(message, 8000);
   const partType  = clean(typePartenariat, 120);
 
-  if (!['contact', 'partnership', 'order-rib'].includes(k)) {
+  if (!['contact', 'partnership', 'order-rib', 'order-cod'].includes(k)) {
     return json(res, 400, { ok: false, error: 'INVALID_KIND' });
   }
 
@@ -180,6 +262,34 @@ module.exports = async (req, res) => {
         from:    fromAddress,
         to:      [userEmail],
         subject: `Votre commande MYRASS #${orderId || '?'} — Instructions de virement`,
+        html,
+      });
+      return json(res, 200, { ok: true });
+    } catch {
+      return json(res, 500, { ok: false, error: 'SEND_FAILED' });
+    }
+  }
+
+  /* ── Confirmation commande paiement à la livraison ── */
+  if (k === 'order-cod') {
+    if (!fullName || !isEmail(userEmail)) {
+      return json(res, 400, { ok: false, error: 'INVALID_INPUT' });
+    }
+
+    const html = buildCodHtml({
+      fullName,
+      orderId,
+      lignes: Array.isArray(lignesDetail) ? lignesDetail : [],
+      total: clean(String(total || ''), 20),
+      ville: clean(String(ville || ''), 100),
+      telephone: clean(String(telephone || ''), 60),
+    });
+
+    try {
+      await resend.emails.send({
+        from:    fromAddress,
+        to:      [userEmail],
+        subject: `Votre commande MYRASS #${orderId || '?'} — Confirmation paiement à la livraison`,
         html,
       });
       return json(res, 200, { ok: true });

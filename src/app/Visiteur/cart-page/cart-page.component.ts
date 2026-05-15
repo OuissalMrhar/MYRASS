@@ -216,6 +216,27 @@ export class CartPageComponent implements OnInit, OnDestroy {
             this.loyalty.applyServerTotal(res.userPointsTotal, res.pointsGagnes);
             this.userAuth.syncStoredPointsTotal(res.userPointsTotal);
           }
+
+          // Envoyer l'email de confirmation COD au client
+          const user = this.userAuth.currentUser;
+          if (user?.email) {
+            const lignesDetail = vm.lines.map(l => ({
+              nom: l.name + (l.variantLabel ? ` (${l.variantLabel})` : ''),
+              quantite: l.quantity,
+              sousTotal: this.cart.lineSubtotalDhs(l).toFixed(2),
+            }));
+            this.http.post('/api/send-email', {
+              kind: 'order-cod',
+              nomComplet: user.nomComplet || nom,
+              email: user.email,
+              telephone: `+212 ${telephone}`,
+              orderId: res.id,
+              lignesDetail,
+              total: vm.total.toFixed(2),
+              ville: this.codVille.trim() || '—',
+            }).subscribe({ error: () => {} });
+          }
+
           this.cart.clear();
           this.codSuccess = true;
         },
