@@ -42,6 +42,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
   // ── Paiement à la livraison (COD) ─────────────────────────────
   codNom = '';
   codTelephone = '';
+  codEmail = '';
   codRue = '';
   codVille = '';
   codCodePostal = '';
@@ -87,6 +88,8 @@ export class CartPageComponent implements OnInit, OnDestroy {
       this.codNom = user.nomComplet;
     if (!this.codTelephone && user.telephone)
       this.codTelephone = user.telephone.replace(/^\+212/, '').trim();
+    if (!this.codEmail && user.email && !user.email.startsWith('placeholder.'))
+      this.codEmail = user.email;
   }
 
   setPaymentTab(id: PaymentTabId): void {
@@ -188,10 +191,12 @@ export class CartPageComponent implements OnInit, OnDestroy {
 
     const nom = this.codNom.trim();
     const telephone = this.codTelephone.trim();
+    const email = this.codEmail.trim();
     const rue = this.codRue.trim();
 
     if (!nom) { this.codError = 'Veuillez saisir votre nom complet.'; return; }
     if (!telephone) { this.codError = 'Veuillez saisir votre numéro de téléphone.'; return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { this.codError = 'Veuillez saisir une adresse email valide.'; return; }
     if (!rue) { this.codError = "Veuillez saisir votre adresse de livraison."; return; }
 
     this.codError = null;
@@ -218,24 +223,23 @@ export class CartPageComponent implements OnInit, OnDestroy {
           }
 
           // Envoyer l'email de confirmation COD au client
-          const user = this.userAuth.currentUser;
-          if (user?.email) {
-            const lignesDetail = vm.lines.map(l => ({
-              nom: l.name + (l.variantLabel ? ` (${l.variantLabel})` : ''),
-              quantite: l.quantity,
-              sousTotal: this.cart.lineSubtotalDhs(l).toFixed(2),
-            }));
-            this.http.post('/api/send-email', {
-              kind: 'order-cod',
-              nomComplet: user.nomComplet || nom,
-              email: user.email,
-              telephone: `+212 ${telephone}`,
-              orderId: res.id,
-              lignesDetail,
-              total: vm.total.toFixed(2),
-              ville: this.codVille.trim() || '—',
-            }).subscribe({ error: () => {} });
-          }
+          const lignesDetail = vm.lines.map(l => ({
+            nom: l.name + (l.variantLabel ? ` (${l.variantLabel})` : ''),
+            quantite: l.quantity,
+            sousTotal: this.cart.lineSubtotalDhs(l).toFixed(2),
+          }));
+          this.http.post('/api/send-email', {
+            kind: 'order-cod',
+            nomComplet: nom,
+            email,
+            telephone: `+212 ${telephone}`,
+            orderId: res.id,
+            lignesDetail,
+            total: vm.total.toFixed(2),
+            ville: this.codVille.trim() || '—',
+          }).subscribe({
+            error: (err) => console.error('[COD email]', err),
+          });
 
           this.cart.clear();
           this.codSuccess = true;

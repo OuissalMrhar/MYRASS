@@ -237,6 +237,13 @@
             </div>
 
             <div class="cart-checkout__field">
+              <label for="cod-email">Email <span style="font-size:11px;color:#8a7a6e;">(reçu de commande)</span></label>
+              <input id="cod-email" type="email" [(ngModel)]="codEmail"
+                     placeholder="votre@email.com" autocomplete="email"
+                     [disabled]="codSubmitting" />
+            </div>
+
+            <div class="cart-checkout__field">
               <label for="cod-rue">Adresse (rue, n°, quartier)</label>
               <textarea id="cod-rue" rows="2" [(ngModel)]="codRue"
                         placeholder="N° rue, quartier…"
