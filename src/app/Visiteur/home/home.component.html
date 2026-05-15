@@ -1,43 +1,41 @@
 <app-navbar></app-navbar>
 <ng-container *ngIf="homeLabels$ | async as t">
 
-<!-- ════════════════════════ HERO PROMO ════════════════════════ -->
-<section class="hero-promo">
+<!-- ════════════════════════ HERO VIDÉO ════════════════════════ -->
+<section class="hero-video">
 
-  <div class="hero-promo__text">
-    <span class="hero-promo__tag">
-      <span class="hero-promo__tag-dot" aria-hidden="true"></span>
-      PURE &nbsp;·&nbsp; NATUREL &nbsp;·&nbsp; MAROCAIN
-    </span>
-    <h1 class="hero-promo__h1">
+  <video
+    class="hero-video__bg"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+  >
+    <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1778854585/PixVerse_V6_Image_Text_360P_Create_a_luxury_ci_ywvsqn.mp4" type="video/mp4" />
+  </video>
+
+  <div class="hero-video__overlay" aria-hidden="true"></div>
+
+  <div class="hero-video__content">
+    <p class="hero-video__eyebrow">PURE &nbsp;·&nbsp; NATUREL &nbsp;·&nbsp; MAROCAIN</p>
+    <h1 class="hero-video__h1">
       Le meilleur du<br>
-      <em>terroir marocain</em><br>
-      livré chez vous.
+      <em>terroir marocain</em>
     </h1>
-    <p class="hero-promo__sub">{{ t.heroSubtitle }}</p>
-    <div class="hero-promo__actions">
-      <a routerLink="/produit" class="hero-promo__btn hero-promo__btn--amber">
-        Nos produits
+    <p class="hero-video__sub">{{ t.heroSubtitle }}</p>
+    <div class="hero-video__ctas">
+      <a routerLink="/produit" class="hero-video__btn hero-video__btn--amber">
+        Découvrir nos produits
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a routerLink="/guide" class="hero-promo__btn hero-promo__btn--outline">Notre histoire</a>
-    </div>
-    <div class="hero-promo__badge" aria-hidden="true">
-      <strong>100%</strong>
-      <span>Naturel &amp; Artisanal</span>
+      <a routerLink="/guide" class="hero-video__btn hero-video__btn--ghost">Notre histoire</a>
     </div>
   </div>
 
-  <div class="hero-promo__visual">
-    <img
-      src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_face,ar_3:4,w_800/v1777552979/lghosn_up83h4.png"
-      alt="Produits Myrass"
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-      width="800"
-      height="1067"
-    />
+  <div class="hero-video__scroll" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </div>
 
 </section>
