@@ -265,8 +265,9 @@ module.exports = async (req, res) => {
         html,
       });
       return json(res, 200, { ok: true });
-    } catch {
-      return json(res, 500, { ok: false, error: 'SEND_FAILED' });
+    } catch (err) {
+      console.error('[send-email] SEND_FAILED:', err?.message || err);
+      return json(res, 500, { ok: false, error: 'SEND_FAILED', detail: err?.message || String(err) });
     }
   }
 
@@ -293,8 +294,9 @@ module.exports = async (req, res) => {
         html,
       });
       return json(res, 200, { ok: true });
-    } catch {
-      return json(res, 500, { ok: false, error: 'SEND_FAILED' });
+    } catch (err) {
+      console.error('[send-email] SEND_FAILED:', err?.message || err);
+      return json(res, 500, { ok: false, error: 'SEND_FAILED', detail: err?.message || String(err) });
     }
   }
 
