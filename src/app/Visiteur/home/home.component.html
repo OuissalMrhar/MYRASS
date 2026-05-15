@@ -5,7 +5,7 @@
 <section class="hero-video">
   <img
     class="hero-video__bg"
-    src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1920/v1778856272/ChatGPT_Image_15_mai_2026_15_44_18_hkbhh3.png"
+    src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1920/v1778857481/ChatGPT_Image_15_mai_2026_15_43_01_yjlhgy.png"
     alt="" aria-hidden="true" fetchpriority="high" loading="eager" decoding="async"
   />
   <div class="hero-video__overlay" aria-hidden="true"></div>
@@ -106,7 +106,11 @@
       [class.bs-split__row--reverse]="i % 2 === 1"
       *ngFor="let slide of bestsellerSlides; let i = index"
     >
-      <div class="bs-split__visual">
+      <a
+        class="bs-split__visual"
+        [routerLink]="slide.id > 0 ? productRoutes.detailLink(slide.title, slide.id) : null"
+        [attr.aria-label]="slide.title"
+      >
         <div
           class="bs-split__img"
           [class.bs-split__img--photo]="!!slide.imageUrl"
@@ -115,7 +119,7 @@
         >
           <span class="bs-split__badge">Best-seller</span>
         </div>
-      </div>
+      </a>
       <div class="bs-split__body">
         <h3 class="bs-split__title">{{ slide.title }}</h3>
         <div class="bs-split__desc-wrap" [class.bs-split__desc-wrap--open]="expandedDescs.has(slide.id)">
