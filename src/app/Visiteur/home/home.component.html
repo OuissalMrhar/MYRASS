@@ -3,28 +3,28 @@
 
 <!-- ════════════════════════ HERO ════════════════════════ -->
 <section class="hero-video">
-  <img
-    class="hero-video__bg"
-    src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1920/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png"
-    srcset="
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_480/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png   480w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_768/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png   768w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1280/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png 1280w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1920/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png 1920w
-    "
-    sizes="100vw"
-    alt="" aria-hidden="true" fetchpriority="high" loading="eager" decoding="async"
-  />
+  <picture class="hero-video__bg">
+    <!-- Mobile & écrans moyens (≤ 900px) -->
+    <source
+      media="(max-width: 900px)"
+      srcset="
+        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_480/v1778858564/ChatGPT_Image_15_mai_2026_16_22_24_fje3m0.png  480w,
+        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_900/v1778858564/ChatGPT_Image_15_mai_2026_16_22_24_fje3m0.png  900w
+      "
+      sizes="100vw"
+    />
+    <!-- Grand écran (> 900px) -->
+    <img
+      src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1920/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png"
+      srcset="
+        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1280/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png 1280w,
+        https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,w_1920/v1778858447/ChatGPT_Image_15_mai_2026_16_10_08_rfrh8h.png 1920w
+      "
+      sizes="100vw"
+      alt="" aria-hidden="true" fetchpriority="high" loading="eager" decoding="async"
+    />
+  </picture>
   <div class="hero-video__overlay" aria-hidden="true"></div>
-  <div class="hero-video__content">
-    <div class="hero-video__ctas">
-      <a routerLink="/produit" class="hero-video__btn hero-video__btn--amber">Découvrir nos produits</a>
-      <a routerLink="/guide" class="hero-video__btn hero-video__btn--ghost">Notre histoire</a>
-    </div>
-  </div>
-  <div class="hero-video__scroll" aria-hidden="true">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-  </div>
 </section>
 
 <!-- ════════════════════════ TRUST BAR ════════════════════════ -->
