@@ -147,12 +147,14 @@ export class CartPageComponent implements OnInit, OnDestroy {
         this.userAuth.syncStoredPointsTotal(res.userPointsTotal);
       }
 
-      // 2. Envoyer l'email avec les instructions de virement
+      this.cart.clear();
+      this.onlineSuccess = true;
+
+      // Email en arrière-plan — n'affecte pas l'affichage du succès
       const lignesText = vm.lines
         .map((l) => `${l.name}${l.variantLabel ? ' (' + l.variantLabel + ')' : ''} × ${l.quantity}`)
         .join(', ');
-
-      await firstValueFrom(
+      setTimeout(() => {
         this.http.post('/api/send-email', {
           kind: 'order-rib',
           nomComplet: user.nomComplet,
@@ -160,11 +162,8 @@ export class CartPageComponent implements OnInit, OnDestroy {
           orderId: res.id,
           lignes: lignesText,
           total: vm.total.toFixed(2),
-        })
-      ).catch(() => { /* L'email est non-bloquant */ });
-
-      this.cart.clear();
-      this.onlineSuccess = true;
+        }).subscribe({ error: () => {} });
+      }, 0);
 
     } catch (err: unknown) {
       const msg = (err as { error?: { message?: string } })?.error?.message;
@@ -231,21 +230,22 @@ export class CartPageComponent implements OnInit, OnDestroy {
             this.userAuth.syncStoredPointsTotal(res.userPointsTotal);
           }
 
-          this.http.post('/api/send-email', {
-            kind: 'order-cod',
-            nomComplet: nom,
-            email,
-            telephone: `+212 ${telephone}`,
-            orderId: res.id,
-            lignesDetail,
-            total: totalStr,
-            ville: villeStr,
-          }).subscribe({
-            error: (err) => console.error('[COD email]', err),
-          });
-
           this.cart.clear();
           this.codSuccess = true;
+
+          // Email en arrière-plan — n'affecte pas l'affichage du succès
+          setTimeout(() => {
+            this.http.post('/api/send-email', {
+              kind: 'order-cod',
+              nomComplet: nom,
+              email,
+              telephone: `+212 ${telephone}`,
+              orderId: res.id,
+              lignesDetail,
+              total: totalStr,
+              ville: villeStr,
+            }).subscribe({ error: (err) => console.error('[COD email]', err) });
+          }, 0);
         },
         error: (err: { error?: { message?: string } }) => {
           this.codSubmitting = false;
