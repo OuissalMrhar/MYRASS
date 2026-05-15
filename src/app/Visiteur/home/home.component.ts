@@ -62,6 +62,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   bestsellerSlides: BestsellerSlide[] = [];
   isBestsellersLoading = false;
+  expandedDescs: Set<number> = new Set();
+
+  toggleBsDesc(id: number): void {
+    this.expandedDescs.has(id) ? this.expandedDescs.delete(id) : this.expandedDescs.add(id);
+  }
 
   gifts: Gift[] = [];
   cadeauxGift: Gift | null = null;

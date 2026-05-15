@@ -6,19 +6,12 @@
   <img
     class="hero-video__bg"
     src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1920/v1778856272/ChatGPT_Image_15_mai_2026_15_44_18_hkbhh3.png"
-    alt=""
-    aria-hidden="true"
-    fetchpriority="high"
-    loading="eager"
-    decoding="async"
+    alt="" aria-hidden="true" fetchpriority="high" loading="eager" decoding="async"
   />
   <div class="hero-video__overlay" aria-hidden="true"></div>
   <div class="hero-video__content">
     <div class="hero-video__ctas">
-      <a routerLink="/produit" class="hero-video__btn hero-video__btn--amber">
-        Découvrir nos produits
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
+      <a routerLink="/produit" class="hero-video__btn hero-video__btn--amber">Découvrir nos produits</a>
       <a routerLink="/guide" class="hero-video__btn hero-video__btn--ghost">Notre histoire</a>
     </div>
   </div>
@@ -29,41 +22,47 @@
 
 <!-- ════════════════════════ TRUST BAR ════════════════════════ -->
 <div class="trust-bar">
-  <div class="trust-bar__item">
-    <div class="trust-bar__icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  <div class="trust-bar__track">
+
+    <div class="trust-bar__inner">
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Ingrédients 100% naturels</span><span class="trust-bar__desc">Sélectionnés du terroir marocain</span></div>
+      </div>
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Savoir-faire artisanal</span><span class="trust-bar__desc">Recettes transmises de génération en génération</span></div>
+      </div>
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Origine Maroc certifiée</span><span class="trust-bar__desc">Producteurs locaux partenaires</span></div>
+      </div>
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/><rect x="1" y="3" width="5" height="18" rx="1"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Livraison soignée</span><span class="trust-bar__desc">Emballage premium &amp; rapide</span></div>
+      </div>
     </div>
-    <div class="trust-bar__copy">
-      <span class="trust-bar__title">Ingrédients 100% naturels</span>
-      <span class="trust-bar__desc">Sélectionnés du terroir marocain</span>
+
+    <!-- Duplicate pour le loop infini mobile -->
+    <div class="trust-bar__inner" aria-hidden="true">
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Ingrédients 100% naturels</span><span class="trust-bar__desc">Sélectionnés du terroir marocain</span></div>
+      </div>
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Savoir-faire artisanal</span><span class="trust-bar__desc">Recettes transmises de génération en génération</span></div>
+      </div>
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Origine Maroc certifiée</span><span class="trust-bar__desc">Producteurs locaux partenaires</span></div>
+      </div>
+      <div class="trust-bar__item">
+        <div class="trust-bar__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/><rect x="1" y="3" width="5" height="18" rx="1"/></svg></div>
+        <div class="trust-bar__copy"><span class="trust-bar__title">Livraison soignée</span><span class="trust-bar__desc">Emballage premium &amp; rapide</span></div>
+      </div>
     </div>
-  </div>
-  <div class="trust-bar__item">
-    <div class="trust-bar__icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-    </div>
-    <div class="trust-bar__copy">
-      <span class="trust-bar__title">Savoir-faire artisanal</span>
-      <span class="trust-bar__desc">Recettes transmises de génération en génération</span>
-    </div>
-  </div>
-  <div class="trust-bar__item">
-    <div class="trust-bar__icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-    </div>
-    <div class="trust-bar__copy">
-      <span class="trust-bar__title">Origine Maroc certifiée</span>
-      <span class="trust-bar__desc">Producteurs locaux partenaires</span>
-    </div>
-  </div>
-  <div class="trust-bar__item">
-    <div class="trust-bar__icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/><rect x="1" y="3" width="5" height="18" rx="1"/></svg>
-    </div>
-    <div class="trust-bar__copy">
-      <span class="trust-bar__title">Livraison soignée</span>
-      <span class="trust-bar__desc">Emballage premium &amp; rapide</span>
-    </div>
+
   </div>
 </div>
 
@@ -74,24 +73,22 @@
     <h2 class="univers-section__title">Nos Collections</h2>
   </div>
   <div class="univers-grid">
-
     <a routerLink="/produit" class="univers-card">
       <div class="univers-card__img col-img--alimentaire"></div>
       <p class="univers-card__label">{{ t.alimentaire }}</p>
     </a>
-
     <div class="univers-card univers-card--soon">
-      <div class="univers-card__img col-img--cosmetique"></div>
+      <div class="univers-card__img col-img--cosmetique">
+        <span class="univers-card__soon-badge">{{ t.availableSoon }}</span>
+      </div>
       <p class="univers-card__label">{{ t.cosmetique }}</p>
     </div>
-
     <div class="univers-card univers-card--soon">
       <div class="univers-card__img col-img--soon">
         <span class="univers-card__soon-badge">{{ t.availableSoon }}</span>
       </div>
       <p class="univers-card__label">{{ t.availableSoon }}</p>
     </div>
-
   </div>
 </section>
 
@@ -120,9 +117,22 @@
         </div>
       </div>
       <div class="bs-split__body">
-        <span class="bs-split__num">0{{ i + 1 }}</span>
         <h3 class="bs-split__title">{{ slide.title }}</h3>
-        <p class="bs-split__desc">{{ slide.desc }}</p>
+        <div class="bs-split__desc-wrap" [class.bs-split__desc-wrap--open]="expandedDescs.has(slide.id)">
+          <p class="bs-split__desc">{{ slide.desc }}</p>
+        </div>
+        <button
+          *ngIf="slide.desc && slide.desc.length > 160"
+          type="button"
+          class="bs-split__toggle"
+          (click)="toggleBsDesc(slide.id)"
+        >
+          {{ expandedDescs.has(slide.id) ? 'Voir moins' : 'Voir plus' }}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"
+            [style.transform]="expandedDescs.has(slide.id) ? 'rotate(180deg)' : 'none'">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
         <p class="bs-split__price">{{ slide.price }}</p>
         <a *ngIf="slide.id > 0" [routerLink]="productRoutes.detailLink(slide.title, slide.id)" class="bs-split__cta">
           Voir le produit
@@ -146,10 +156,7 @@
     <span class="mkt-eyebrow">Coffrets &amp; Cadeaux</span>
     <h2 class="bs-split-section__title">Nos coffrets</h2>
   </div>
-
   <div class="bs-split">
-
-    <!-- Coffret cadeaux (image gauche) -->
     <div class="bs-split__row" *ngIf="cadeauxGift">
       <div class="bs-split__visual">
         <div class="bs-split__img bs-split__img--cover">
@@ -158,7 +165,6 @@
         </div>
       </div>
       <div class="bs-split__body">
-        <span class="bs-split__num">01</span>
         <h3 class="bs-split__title">{{ cadeauxGift.nom }}</h3>
         <p class="bs-split__desc" *ngIf="cadeauxGift.description">{{ cadeauxGift.description }}</p>
         <a [routerLink]="['/details-gift', cadeauxGift.id]" class="bs-split__cta">
@@ -167,8 +173,6 @@
         </a>
       </div>
     </div>
-
-    <!-- Pack Aïd / Ramadan (image droite) -->
     <div class="bs-split__row bs-split__row--reverse" *ngIf="gifts.length > 0">
       <div class="bs-split__visual">
         <div class="bs-split__img bs-split__img--cover">
@@ -177,7 +181,6 @@
         </div>
       </div>
       <div class="bs-split__body">
-        <span class="bs-split__num">02</span>
         <h3 class="bs-split__title">{{ gifts[0] | lang: 'nom' : currentLang }}</h3>
         <p class="bs-split__desc" *ngIf="(gifts[0] | lang: 'description' : currentLang) as d">{{ d }}</p>
         <a [routerLink]="['/details-gift', gifts[0].id]" class="bs-split__cta">
@@ -186,7 +189,6 @@
         </a>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -194,15 +196,10 @@
 <section class="mkt-story home-reveal home-reveal--delay-2" id="brand-story">
   <div class="mkt-story__split">
     <div class="mkt-story__visual">
-      <img
-        src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_face,ar_4:5,w_800/v1777552979/lghosn_up83h4.png"
-        alt="Terroir marocain — Myrass"
-        loading="lazy" decoding="async" width="800" height="1000"
-      />
+      <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_face,ar_4:5,w_800/v1777552979/lghosn_up83h4.png"
+        alt="Terroir marocain — Myrass" loading="lazy" decoding="async" width="800" height="1000"/>
       <div class="mkt-story__stamp" aria-hidden="true">
-        <span>Depuis</span>
-        <strong>2024</strong>
-        <span>Maroc</span>
+        <span>Depuis</span><strong>2024</strong><span>Maroc</span>
       </div>
     </div>
     <div class="mkt-story__text">
