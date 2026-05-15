@@ -202,6 +202,15 @@ export class CartPageComponent implements OnInit, OnDestroy {
     this.codError = null;
     this.codSubmitting = true;
 
+    // Capturer les données du panier AVANT l'appel async
+    const lignesDetail = vm.lines.map(l => ({
+      nom: l.name + (l.variantLabel ? ` (${l.variantLabel})` : ''),
+      quantite: l.quantity,
+      sousTotal: this.cart.lineSubtotalDhs(l).toFixed(2),
+    }));
+    const totalStr = vm.total.toFixed(2);
+    const villeStr = this.codVille.trim() || '—';
+
     this.ordersApi
       .create({
         lignes: vm.lines.map((l) => ({ produitId: l.productId, quantite: l.quantity, tailleId: l.tailleId })),
@@ -222,12 +231,6 @@ export class CartPageComponent implements OnInit, OnDestroy {
             this.userAuth.syncStoredPointsTotal(res.userPointsTotal);
           }
 
-          // Envoyer l'email de confirmation COD au client
-          const lignesDetail = vm.lines.map(l => ({
-            nom: l.name + (l.variantLabel ? ` (${l.variantLabel})` : ''),
-            quantite: l.quantity,
-            sousTotal: this.cart.lineSubtotalDhs(l).toFixed(2),
-          }));
           this.http.post('/api/send-email', {
             kind: 'order-cod',
             nomComplet: nom,
@@ -235,8 +238,8 @@ export class CartPageComponent implements OnInit, OnDestroy {
             telephone: `+212 ${telephone}`,
             orderId: res.id,
             lignesDetail,
-            total: vm.total.toFixed(2),
-            ville: this.codVille.trim() || '—',
+            total: totalStr,
+            ville: villeStr,
           }).subscribe({
             error: (err) => console.error('[COD email]', err),
           });
