@@ -2,41 +2,69 @@
 <ng-container *ngIf="homeLabels$ | async as t">
 
 <!-- ════════════════════════ HERO ════════════════════════ -->
-<section class="hero home-reveal">
-  <img
-    class="hero__bg"
-    src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_960/v1777552979/lghosn_up83h4.png"
-    srcset="
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_480/v1777552979/lghosn_up83h4.png  480w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_768/v1777552979/lghosn_up83h4.png  768w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1200/v1777552979/lghosn_up83h4.png 1200w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1920/v1777552979/lghosn_up83h4.png 1920w
-    "
-    sizes="100vw"
-    alt=""
-    aria-hidden="true"
-    fetchpriority="high"
-    loading="eager"
-    decoding="async"
-    width="1920"
-    height="1080"
-  />
-  <div class="hero__gradient" aria-hidden="true"></div>
+<section class="hero-mk">
 
-  <div class="hero__content">
-    <p class="hero__eyebrow">PURE &nbsp;·&nbsp; NATUREL &nbsp;·&nbsp; MAROCAIN</p>
-    <h1 class="hero__h1">{{ t.heroTitle }}</h1>
-    <p class="hero__sub">{{ t.heroSubtitle }}</p>
-    <div class="hero__ctas">
-      <a routerLink="/produit" class="hero__btn hero__btn--primary">
+  <!-- Décor arrière-plan CSS pur -->
+  <div class="hero-mk__bg" aria-hidden="true">
+    <div class="hero-mk__glow hero-mk__glow--a"></div>
+    <div class="hero-mk__glow hero-mk__glow--b"></div>
+    <div class="hero-mk__glow hero-mk__glow--c"></div>
+    <span class="hero-mk__word hero-mk__word--1" aria-hidden="true">MYRASS</span>
+    <span class="hero-mk__word hero-mk__word--2" aria-hidden="true">MAROC</span>
+  </div>
+
+  <div class="hero-mk__inner">
+
+    <!-- Tag pill -->
+    <div class="hero-mk__pill">
+      <span class="hero-mk__pill-dot"></span>
+      PURE &nbsp;·&nbsp; NATUREL &nbsp;·&nbsp; ARTISANAL
+    </div>
+
+    <!-- Titre principal -->
+    <h1 class="hero-mk__h1">
+      <span class="hero-mk__h1-line hero-mk__h1-line--light">L'essence du</span>
+      <span class="hero-mk__h1-line hero-mk__h1-line--accent">terroir marocain</span>
+      <span class="hero-mk__h1-line hero-mk__h1-line--light">dans chaque goutte.</span>
+    </h1>
+
+    <!-- Sous-titre -->
+    <p class="hero-mk__sub">{{ t.heroSubtitle }}</p>
+
+    <!-- CTAs -->
+    <div class="hero-mk__ctas">
+      <a routerLink="/produit" class="hero-mk__btn hero-mk__btn--primary">
         Découvrir nos produits
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a routerLink="/guide" class="hero__btn hero__btn--ghost">Notre histoire</a>
+      <a routerLink="/guide" class="hero-mk__btn hero-mk__btn--ghost">Notre histoire</a>
     </div>
+
+    <!-- Ligne décorative + stats rapides -->
+    <div class="hero-mk__stats">
+      <div class="hero-mk__stat">
+        <strong>100%</strong>
+        <span>Naturel</span>
+      </div>
+      <div class="hero-mk__stat-sep" aria-hidden="true"></div>
+      <div class="hero-mk__stat">
+        <strong>Artisanal</strong>
+        <span>Fait main</span>
+      </div>
+      <div class="hero-mk__stat-sep" aria-hidden="true"></div>
+      <div class="hero-mk__stat">
+        <strong>🇲🇦</strong>
+        <span>Origine Maroc</span>
+      </div>
+    </div>
+
   </div>
 
-  <div class="hero__scroll-line" aria-hidden="true"><span></span></div>
+  <!-- Flèche bas animée -->
+  <div class="hero-mk__arrow" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+
 </section>
 
 <!-- ════════════════════════ TRUST BAR ════════════════════════ -->
