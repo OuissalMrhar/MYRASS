@@ -121,108 +121,49 @@
 </div>
 
 <!-- ════════════════════════ BEST-SELLERS ════════════════════════ -->
-<section class="bestsellers home-reveal home-reveal--delay-1">
+<section class="bs-split-section home-reveal home-reveal--delay-1">
 
-  <div class="mkt-section-intro">
+  <div class="mkt-section-intro mkt-section-intro--center">
     <span class="mkt-eyebrow">Best-sellers</span>
+    <h2 class="bs-split-section__title">Nos produits phares</h2>
     <p class="mkt-section-body">{{ t.sectionSubtitle }}</p>
   </div>
 
-  <!-- Mobile / tablette -->
-  <div class="bs-mobile" *ngIf="isMobileProductsCarousel && bestsellerSlides.length">
-    <ng-container *ngIf="activeBestsellerSlide as slide">
-      <div class="bs-mobile__visual" (click)="onBestsellerCardClick(slide)">
+  <div class="bs-split">
+    <div
+      class="bs-split__row"
+      [class.bs-split__row--reverse]="i % 2 === 1"
+      *ngFor="let slide of bestsellerSlides; let i = index"
+    >
+
+      <!-- Image -->
+      <div class="bs-split__visual">
         <div
-          class="bs-mobile__img"
-          [class.bs-mobile__img--photo]="!!slide.imageUrl"
-          [ngClass]="slide.imageUrl ? null : slide.fallbackImageClass"
+          class="bs-split__img"
+          [class.bs-split__img--photo]="!!slide.imageUrl"
+          [ngClass]="!slide.imageUrl ? slide.fallbackImageClass : null"
           [style.background-image]="cardBackgroundImage(slide)"
         >
-          <span class="badge">Best-seller</span>
+          <span class="bs-split__badge">Best-seller</span>
         </div>
       </div>
-      <div class="bs-mobile__copy">
-        <h2 class="bs-mobile__title">{{ slide.title }}</h2>
-        <div class="bs-mobile__desc-wrap" [class.bs-mobile__desc-wrap--expanded]="mobileBestsellerDescExpanded">
-          <p class="bs-mobile__desc">{{ slide.desc }}</p>
-        </div>
-        <button
-          type="button"
-          class="bs-mobile__desc-more"
-          *ngIf="slide.desc && slide.desc.trim().length > 90"
-          (click)="toggleMobileBestsellerDesc(); $event.stopPropagation()"
-        >{{ mobileBestsellerDescExpanded ? t.readLess : t.readMore }}</button>
-        <p class="bs-mobile__price">{{ slide.price }}</p>
-      </div>
-      <div class="bs-mobile__nav">
-        <button class="nav-arrow prev" type="button" (click)="prevProduct(); $event.stopPropagation()" aria-label="Produit précédent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <div class="pagination" role="tablist" aria-label="Best-sellers">
-          <button type="button" class="dot"
-            *ngFor="let product of bestsellerSlides; let i = index"
-            [class.active]="i === activeProductIndex"
-            (click)="goToProduct(i); $event.stopPropagation()"
-            [attr.aria-label]="'Produit ' + (i + 1)"
-            [attr.aria-selected]="i === activeProductIndex"
-            role="tab"
-          ></button>
-        </div>
-        <button class="nav-arrow next" type="button" (click)="nextProduct(); $event.stopPropagation()" aria-label="Produit suivant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
-    </ng-container>
-  </div>
 
-  <!-- Desktop -->
-  <div class="bs-layout bs-desktop" *ngIf="!isMobileProductsCarousel">
-    <div class="bs-sidebar">
-      <div class="bs-sidebar__intro">
-        <h2>{{ bestsellerSidebarTitle }}</h2>
-      </div>
-      <div class="bs-sidebar__desc-wrap">
-        <p class="bs-sidebar__desc" *ngIf="bestsellerSidebarDescription as d">{{ d }}</p>
-      </div>
-      <div class="carousel-controls">
-        <button class="nav-arrow prev" type="button" (click)="prevProduct()" aria-label="Produit précédent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <div class="pagination">
-          <button type="button" class="dot"
-            *ngFor="let product of bestsellerSlides; let i = index"
-            [class.active]="i === activeProductIndex"
-            (click)="goToProduct(i)"
-            [attr.aria-label]="'Aller au produit ' + (i + 1)"
-          ></button>
-        </div>
-        <button class="nav-arrow next" type="button" (click)="nextProduct()" aria-label="Produit suivant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="products-grid">
-      <div class="products-track" [style.transform]="trackTransform">
-        <div
-          class="product-card"
-          *ngFor="let product of bestsellerSlides; let i = index"
-          [class.active]="i === activeProductIndex"
-          [class.product-card--clickable]="product.id > 0"
-          (click)="onBestsellerCardClick(product)"
+      <!-- Texte -->
+      <div class="bs-split__body">
+        <span class="bs-split__num">0{{ i + 1 }}</span>
+        <h3 class="bs-split__title">{{ slide.title }}</h3>
+        <p class="bs-split__desc">{{ slide.desc }}</p>
+        <p class="bs-split__price">{{ slide.price }}</p>
+        <a
+          *ngIf="slide.id > 0"
+          [routerLink]="productRoutes.detailLink(slide.title, slide.id)"
+          class="bs-split__cta"
         >
-          <div
-            class="img-box"
-            [class.img-box--photo]="!!product.imageUrl"
-            [ngClass]="product.imageUrl ? null : product.fallbackImageClass"
-            [style.background-image]="cardBackgroundImage(product)"
-          >
-            <span class="badge">{{ t.bestSellerBadge }}</span>
-          </div>
-          <p class="p-title">{{ product.title }}</p>
-          <p class="p-price">{{ product.price }}</p>
-        </div>
+          Voir le produit
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
       </div>
+
     </div>
   </div>
 

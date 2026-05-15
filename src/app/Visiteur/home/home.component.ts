@@ -115,7 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private produitService: ProduitService,
     private giftService: GiftService,
     private router: Router,
-    private productRoutes: ProductRoutingHelper,
+    readonly productRoutes: ProductRoutingHelper,
     private siteLang: SiteLanguageService,
     private currencyService: CurrencyService,
     private seo: SeoService,
