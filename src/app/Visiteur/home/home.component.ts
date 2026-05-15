@@ -64,6 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isBestsellersLoading = false;
 
   gifts: Gift[] = [];
+  cadeauxGift: Gift | null = null;
   isGiftsLoading = false;
 
   partnerHomeEmail = '';
@@ -494,7 +495,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       finalize(() => { this.isGiftsLoading = false; })
     ).subscribe({
       next: (gifts) => {
-        // Home shows only packs NOT starting with "cadeaux" (e.g. Pack Ramadan)
+        this.cadeauxGift = gifts.find(g => g.nom?.trim().toLowerCase().startsWith('cadeaux')) ?? null;
         this.gifts = gifts.filter(g => !g.nom?.trim().toLowerCase().startsWith('cadeaux'));
       },
       error: () => { this.gifts = []; }
