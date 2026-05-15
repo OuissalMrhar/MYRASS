@@ -155,57 +155,71 @@
 </section>
 
 <!-- ════════════════════════ COFFRETS & PACKS ════════════════════════ -->
-<section class="bs-split-section home-reveal home-reveal--delay-1">
+<section class="gift-section home-reveal home-reveal--delay-1">
   <div class="mkt-section-intro mkt-section-intro--center">
     <span class="mkt-eyebrow">Coffrets &amp; Cadeaux</span>
     <h2 class="bs-split-section__title">Nos coffrets</h2>
   </div>
-  <div class="bs-split">
-    <div class="bs-split__row" *ngIf="cadeauxGift">
-      <div class="bs-split__visual">
-        <div class="bs-split__img bs-split__img--cover">
-          <img [src]="giftImageUrl(cadeauxGift)" [alt]="cadeauxGift.nom" loading="lazy" decoding="async" />
-          <span class="bs-split__badge">Coffret cadeaux</span>
+
+  <div class="gift-strip">
+
+    <!-- Coffret 1 : texte gauche, image droite -->
+    <div class="gift-pair gift-pair--flip" *ngIf="cadeauxGift">
+      <div class="gift-media">
+        <img [src]="giftImageUrl(cadeauxGift)" [alt]="cadeauxGift.nom" loading="lazy" decoding="async" />
+      </div>
+      <div class="gift-text">
+        <div class="gift-text__inner">
+          <p class="gift-text__kicker">Coffret cadeaux</p>
+          <h3 class="gift-text__headline">{{ cadeauxGift.nom }}</h3>
+          <p class="gift-text__body" *ngIf="cadeauxGift.description">{{ cadeauxGift.description }}</p>
+          <a [routerLink]="['/details-gift', cadeauxGift.id]" class="gift-text__cta">
+            Découvrir
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
-      <div class="bs-split__body">
-        <h3 class="bs-split__title">{{ cadeauxGift.nom }}</h3>
-        <p class="bs-split__desc" *ngIf="cadeauxGift.description">{{ cadeauxGift.description }}</p>
-        <a [routerLink]="['/details-gift', cadeauxGift.id]" class="bs-split__cta">
-          Découvrir
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
     </div>
-    <div class="bs-split__row bs-split__row--reverse" *ngIf="gifts.length > 0">
-      <div class="bs-split__visual">
-        <div class="bs-split__img bs-split__img--cover">
-          <img [src]="giftImageUrl(gifts[0])" [alt]="gifts[0] | lang: 'nom' : currentLang" loading="lazy" decoding="async" />
-          <span class="bs-split__badge">Pack spécial</span>
+
+    <!-- Pack 2 : image gauche, texte droite -->
+    <div class="gift-pair" *ngIf="gifts.length > 0">
+      <div class="gift-media">
+        <img [src]="giftImageUrl(gifts[0])" [alt]="gifts[0] | lang: 'nom' : currentLang" loading="lazy" decoding="async" />
+      </div>
+      <div class="gift-text gift-text--beige">
+        <div class="gift-text__inner">
+          <p class="gift-text__kicker">Pack spécial</p>
+          <h3 class="gift-text__headline">{{ gifts[0] | lang: 'nom' : currentLang }}</h3>
+          <p class="gift-text__body" *ngIf="(gifts[0] | lang: 'description' : currentLang) as d">{{ d }}</p>
+          <a [routerLink]="['/details-gift', gifts[0].id]" class="gift-text__cta">
+            Découvrir
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
-      <div class="bs-split__body">
-        <h3 class="bs-split__title">{{ gifts[0] | lang: 'nom' : currentLang }}</h3>
-        <p class="bs-split__desc" *ngIf="(gifts[0] | lang: 'description' : currentLang) as d">{{ d }}</p>
-        <a [routerLink]="['/details-gift', gifts[0].id]" class="bs-split__cta">
-          Découvrir
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
     </div>
+
   </div>
 </section>
 
 <!-- ════════════════════════ NOTRE HISTOIRE ════════════════════════ -->
 <section class="mkt-story home-reveal home-reveal--delay-2" id="brand-story">
   <div class="mkt-story__split">
-    <div class="mkt-story__visual">
-      <img src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_face,ar_4:5,w_800/v1777552979/lghosn_up83h4.png"
-        alt="Terroir marocain — Myrass" loading="lazy" decoding="async" width="800" height="1000"/>
-      <div class="mkt-story__stamp" aria-hidden="true">
-        <span>Depuis</span><strong>2024</strong><span>Maroc</span>
-      </div>
+
+    <div class="mkt-story__visual mkt-story__visual--video">
+      <video
+        class="mkt-story__video"
+        controls
+        playsinline
+        preload="metadata"
+        poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto:eco,w_960/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
+        aria-label="L'expérience Myrass"
+      >
+        <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.mp4" type="video/mp4" />
+        <track kind="captions" src="/assets/captions/myrass-video.fr.vtt" srclang="fr" label="Français" />
+      </video>
     </div>
+
     <div class="mkt-story__text">
       <span class="mkt-eyebrow">Notre histoire</span>
       <h2 class="mkt-story__title">L'exigence du terroir Marocain</h2>
@@ -220,27 +234,8 @@
         <div class="mkt-story__stat"><strong>Artisanal</strong><span>Fait main</span></div>
         <div class="mkt-story__stat"><strong>🇲🇦</strong><span>Origine Maroc</span></div>
       </div>
-      <a routerLink="/guide" class="mkt-story__cta">
-        En savoir plus
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
     </div>
-  </div>
-</section>
 
-<!-- ════════════════════════ VIDÉO ════════════════════════ -->
-<section class="video-preview">
-  <div class="mkt-video-label" aria-hidden="true">
-    <span class="mkt-eyebrow">L'expérience Myrass</span>
-  </div>
-  <div class="video-preview__frame">
-    <video class="video-preview__player" controls playsinline preload="metadata"
-      poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto:eco,w_960/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
-      aria-label="Vidéo Myrass">
-      <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.mp4" type="video/mp4" />
-      <track kind="captions" src="/assets/captions/myrass-video.fr.vtt" srclang="fr" label="Français" />
-    </video>
-    <div class="video-preview__overlay"></div>
   </div>
 </section>
 
