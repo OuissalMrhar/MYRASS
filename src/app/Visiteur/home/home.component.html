@@ -145,10 +145,6 @@
           </svg>
         </button>
         <p class="bs-split__price">{{ slide.price }}</p>
-        <a *ngIf="slide.id > 0" [routerLink]="productRoutes.detailLink(slide.title, slide.id)" class="bs-split__cta">
-          Voir le produit
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
       </div>
     </div>
   </div>
@@ -218,7 +214,9 @@
         class="mkt-story__video"
         controls
         playsinline
-        preload="metadata"
+        preload="none"
+        controlslist="nofullscreen nodownload"
+        disablePictureInPicture
         poster="https://res.cloudinary.com/dzajgsdwg/video/upload/so_0,f_auto,q_auto:eco,w_960/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.jpg"
         aria-label="L'expérience Myrass"
       >
