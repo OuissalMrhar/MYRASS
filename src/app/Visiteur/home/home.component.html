@@ -1,94 +1,46 @@
 <app-navbar></app-navbar>
 <ng-container *ngIf="homeLabels$ | async as t">
 
-<!-- ════════════════════════ HERO ════════════════════════ -->
-<section class="hero-ed">
+<!-- ════════════════════════ HERO PROMO ════════════════════════ -->
+<section class="hero-promo">
 
-  <!-- LEFT – contenu éditorial -->
-  <div class="hero-ed__left">
-
-    <p class="hero-ed__eyebrow">
-      <span aria-hidden="true"></span>
+  <div class="hero-promo__text">
+    <span class="hero-promo__tag">
+      <span class="hero-promo__tag-dot" aria-hidden="true"></span>
       PURE &nbsp;·&nbsp; NATUREL &nbsp;·&nbsp; MAROCAIN
-    </p>
-
-    <h1 class="hero-ed__h1">
-      <span class="hero-ed__h1-sm">L'excellence</span>
-      <span class="hero-ed__h1-lg">du <em>terroir</em></span>
-      <span class="hero-ed__h1-sm">marocain.</span>
+    </span>
+    <h1 class="hero-promo__h1">
+      Le meilleur du<br>
+      <em>terroir marocain</em><br>
+      livré chez vous.
     </h1>
-
-    <p class="hero-ed__sub">{{ t.heroSubtitle }}</p>
-
-    <div class="hero-ed__ctas">
-      <a routerLink="/produit" class="hero-ed__btn hero-ed__btn--dark">
-        Découvrir nos produits
+    <p class="hero-promo__sub">{{ t.heroSubtitle }}</p>
+    <div class="hero-promo__actions">
+      <a routerLink="/produit" class="hero-promo__btn hero-promo__btn--amber">
+        Nos produits
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a routerLink="/guide" class="hero-ed__btn hero-ed__btn--outline">Notre histoire</a>
+      <a routerLink="/guide" class="hero-promo__btn hero-promo__btn--outline">Notre histoire</a>
     </div>
-
-    <div class="hero-ed__stats">
-      <div class="hero-ed__stat">
-        <strong>100%</strong>
-        <span>Naturel</span>
-      </div>
-      <div class="hero-ed__stat-sep" aria-hidden="true"></div>
-      <div class="hero-ed__stat">
-        <strong>Artisanal</strong>
-        <span>Fait main</span>
-      </div>
-      <div class="hero-ed__stat-sep" aria-hidden="true"></div>
-      <div class="hero-ed__stat">
-        <strong>🇲🇦</strong>
-        <span>Origine Maroc</span>
-      </div>
+    <div class="hero-promo__badge" aria-hidden="true">
+      <strong>100%</strong>
+      <span>Naturel &amp; Artisanal</span>
     </div>
-
   </div>
 
-  <!-- RIGHT – décor CSS pur -->
-  <div class="hero-ed__right" aria-hidden="true">
-    <span class="hero-ed__big-letter">M</span>
-    <div class="hero-ed__badge">
-      <svg class="hero-ed__ring-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <path id="rpath" d="M 90 90 m -68 0 a 68 68 0 1 1 136 0 a 68 68 0 1 1 -136 0"/>
-        </defs>
-        <text font-size="9.5" fill="rgba(255,252,241,0.55)" font-family="Montserrat,Arial,sans-serif" font-weight="700" letter-spacing="2.5">
-          <textPath href="#rpath">MYRASS · MAROC · NATUREL · ARTISANAL · MYRASS · MAROC ·</textPath>
-        </text>
-      </svg>
-      <div class="hero-ed__badge-inner">
-        <strong>MY</strong>
-        <strong>RASS</strong>
-        <small>EST. 2024</small>
-      </div>
-    </div>
+  <div class="hero-promo__visual">
+    <img
+      src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_face,ar_3:4,w_800/v1777552979/lghosn_up83h4.png"
+      alt="Produits Myrass"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+      width="800"
+      height="1067"
+    />
   </div>
 
 </section>
-
-<!-- ════ COFFRET CADEAUX (après hero) ════ -->
-<div class="cadeaux-banner" *ngIf="cadeauxGift" (click)="goToGiftDetail(cadeauxGift)" role="button" [attr.aria-label]="cadeauxGift.nom">
-  <div class="cadeaux-banner__img-wrap">
-    <img
-      [src]="giftImageUrl(cadeauxGift)"
-      [alt]="cadeauxGift.nom || 'Coffret cadeaux Myrass'"
-      loading="lazy"
-      decoding="async"
-    />
-  </div>
-  <div class="cadeaux-banner__text">
-    <span class="mkt-eyebrow">Collection cadeaux</span>
-    <h2 class="cadeaux-banner__title">{{ cadeauxGift.nom }}</h2>
-    <p class="cadeaux-banner__desc" *ngIf="cadeauxGift.description">{{ cadeauxGift.description }}</p>
-    <span class="cadeaux-banner__cta">
-      Découvrir
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </span>
-  </div>
-</div>
 
 <!-- ════════════════════════ TRUST BAR ════════════════════════ -->
 <div class="trust-bar">
@@ -143,50 +95,89 @@
 
 </div>
 
-<!-- ════════════════════════ BEST-SELLERS ════════════════════════ -->
-<section class="bs-split-section home-reveal home-reveal--delay-1">
+<!-- ════════════════════════ NOS COLLECTIONS ════════════════════════ -->
+<section class="univers-section home-reveal">
 
-  <div class="mkt-section-intro mkt-section-intro--center">
+  <div class="univers-section__intro">
+    <span class="mkt-eyebrow">Collections</span>
+    <h2 class="univers-section__title">Nos Collections</h2>
+  </div>
+
+  <div class="univers-grid">
+
+    <div class="univers-card">
+      <div class="univers-card__img col-img--alimentaire"></div>
+      <div class="univers-card__body">
+        <h3 class="univers-card__name">{{ t.alimentaire }}</h3>
+        <p class="univers-card__desc">Produits alimentaires issus du terroir marocain, sélectionnés pour leur authenticité et leurs saveurs.</p>
+        <a routerLink="/produit" class="univers-card__btn">
+          Découvrir
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="univers-card univers-card--soon">
+      <div class="univers-card__img col-img--cosmetique">
+        <span class="univers-card__soon-tag">{{ t.availableSoon }}</span>
+      </div>
+      <div class="univers-card__body">
+        <h3 class="univers-card__name">{{ t.cosmetique }}</h3>
+        <p class="univers-card__desc">Cosmétiques naturels aux actifs précieux du Maroc. Bientôt disponibles dans notre boutique.</p>
+        <span class="univers-card__btn univers-card__btn--disabled">Bientôt disponible</span>
+      </div>
+    </div>
+
+    <div class="univers-card univers-card--soon">
+      <div class="univers-card__img col-img--soon">
+        <span class="univers-card__soon-tag">{{ t.availableSoon }}</span>
+      </div>
+      <div class="univers-card__body">
+        <h3 class="univers-card__name">À venir</h3>
+        <p class="univers-card__desc">De nouvelles gammes en préparation pour enrichir votre expérience Myrass.</p>
+        <span class="univers-card__btn univers-card__btn--disabled">Bientôt disponible</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════ NOS PRODUITS PHARES ════════════════════════ -->
+<section class="produits-section home-reveal home-reveal--delay-1">
+
+  <div class="produits-section__intro">
     <span class="mkt-eyebrow">Best-sellers</span>
-    <h2 class="bs-split-section__title">Nos produits phares</h2>
+    <h2 class="produits-section__title">Nos produits phares</h2>
     <p class="mkt-section-body">{{ t.sectionSubtitle }}</p>
   </div>
 
-  <div class="bs-split">
+  <div class="produits-grid">
     <div
-      class="bs-split__row"
-      [class.bs-split__row--reverse]="i % 2 === 1"
+      class="produits-card"
       *ngFor="let slide of bestsellerSlides; let i = index"
+      [class.produits-card--clickable]="slide.id > 0"
     >
-
-      <!-- Image -->
-      <div class="bs-split__visual">
-        <div
-          class="bs-split__img"
-          [class.bs-split__img--photo]="!!slide.imageUrl"
-          [ngClass]="!slide.imageUrl ? slide.fallbackImageClass : null"
-          [style.background-image]="cardBackgroundImage(slide)"
-        >
-          <span class="bs-split__badge">Best-seller</span>
-        </div>
+      <div
+        class="produits-card__img"
+        [class.produits-card__img--photo]="!!slide.imageUrl"
+        [ngClass]="!slide.imageUrl ? slide.fallbackImageClass : null"
+        [style.background-image]="cardBackgroundImage(slide)"
+      >
+        <span class="produits-card__badge">Best-seller</span>
       </div>
-
-      <!-- Texte -->
-      <div class="bs-split__body">
-        <span class="bs-split__num">0{{ i + 1 }}</span>
-        <h3 class="bs-split__title">{{ slide.title }}</h3>
-        <p class="bs-split__desc">{{ slide.desc }}</p>
-        <p class="bs-split__price">{{ slide.price }}</p>
+      <div class="produits-card__body">
+        <h3 class="produits-card__name">{{ slide.title }}</h3>
+        <p class="produits-card__desc">{{ slide.cardTeaser }}</p>
+        <p class="produits-card__price">{{ slide.price }}</p>
         <a
           *ngIf="slide.id > 0"
           [routerLink]="productRoutes.detailLink(slide.title, slide.id)"
-          class="bs-split__cta"
+          class="produits-card__btn"
         >
           Voir le produit
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-
     </div>
   </div>
 
@@ -221,54 +212,7 @@
   </div>
 </section>
 
-<!-- ════════════════════════ CATÉGORIES ════════════════════════ -->
-<section class="collections home-reveal home-reveal--delay-2">
-
-  <div class="mkt-section-intro mkt-section-intro--center">
-    <span class="mkt-eyebrow">Collections</span>
-    <h2 class="mkt-collections__h2">{{ t.categoriesTitle }}</h2>
-    <p class="mkt-collections__sub">Explorez l'excellence du terroir marocain à travers nos gammes soigneusement sélectionnées.</p>
-  </div>
-
-  <div class="mkt-col-grid">
-
-    <!-- Alimentaire -->
-    <div class="mkt-col-item">
-      <div class="col-img col-img--alimentaire">
-        <div class="mkt-col-overlay">
-          <p class="mkt-col-name">{{ t.alimentaire }}</p>
-          <a routerLink="/produit" class="mkt-col-cta">
-            Découvrir
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cosmétique — bientôt -->
-    <div class="mkt-col-item mkt-col-item--soon">
-      <div class="col-img col-img--cosmetique">
-        <span class="mkt-col-soon">{{ t.availableSoon }}</span>
-        <div class="mkt-col-overlay">
-          <p class="mkt-col-name">{{ t.cosmetique }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bientôt -->
-    <div class="mkt-col-item mkt-col-item--soon">
-      <div class="col-img col-img--soon">
-        <span class="mkt-col-soon">{{ t.availableSoon }}</span>
-        <div class="mkt-col-overlay">
-          <p class="mkt-col-name">{{ t.availableSoon }}</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ════════════════════════ BRAND STORY ════════════════════════ -->
+<!-- ════════════════════════ NOTRE HISTOIRE ════════════════════════ -->
 <section class="mkt-story home-reveal home-reveal--delay-2" id="brand-story">
   <div class="mkt-story__split">
 
@@ -341,8 +285,7 @@
   </div>
 </section>
 
-<!-- ════ Sections existantes inchangées ════ -->
-
+<!-- ════════════════════════ PACK RAMADAN / CADEAUX ════════════════════════ -->
 <section class="ramadan-section home-reveal home-reveal--delay-2">
   <div class="ramadan-header">
     <ng-container *ngIf="gifts.length > 0">
