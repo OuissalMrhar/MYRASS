@@ -1,12 +1,14 @@
 <app-navbar></app-navbar>
 <ng-container *ngIf="homeLabels$ | async as t">
+
+<!-- ════════════════════════ HERO ════════════════════════ -->
 <section class="hero home-reveal">
   <img
     class="hero__bg"
     src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_960/v1777552979/lghosn_up83h4.png"
     srcset="
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_480/v1777552979/lghosn_up83h4.png 480w,
-      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_768/v1777552979/lghosn_up83h4.png 768w,
+      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_480/v1777552979/lghosn_up83h4.png  480w,
+      https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_768/v1777552979/lghosn_up83h4.png  768w,
       https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1200/v1777552979/lghosn_up83h4.png 1200w,
       https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_auto,w_1920/v1777552979/lghosn_up83h4.png 1920w
     "
@@ -19,16 +21,86 @@
     width="1920"
     height="1080"
   />
-  <div class="hero-content">
-    <h1>{{ t.heroTitle }}</h1>
-    <p>{{ t.heroSubtitle }}</p>
+  <div class="hero__gradient" aria-hidden="true"></div>
+
+  <div class="hero__content">
+    <p class="hero__eyebrow">PURE &nbsp;·&nbsp; NATUREL &nbsp;·&nbsp; MAROCAIN</p>
+    <h1 class="hero__h1">{{ t.heroTitle }}</h1>
+    <p class="hero__sub">{{ t.heroSubtitle }}</p>
+    <div class="hero__ctas">
+      <a routerLink="/produit" class="hero__btn hero__btn--primary">
+        Découvrir nos produits
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a routerLink="/guide" class="hero__btn hero__btn--ghost">Notre histoire</a>
+    </div>
   </div>
+
+  <div class="hero__scroll-line" aria-hidden="true"><span></span></div>
 </section>
 
-<section class="bestsellers home-reveal home-reveal--delay-1">
-  <p class="section-subtitle">{{ t.sectionSubtitle }}</p>
+<!-- ════════════════════════ TRUST BAR ════════════════════════ -->
+<div class="trust-bar">
 
-  <!-- Mobile / tablette : image + description + barre de navigation fixe en bas -->
+  <div class="trust-bar__item">
+    <div class="trust-bar__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="trust-bar__copy">
+      <span class="trust-bar__title">Ingrédients 100% naturels</span>
+      <span class="trust-bar__desc">Sélectionnés du terroir marocain</span>
+    </div>
+  </div>
+
+  <div class="trust-bar__item">
+    <div class="trust-bar__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+      </svg>
+    </div>
+    <div class="trust-bar__copy">
+      <span class="trust-bar__title">Savoir-faire artisanal</span>
+      <span class="trust-bar__desc">Recettes transmises de génération en génération</span>
+    </div>
+  </div>
+
+  <div class="trust-bar__item">
+    <div class="trust-bar__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </div>
+    <div class="trust-bar__copy">
+      <span class="trust-bar__title">Origine Maroc certifiée</span>
+      <span class="trust-bar__desc">Producteurs locaux partenaires</span>
+    </div>
+  </div>
+
+  <div class="trust-bar__item">
+    <div class="trust-bar__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/><rect x="1" y="3" width="5" height="18" rx="1"/>
+      </svg>
+    </div>
+    <div class="trust-bar__copy">
+      <span class="trust-bar__title">Livraison soignée</span>
+      <span class="trust-bar__desc">Emballage premium &amp; rapide</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════ BEST-SELLERS ════════════════════════ -->
+<section class="bestsellers home-reveal home-reveal--delay-1">
+
+  <div class="mkt-section-intro">
+    <span class="mkt-eyebrow">Best-sellers</span>
+    <p class="mkt-section-body">{{ t.sectionSubtitle }}</p>
+  </div>
+
+  <!-- Mobile / tablette -->
   <div class="bs-mobile" *ngIf="isMobileProductsCarousel && bestsellerSlides.length">
     <ng-container *ngIf="activeBestsellerSlide as slide">
       <div class="bs-mobile__visual" (click)="onBestsellerCardClick(slide)">
@@ -43,10 +115,7 @@
       </div>
       <div class="bs-mobile__copy">
         <h2 class="bs-mobile__title">{{ slide.title }}</h2>
-        <div
-          class="bs-mobile__desc-wrap"
-          [class.bs-mobile__desc-wrap--expanded]="mobileBestsellerDescExpanded"
-        >
+        <div class="bs-mobile__desc-wrap" [class.bs-mobile__desc-wrap--expanded]="mobileBestsellerDescExpanded">
           <p class="bs-mobile__desc">{{ slide.desc }}</p>
         </div>
         <button
@@ -54,21 +123,15 @@
           class="bs-mobile__desc-more"
           *ngIf="slide.desc && slide.desc.trim().length > 90"
           (click)="toggleMobileBestsellerDesc(); $event.stopPropagation()"
-        >
-          {{ mobileBestsellerDescExpanded ? t.readLess : t.readMore }}
-        </button>
+        >{{ mobileBestsellerDescExpanded ? t.readLess : t.readMore }}</button>
         <p class="bs-mobile__price">{{ slide.price }}</p>
       </div>
       <div class="bs-mobile__nav">
         <button class="nav-arrow prev" type="button" (click)="prevProduct(); $event.stopPropagation()" aria-label="Produit précédent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <div class="pagination" role="tablist" aria-label="Best-sellers">
-          <button
-            type="button"
-            class="dot"
+          <button type="button" class="dot"
             *ngFor="let product of bestsellerSlides; let i = index"
             [class.active]="i === activeProductIndex"
             (click)="goToProduct(i); $event.stopPropagation()"
@@ -78,9 +141,7 @@
           ></button>
         </div>
         <button class="nav-arrow next" type="button" (click)="nextProduct(); $event.stopPropagation()" aria-label="Produit suivant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
       </div>
     </ng-container>
@@ -96,15 +157,11 @@
         <p class="bs-sidebar__desc" *ngIf="bestsellerSidebarDescription as d">{{ d }}</p>
       </div>
       <div class="carousel-controls">
-        <button class="nav-arrow prev" type="button" (click)="prevProduct()" aria-label="Produit precedent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
+        <button class="nav-arrow prev" type="button" (click)="prevProduct()" aria-label="Produit précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <div class="pagination">
-          <button
-            type="button"
-            class="dot"
+          <button type="button" class="dot"
             *ngFor="let product of bestsellerSlides; let i = index"
             [class.active]="i === activeProductIndex"
             (click)="goToProduct(i)"
@@ -112,9 +169,7 @@
           ></button>
         </div>
         <button class="nav-arrow next" type="button" (click)="nextProduct()" aria-label="Produit suivant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
       </div>
     </div>
@@ -142,20 +197,68 @@
       </div>
     </div>
   </div>
+
+  <div class="mkt-see-all">
+    <a routerLink="/produit" class="mkt-see-all__btn">
+      Voir tous nos produits
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
 </section>
 
-<section class="brand-story home-reveal home-reveal--delay-2">
-  <h2>{{ t.storyTitle }}</h2>
-  <div class="story-content" [class.story-content--expanded]="brandStoryExpanded">
-    <p class="story-content__text">{{ t.storyBody }}</p>
-    <button type="button" class="story-content__toggle" (click)="toggleBrandStory()">
-      <ng-container *ngIf="brandStoryExpanded">{{ t.readLess }}</ng-container>
-      <ng-container *ngIf="!brandStoryExpanded">{{ t.readMore }}</ng-container>
-    </button>
+<!-- ════════════════════════ BRAND STORY ════════════════════════ -->
+<section class="mkt-story home-reveal home-reveal--delay-2" id="brand-story">
+  <div class="mkt-story__split">
+
+    <div class="mkt-story__visual">
+      <img
+        src="https://res.cloudinary.com/dzajgsdwg/image/upload/f_auto,q_auto:eco,c_fill,g_face,ar_4:5,w_800/v1777552979/lghosn_up83h4.png"
+        alt="Terroir marocain — Myrass"
+        loading="lazy"
+        decoding="async"
+        width="800"
+        height="1000"
+      />
+      <div class="mkt-story__stamp" aria-hidden="true">
+        <span>Depuis</span>
+        <strong>2024</strong>
+        <span>Maroc</span>
+      </div>
+    </div>
+
+    <div class="mkt-story__text">
+      <span class="mkt-eyebrow">Notre histoire</span>
+      <h2 class="mkt-story__title">{{ t.storyTitle }}</h2>
+      <p class="mkt-story__body">{{ t.storyBody }}</p>
+      <div class="mkt-story__stats">
+        <div class="mkt-story__stat">
+          <strong>100%</strong>
+          <span>Naturel</span>
+        </div>
+        <div class="mkt-story__stat">
+          <strong>Artisanal</strong>
+          <span>Fait main</span>
+        </div>
+        <div class="mkt-story__stat">
+          <strong>🇲🇦</strong>
+          <span>Origine Maroc</span>
+        </div>
+      </div>
+      <a routerLink="/guide" class="mkt-story__cta">
+        {{ t.readMore }}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
   </div>
 </section>
 
+<!-- ════════════════════════ VIDEO ════════════════════════ -->
 <section class="video-preview">
+  <div class="mkt-video-label" aria-hidden="true">
+    <span class="mkt-eyebrow">L'expérience Myrass</span>
+  </div>
   <div class="video-preview__frame">
     <video
       class="video-preview__player"
@@ -166,51 +269,60 @@
       aria-label="Vidéo Myrass"
     >
       <source src="https://res.cloudinary.com/dzajgsdwg/video/upload/q_auto:best,vc_auto,w_1280,c_limit/v1777480791/79AACBAE-8FDF-4FDA-8BE2-F00004C6FADD_1_fpk1ym.mp4" type="video/mp4" />
-      <track
-        kind="captions"
-        src="/assets/captions/myrass-video.fr.vtt"
-        srclang="fr"
-        label="Français"
-      />
+      <track kind="captions" src="/assets/captions/myrass-video.fr.vtt" srclang="fr" label="Français" />
     </video>
     <div class="video-preview__overlay"></div>
   </div>
 </section>
 
-
-
-
+<!-- ════════════════════════ CATÉGORIES ════════════════════════ -->
 <section class="collections home-reveal home-reveal--delay-2">
 
-  <h2 class="collections-title">{{ t.categoriesTitle }}</h2>
+  <div class="mkt-section-intro mkt-section-intro--center">
+    <span class="mkt-eyebrow">Collections</span>
+    <h2 class="mkt-collections__h2">{{ t.categoriesTitle }}</h2>
+    <p class="mkt-collections__sub">Explorez l'excellence du terroir marocain à travers nos gammes soigneusement sélectionnées.</p>
+  </div>
 
-  <div class="col-grid">
+  <div class="mkt-col-grid">
 
-    <!-- Carte 1 : Alimentaire -->
-    <div class="col-item">
-      <div class="col-img col-img--alimentaire"></div>
-      <p class="category-name">{{ t.alimentaire }}</p>
+    <!-- Alimentaire -->
+    <div class="mkt-col-item">
+      <div class="col-img col-img--alimentaire">
+        <div class="mkt-col-overlay">
+          <p class="mkt-col-name">{{ t.alimentaire }}</p>
+          <a routerLink="/produit" class="mkt-col-cta">
+            Découvrir
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
     </div>
 
-    <!-- Carte 2 : Cosmétique — bientôt disponible -->
-    <div class="col-item">
-      <div class="col-img col-img--cosmetique coming-soon">
-        <span class="coming-badge">{{ t.availableSoon }}</span>
+    <!-- Cosmétique — bientôt -->
+    <div class="mkt-col-item mkt-col-item--soon">
+      <div class="col-img col-img--cosmetique">
+        <span class="mkt-col-soon">{{ t.availableSoon }}</span>
+        <div class="mkt-col-overlay">
+          <p class="mkt-col-name">{{ t.cosmetique }}</p>
+        </div>
       </div>
-      <p class="category-name">{{ t.cosmetique }}</p>
     </div>
 
-    <!-- Carte 3 : bientôt disponible -->
-    <div class="col-item">
-      <div class="col-img col-img--soon coming-soon">
-        <span class="coming-badge">{{ t.availableSoon }}</span>
+    <!-- Bientôt -->
+    <div class="mkt-col-item mkt-col-item--soon">
+      <div class="col-img col-img--soon">
+        <span class="mkt-col-soon">{{ t.availableSoon }}</span>
+        <div class="mkt-col-overlay">
+          <p class="mkt-col-name">{{ t.availableSoon }}</p>
+        </div>
       </div>
-      <p class="category-name">{{ t.availableSoon }}</p>
     </div>
 
   </div>
 </section>
 
+<!-- ════ Sections existantes inchangées ════ -->
 
 <section class="ramadan-section home-reveal home-reveal--delay-2">
   <div class="ramadan-header">
@@ -219,7 +331,6 @@
       <p *ngIf="(gifts[0] | lang: 'description' : currentLang) as giftDesc">{{ giftDesc }}</p>
     </ng-container>
   </div>
-
   <div class="ramadan-container ramadan-container--single" *ngIf="gifts.length > 0">
     <div class="ramadan-item large" *ngFor="let gift of gifts | slice:0:1">
       <div class="img-wrapper main-banner">
@@ -230,12 +341,8 @@
       </div>
     </div>
   </div>
-
-  <div class="ramadan-loading" *ngIf="isGiftsLoading">
-    <p>{{ t.loading }}</p>
-  </div>
+  <div class="ramadan-loading" *ngIf="isGiftsLoading"><p>{{ t.loading }}</p></div>
 </section>
-
 
 <section class="guide-container home-reveal home-reveal--delay-3">
   <div class="guide-hero">
@@ -244,7 +351,6 @@
       <a routerLink="/guide" class="btn-guide">{{ t.readMore }}</a>
     </div>
   </div>
-
   <div class="features-bar">
     <div class="features-track">
       <div class="features-track__inner" aria-label="Myrass">
@@ -263,24 +369,14 @@
   </div>
 </section>
 
-
 <section class="contact-dual home-reveal home-reveal--delay-3" id="contact">
   <div class="contact-dual__panel contact-dual__panel--partner">
     <h2 class="contact-dual__title">{{ t.partnerTitle }}</h2>
     <p class="contact-dual__desc">{{ t.partnerDesc }}</p>
     <form class="contact-dual__form" (ngSubmit)="submitPartnerEmailFromHome($event)">
       <div class="input-group">
-        <input
-          type="email"
-          name="partner-email"
-          autocomplete="email"
-          [(ngModel)]="partnerHomeEmail"
-          [placeholder]="t.newsletterPlaceholder"
-          aria-label="Email partenariat"
-        />
-        <button type="submit" aria-label="Envoyer">
-          <span class="arrow">→</span>
-        </button>
+        <input type="email" name="partner-email" autocomplete="email" [(ngModel)]="partnerHomeEmail" [placeholder]="t.newsletterPlaceholder" aria-label="Email partenariat" />
+        <button type="submit" aria-label="Envoyer"><span class="arrow">→</span></button>
       </div>
     </form>
   </div>
@@ -289,17 +385,8 @@
     <p class="contact-dual__desc">{{ t.newsletterDesc }}</p>
     <form class="contact-dual__form" (ngSubmit)="submitNewsletterEmailFromHome($event)">
       <div class="input-group">
-        <input
-          type="email"
-          name="newsletter-email"
-          autocomplete="email"
-          [(ngModel)]="newsletterHomeEmail"
-          [placeholder]="t.newsletterPlaceholder"
-          aria-label="Newsletter email"
-        />
-        <button type="submit" aria-label="Envoyer">
-          <span class="arrow">→</span>
-        </button>
+        <input type="email" name="newsletter-email" autocomplete="email" [(ngModel)]="newsletterHomeEmail" [placeholder]="t.newsletterPlaceholder" aria-label="Newsletter email" />
+        <button type="submit" aria-label="Envoyer"><span class="arrow">→</span></button>
       </div>
     </form>
   </div>
