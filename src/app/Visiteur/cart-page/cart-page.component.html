@@ -127,21 +127,19 @@
         <!-- Choix du mode de paiement -->
         <div class="cart-checkout__payment-choice" role="tablist">
           <button
-            type="button"
-            role="tab"
+            type="button" role="tab"
             class="cart-checkout__choice-btn"
-            [class.cart-checkout__choice-btn--active]="paymentTab === 'card'"
-            [attr.aria-selected]="paymentTab === 'card'"
-            (click)="setPaymentTab('card')"
+            [class.cart-checkout__choice-btn--active]="paymentTab === 'online'"
+            [attr.aria-selected]="paymentTab === 'online'"
+            (click)="setPaymentTab('online')"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+              <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
             </svg>
             Paiement en ligne
           </button>
           <button
-            type="button"
-            role="tab"
+            type="button" role="tab"
             class="cart-checkout__choice-btn"
             [class.cart-checkout__choice-btn--active]="paymentTab === 'cod'"
             [attr.aria-selected]="paymentTab === 'cod'"
@@ -154,74 +152,56 @@
           </button>
         </div>
 
-        <!-- ── Panneau paiement en ligne (Stripe) ── -->
-        <div class="cart-checkout__payment-body" *ngIf="paymentTab === 'card'">
+        <!-- ── Panneau paiement en ligne (virement RIB) ── -->
+        <div class="cart-checkout__payment-body" *ngIf="paymentTab === 'online'">
 
-          <div *ngIf="paymentSuccess" class="stripe-success" role="status">
+          <!-- Succès -->
+          <div *ngIf="onlineSuccess" class="stripe-success" role="status">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5f7047" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
-            <p>Paiement accepté — merci pour votre commande !</p>
+            <div>
+              <p><strong>Commande confirmée !</strong></p>
+              <p>Vous allez recevoir un email avec les instructions de virement bancaire.</p>
+            </div>
           </div>
 
-          <ng-container *ngIf="!paymentSuccess">
-            <div class="cart-checkout__field">
-              <label for="cc-name">{{ t.nameOnCard }}</label>
-              <input id="cc-name" type="text" name="nameOnCard" [(ngModel)]="nameOnCard"
-                     autocomplete="cc-name" placeholder="Prénom Nom"
-                     [disabled]="paymentProcessing" />
-            </div>
-
-            <div class="cart-checkout__field">
-              <label>{{ t.cardNumber }}</label>
-              <div class="stripe-element-wrap">
-                <div id="stripe-card-number" class="stripe-element"></div>
-                <span class="stripe-brands" aria-hidden="true">
-                  <svg width="34" height="22" viewBox="0 0 34 22" aria-label="Visa"><rect width="34" height="22" rx="3" fill="#1A1F71"/><text x="5" y="16" font-family="Arial" font-weight="700" font-size="11" fill="#fff" letter-spacing="-0.5">VISA</text></svg>
-                  <svg width="34" height="22" viewBox="0 0 34 22" aria-label="Mastercard"><rect width="34" height="22" rx="3" fill="#252525"/><circle cx="13" cy="11" r="7" fill="#EB001B"/><circle cx="21" cy="11" r="7" fill="#F79E1B"/><path d="M17 5.9a7 7 0 010 10.2A7 7 0 0117 5.9z" fill="#FF5F00"/></svg>
-                </span>
+          <ng-container *ngIf="!onlineSuccess">
+            <!-- Instruction virement -->
+            <div class="rib-info-box">
+              <div class="rib-info-box__icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                  <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </div>
+              <div class="rib-info-box__content">
+                <p class="rib-info-box__title">Confirmez votre commande</p>
+                <p class="rib-info-box__text">
+                  Après validation, vous recevrez un email sur votre adresse enregistrée avec les coordonnées bancaires (RIB) pour effectuer votre virement.
+                  Votre commande sera préparée dès réception du paiement.
+                </p>
               </div>
             </div>
 
-            <div class="cart-checkout__field-row">
-              <div class="cart-checkout__field">
-                <label>{{ t.expiry }}</label>
-                <div id="stripe-card-expiry" class="stripe-element"></div>
-              </div>
-              <div class="cart-checkout__field">
-                <label>{{ t.cvc }}
-                  <span class="stripe-cvc-hint" title="3 chiffres au dos de la carte">?</span>
-                </label>
-                <div id="stripe-card-cvc" class="stripe-element"></div>
-              </div>
-            </div>
-
-            <div class="cart-checkout__field">
-              <label for="phone">{{ t.phone }}</label>
-              <div class="cart-checkout__phone">
-                <span class="cart-checkout__phone-prefix">+212</span>
-                <input id="phone" type="tel" name="phone" [(ngModel)]="phone"
-                       autocomplete="tel" placeholder="6 12 34 56 78"
-                       [disabled]="paymentProcessing" />
-              </div>
-            </div>
-            <p class="cart-checkout__phone-hint">{{ t.phoneHint }}</p>
-
-            <p *ngIf="stripeError" class="stripe-error" role="alert">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              {{ stripeError }}
+            <!-- Erreur -->
+            <p *ngIf="onlineError" class="stripe-error" role="alert">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+              {{ onlineError }}
             </p>
           </ng-container>
 
           <button
             type="button"
             class="cart-checkout__pay-btn"
-            [disabled]="paymentProcessing || paymentSuccess || vm.lines.length === 0"
-            (click)="payNow(vm)"
+            [disabled]="onlineProcessing || onlineSuccess || vm.lines.length === 0"
+            (click)="confirmOnlinePayment(vm)"
           >
-            <ng-container *ngIf="paymentProcessing">
+            <ng-container *ngIf="onlineProcessing">
               <svg class="stripe-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0110 10"/></svg>
-              Traitement en cours…
+              Traitement…
             </ng-container>
-            <ng-container *ngIf="!paymentProcessing">{{ t.payNow }} · {{ vm.total | currencyDisplay }}</ng-container>
+            <ng-container *ngIf="!onlineProcessing && !onlineSuccess">
+              Payer maintenant · {{ vm.total | currencyDisplay }}
+            </ng-container>
+            <ng-container *ngIf="onlineSuccess">✓ Commande enregistrée</ng-container>
           </button>
         </div>
 
@@ -235,7 +215,7 @@
 
           <ng-container *ngIf="!codSuccess">
             <p class="cod-info">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
               Vous réglez en espèces à la réception de votre colis.
             </p>
 
@@ -279,7 +259,7 @@
             </div>
 
             <p *ngIf="codError" class="stripe-error" role="alert">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
               {{ codError }}
             </p>
 

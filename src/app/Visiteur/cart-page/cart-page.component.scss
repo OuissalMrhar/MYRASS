@@ -803,16 +803,66 @@
 
 .stripe-success {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: clamp(20px, 4vw, 36px) 0;
-  text-align: center;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  padding: clamp(16px, 3vw, 24px);
+  background: #edf7ed;
+  border: 1px solid #b8ddb9;
+  border-radius: 10px;
+  text-align: left;
+
+  svg { flex-shrink: 0; margin-top: 2px; }
 
   p {
-    font-size: 14px;
-    color: #5f7047;
+    font-size: 13px;
+    color: #256029;
     font-weight: 500;
+    margin: 0 0 4px;
+    &:last-child { margin-bottom: 0; }
+  }
+
+  strong { display: block; font-size: 14px; margin-bottom: 4px; }
+}
+
+/* ── Boîte info virement RIB ────────────────────────────────── */
+.rib-info-box {
+  display: flex;
+  gap: 14px;
+  background: #f0f4f8;
+  border: 1px solid #c5d5e8;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 4px;
+
+  &__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: #2a6ea5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a3a5c;
+    margin: 0 0 6px;
+  }
+
+  &__text {
+    font-size: 12.5px;
+    color: #4a6a8a;
+    line-height: 1.65;
     margin: 0;
   }
 }
