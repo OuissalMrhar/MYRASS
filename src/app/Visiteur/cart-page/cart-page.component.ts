@@ -150,20 +150,22 @@ export class CartPageComponent implements OnInit, OnDestroy {
       this.cart.clear();
       this.onlineSuccess = true;
 
-      // Email en arrière-plan — n'affecte pas l'affichage du succès
+      // Email via fetch natif — indépendant d'Angular zone.js
       const lignesText = vm.lines
         .map((l) => `${l.name}${l.variantLabel ? ' (' + l.variantLabel + ')' : ''} × ${l.quantity}`)
         .join(', ');
-      setTimeout(() => {
-        this.http.post('/api/send-email', {
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           kind: 'order-rib',
           nomComplet: user.nomComplet,
           email: user.email,
           orderId: res.id,
           lignes: lignesText,
           total: vm.total.toFixed(2),
-        }).subscribe({ error: () => {} });
-      }, 0);
+        }),
+      }).catch(() => {});
 
     } catch (err: unknown) {
       const msg = (err as { error?: { message?: string } })?.error?.message;
@@ -233,9 +235,11 @@ export class CartPageComponent implements OnInit, OnDestroy {
           this.cart.clear();
           this.codSuccess = true;
 
-          // Email en arrière-plan — n'affecte pas l'affichage du succès
-          setTimeout(() => {
-            this.http.post('/api/send-email', {
+          // Email via fetch natif — indépendant d'Angular zone.js
+          fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
               kind: 'order-cod',
               nomComplet: nom,
               email,
@@ -244,8 +248,8 @@ export class CartPageComponent implements OnInit, OnDestroy {
               lignesDetail,
               total: totalStr,
               ville: villeStr,
-            }).subscribe({ error: (err) => console.error('[COD email]', err) });
-          }, 0);
+            }),
+          }).catch(err => console.error('[COD email]', err));
         },
         error: (err: { error?: { message?: string } }) => {
           this.codSubmitting = false;
