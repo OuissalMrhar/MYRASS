@@ -222,6 +222,7 @@ export class CartPageComponent implements OnInit, OnDestroy {
         rueLivraison: rue,
         villeLivraison: this.codVille.trim() || undefined,
         codePostalLivraison: this.codCodePostal.trim() || undefined,
+        emailDestinataire: email,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -235,21 +236,25 @@ export class CartPageComponent implements OnInit, OnDestroy {
           this.cart.clear();
           this.codSuccess = true;
 
-          // Email via fetch natif — indépendant d'Angular zone.js
+          // Email via fetch natif
+          const emailPayload = {
+            kind: 'order-cod',
+            nomComplet: nom,
+            email,
+            telephone: `+212 ${telephone}`,
+            orderId: res.id,
+            lignesDetail,
+            total: totalStr,
+            ville: villeStr,
+          };
+          console.log('[COD email] Envoi à:', email, '| lignes:', lignesDetail.length, '| payload:', emailPayload);
           fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              kind: 'order-cod',
-              nomComplet: nom,
-              email,
-              telephone: `+212 ${telephone}`,
-              orderId: res.id,
-              lignesDetail,
-              total: totalStr,
-              ville: villeStr,
-            }),
-          }).catch(err => console.error('[COD email]', err));
+            body: JSON.stringify(emailPayload),
+          })
+          .then(r => r.json().then(d => console.log('[COD email] Réponse:', d)))
+          .catch(err => console.error('[COD email] Erreur fetch:', err));
         },
         error: (err: { error?: { message?: string } }) => {
           this.codSubmitting = false;

@@ -20,6 +20,7 @@ export interface CommandeCreateDto {
   rueLivraison?: string;
   villeLivraison?: string;
   codePostalLivraison?: string;
+  emailDestinataire?: string;
 }
 
 export interface LigneCommandeResponseDto {
