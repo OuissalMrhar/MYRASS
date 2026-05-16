@@ -221,7 +221,7 @@ module.exports = async (req, res) => {
   const resend = new Resend(apiKey);
 
   // Adresse "From" configurable — doit être un domaine vérifié sur Resend
-  const fromAddress = process.env.RESEND_FROM || 'MYRASS <onboarding@resend.dev>';
+  const fromAddress = process.env.RESEND_FROM || 'MYRASS <contact@myrass.com>';
   // Email admin pour recevoir les contacts/partenariats
   const adminEmail  = process.env.MAIL_TO || 'contact@myrass.com';
 
